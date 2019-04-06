@@ -8,7 +8,6 @@
 
 namespace basesystem {
 
-// ゲーム自体の情報
 class GameData {
 public :
 	int32_t max_turn_;
@@ -17,13 +16,13 @@ public :
 	int32_t agent_num_;
 	std::vector<std::vector<int32_t> > field_data_;  // 盤面の得点データ
 
-	void InputGameData();
+	GameData() {};
+	bool InputGameData();
 
 protected :
 private :
 };
 
-// エージェントの場所
 class AgentPosition {
 public :
 	int32_t h_;
@@ -42,23 +41,21 @@ protected :
 private :
 };
 
-// 各ターンの情報
 class TurnData {
 public :
-	std::array<std::vector<int32_t>, 2> agents_position_;
-	std::vector<std::vector<int32_t> > tile_data_;  // 盤面のタイルデータ
+	std::int32_t now_turn_;
+	std::array<std::vector<AgentPosition>, 2> agents_position_;
+	std::vector<std::vector<int32_t> > tile_data_;
 
-	void InputTurnData();
+	TurnData() {};
+	bool MakeTurnData(const GameData&);
+	bool InputTurnData(const GameData&);
 
 protected:
 private:
 	static constexpr int32_t my_agent_ = 0;
 	static constexpr int32_t rival_agent_ = 1;
 };
-
-std::tuple<int32_t, int32_t, int32_t, int32_t> CalclationScore(GameData&, TurnData&);
-
-
 
 };
 
