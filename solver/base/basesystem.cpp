@@ -1,8 +1,8 @@
-#include "basesystem.h"
+#include "../base/basesystem.h"
 
 #include <iostream>
 
-namespace basesystem {
+namespace base {
 
 bool GameData::InputGameData() {
 	std::cin >> this->max_turn_;

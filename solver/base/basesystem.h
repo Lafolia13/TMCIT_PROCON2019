@@ -4,9 +4,8 @@
 #include <cstdint>
 #include <vector>
 #include <array>
-#include <tuple>
 
-namespace basesystem {
+namespace base {
 
 class GameData {
 public :
