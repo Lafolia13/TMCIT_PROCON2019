@@ -2,13 +2,13 @@ package tmcit.yasu.ui.game;
 
 import javax.swing.JFrame;
 
-import tmcit.yasu.data.GameData;
+import tmcit.yasu.data.PaintGameData;
 import tmcit.yasu.util.Constant;
 
 public class GameFrame extends JFrame{
-	private GameData gameData;
+	private PaintGameData gameData;
 	
-	public GameFrame(GameData gameData0) {
+	public GameFrame(PaintGameData gameData0) {
 		gameData = gameData0;
 		
 		initLayout();
