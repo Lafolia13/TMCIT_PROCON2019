@@ -10,13 +10,15 @@ public class Main {
 		System.out.println("Hello World");
 
 		int[][] score = new int[10][8];
+		int[][] territory = new int[10][8];
 		for(int i = 0;i < 10;i++) {
 			for(int j = 0;j < 8;j++) {
 				score[i][j] = j;
+				territory[i][j] = (i+j)%3;
 			}
 		}
 
-		PaintGameData gameData = new PaintGameData(10, 8, score);
+		PaintGameData gameData = new PaintGameData(10, 8, score, territory);
 
 		new GameFrame(gameData);
 	}
