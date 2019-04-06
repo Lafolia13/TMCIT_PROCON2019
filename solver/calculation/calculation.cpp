@@ -87,7 +87,7 @@ Point CalculationOnePoint(const base::GameData &game_data,
 inline std::pair<Point, Point> CalculationAllPoint(
 		const base::GameData &game_data,
 		const base::TurnData &turn_data) {
-	return {CalculationOnePoint(game_data, turn_data, base::my_team),
+	return {CalculationOnePoint(game_data, turn_data, base::ally_team),
 			CalculationOnePoint(game_data, turn_data, base::rival_team)};
 }
 

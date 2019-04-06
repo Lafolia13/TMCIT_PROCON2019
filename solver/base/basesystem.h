@@ -11,7 +11,7 @@
 namespace base {
 
 // タイルの種類
-constexpr int32_t my_team = 0;
+constexpr int32_t ally_team = 0;
 constexpr int32_t rival_team = 1;
 constexpr int32_t brank = 2;
 
