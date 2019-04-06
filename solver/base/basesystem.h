@@ -10,11 +10,6 @@
 
 namespace base {
 
-// タイルの種類
-constexpr int32_t ally_team = 0;
-constexpr int32_t rival_team = 1;
-constexpr int32_t brank = 2;
-
 class GameData {
 public :
 	int32_t max_turn_;
@@ -46,6 +41,12 @@ public :
 		return !(this->h_ == another.h_ && this->w_ == another.w_);
 	}
 
+	inline bool operator<(const Position &another) {
+		return this->h_ == another.h_ ?
+			   this->w_ < another.w_ :
+			   this->h_ < another.h_;
+	}
+
 	inline Position operator+(const Position &another) {
 		return Position(this->h_ + another.h_, this->w_ + another.w_);
 	}
@@ -57,6 +58,7 @@ public :
 	inline Position operator*(const Position &another) {
 		return Position(this->h_ * another.h_, this->w_ * another.w_);
 	}
+
 
 protected :
 private :
@@ -78,8 +80,8 @@ public :
 	{};
 	bool Input(const GameData&);
 
-protected:
-private:
+protected :
+private :
 };
 
 };

@@ -9,9 +9,9 @@
 namespace calculation {
 
 // あるマスが既に調べた領域であるかを示す
-std::array<std::array<bool, 20>, 20> checked_field;
+std::array<std::array<bool, 20>, 20> kCheckedField;
 // あるマスの四近傍を示す
-constexpr std::array<base::Position, 4> next_to = {base::Position(1,0),
+constexpr std::array<base::Position, 4> kNextTo = {base::Position(1,0),
 												   base::Position(0,1),
 												   base::Position(-1,0),
 												   base::Position(0,-1)};
@@ -31,7 +31,7 @@ int32_t FindSurroundedMasu(const base::Position &start_position,
 	int32_t ret = 0;
 	std::queue<base::Position> same_area;
 
-	checked_field[start_position.h_][start_position.w_] = true;
+	kCheckedField[start_position.h_][start_position.w_] = true;
 	same_area.push(start_position);
 
 	base::Position next_position;
@@ -45,15 +45,15 @@ int32_t FindSurroundedMasu(const base::Position &start_position,
 
 		ret += abs(game_data.field_data_[now_position.h_][now_position.w_]);
 
-		for (auto &neighborhood : next_to) {
+		for (auto &neighborhood : kNextTo) {
 			next_position = now_position + neighborhood;
 			if (!IntoField(next_position, game_data) ||
-				checked_field[next_position.h_] [next_position.w_] == true ||
+				kCheckedField[next_position.h_] [next_position.w_] == true ||
 				turn_data.tile_data_[next_position.h_]
 				[next_position.w_] == team_id) continue;
 
 			same_area.push(next_position);
-			checked_field[next_position.h_][next_position.w_] = true;
+			kCheckedField[next_position.h_][next_position.w_] = true;
 		}
 	}
 
@@ -63,7 +63,7 @@ int32_t FindSurroundedMasu(const base::Position &start_position,
 Point CalculationOnePoint(const base::GameData &game_data,
 						  const base::TurnData &turn_data,
 						  const int32_t &team_id) {
-	for (auto &change_array : checked_field)
+	for (auto &change_array : kCheckedField)
 		change_array.fill(false);
 
 	Point ret;
@@ -71,8 +71,8 @@ Point CalculationOnePoint(const base::GameData &game_data,
 		for (int32_t w = 0; w < game_data.width_; ++w) {
 			if (turn_data.tile_data_[h][w] == team_id) {
 				ret.tile_point_ += game_data.field_data_[h][w];
-			} else if (turn_data.tile_data_[h][w] == base::brank &&
-					   checked_field[h][w] == false) {
+			} else if (turn_data.tile_data_[h][w] == base::kBrank &&
+					   kCheckedField[h][w] == false) {
 				ret.area_point_ += FindSurroundedMasu(base::Position(h,w),
 												  game_data, turn_data,
 												  team_id);
@@ -87,8 +87,8 @@ Point CalculationOnePoint(const base::GameData &game_data,
 inline std::pair<Point, Point> CalculationAllPoint(
 		const base::GameData &game_data,
 		const base::TurnData &turn_data) {
-	return {CalculationOnePoint(game_data, turn_data, base::ally_team),
-			CalculationOnePoint(game_data, turn_data, base::rival_team)};
+	return {CalculationOnePoint(game_data, turn_data, base::kAllyTeam),
+			CalculationOnePoint(game_data, turn_data, base::kRivalTeam)};
 }
 
 }
