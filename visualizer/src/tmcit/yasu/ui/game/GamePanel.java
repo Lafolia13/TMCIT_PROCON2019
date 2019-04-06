@@ -3,6 +3,8 @@ package tmcit.yasu.ui.game;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Point;
+import java.util.ArrayList;
 
 import javax.swing.JPanel;
 
@@ -78,6 +80,36 @@ public class GamePanel extends JPanel{
 		g2.setColor(Color.BLACK);
 	}
 
+	private void paintPlayer(Graphics2D g2, Point nowPlayer, Color c, String str) {
+		int drawInterval = calcDrawInterval();
+		int px = nowPlayer.x * drawInterval;
+		int py = nowPlayer.y * drawInterval;
+
+		int spaceBias = (int)(drawInterval*0.1);
+		int spaceSize = (int)(drawInterval*0.8);
+		int bias = 6;
+
+		g2.setColor(c);
+		g2.fillOval(px+spaceBias, py+spaceBias, spaceSize, spaceSize);
+		g2.setColor(Color.BLACK);
+
+		g2.drawString(str, px+drawInterval/2-bias, py+drawInterval/2+bias);
+	}
+
+	private void paintPlayers(Graphics2D g2) {
+		ArrayList<Point> myPlayers = paintGameData.getMyPlayers();
+		ArrayList<Point> rivalPlayers = paintGameData.getRivalPlayers();
+
+		for(int i = 0;i < myPlayers.size();i++) {
+			String str = "" + (char)('a'+i);
+			paintPlayer(g2, myPlayers.get(i), Constant.MY_COLOR, str);
+		}
+		for(int i = 0;i < rivalPlayers.size();i++) {
+			String str = "" + (char)('A'+i);
+			paintPlayer(g2, rivalPlayers.get(i), Constant.RIVAL_COLOR, str);
+		}
+	}
+
 	@Override
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
@@ -87,5 +119,6 @@ public class GamePanel extends JPanel{
 		paintTerritory(g2);
 		paintGrid(g2);
 		paintScore(g2);
+		paintPlayers(g2);
 	}
 }

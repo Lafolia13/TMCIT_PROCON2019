@@ -1,5 +1,8 @@
 package tmcit.yasu.main;
 
+import java.awt.Point;
+import java.util.ArrayList;
+
 import tmcit.yasu.data.PaintGameData;
 import tmcit.yasu.ui.MainFrame;
 import tmcit.yasu.ui.game.GameFrame;
@@ -17,8 +20,14 @@ public class Main {
 				territory[i][j] = (i+j)%3;
 			}
 		}
+		ArrayList<Point> myPlayers = new ArrayList<Point>();
+		ArrayList<Point> rivalPlayers = new ArrayList<Point>();
+		myPlayers.add(new Point(0, 0));
+		myPlayers.add(new Point(5, 5));
+		rivalPlayers.add(new Point(5, 0));
+		rivalPlayers.add(new Point(0, 5));
 
-		PaintGameData gameData = new PaintGameData(10, 8, score, territory);
+		PaintGameData gameData = new PaintGameData(10, 8, score, territory, myPlayers, rivalPlayers);
 
 		new GameFrame(gameData);
 	}
