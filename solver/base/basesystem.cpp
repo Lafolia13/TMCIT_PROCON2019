@@ -16,11 +16,6 @@
 
 namespace base {
 
-// タイルの種類
-constexpr int32_t kAllyTeam = 0;
-constexpr int32_t kRivalTeam = 1;
-constexpr int32_t kBrank = 2;
-
 bool GameData::Input() {
 	std::cin >> this->max_turn_;
 	std::cin >> this->height_ >> width_;
@@ -62,6 +57,12 @@ bool TurnData::Input(const GameData &game_data) {
 	}
 
 	return true;
+}
+
+inline bool IntoField(const Position &check_position,
+					  const GameData &game_data) {
+	return (0 <= check_position.h_ && check_position.h_ < game_data.height_ &&
+			0 <= check_position.w_ && check_position.w_ < game_data.width_);
 }
 
 }

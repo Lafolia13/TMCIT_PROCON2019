@@ -4,10 +4,17 @@
 #include "../base/basesystem.cpp"
 
 #include <cstdint>
+#include <array>
+#include <vector>
 #include <utility>
 
 namespace calculation {
 
+// あるマスの四近傍を示す
+constexpr std::array<base::Position, 4> kNextTo = {base::Position(1,0),
+												   base::Position(0,1),
+												   base::Position(-1,0),
+												   base::Position(0,-1)};
 class Point {
 public :
 	int32_t all_point_ = 0;
@@ -20,12 +27,10 @@ protected :
 private :
 };
 
-// 引数のPositionが盤面内を指しているかを示す
-inline bool IntoField(const base::Position&, const base::GameData&);
-
 // 囲まれているマスを探索
 int32_t FindSurroundedMasu(const base::Position&, const base::GameData&,
-					   const base::TurnData&, const int32_t&);
+					   	   const base::TurnData&, const int32_t&,
+					   	   std::vector<std::vector<bool> >&);
 
 // base::team_idのチームの得点を返す
 Point CalculationOnePoint(const base::GameData&, const base::TurnData&,
@@ -33,7 +38,7 @@ Point CalculationOnePoint(const base::GameData&, const base::TurnData&,
 
 // 両チームの得点を返す
 inline std::pair<Point, Point> CalculationAllPoint(const base::GameData&,
-											const base::TurnData&);
+												   const base::TurnData&);
 
 }
 

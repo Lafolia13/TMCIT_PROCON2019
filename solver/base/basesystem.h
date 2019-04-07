@@ -10,6 +10,11 @@
 
 namespace base {
 
+// タイルの種類
+constexpr int32_t kAllyTeam = 0;
+constexpr int32_t kRivalTeam = 1;
+constexpr int32_t kBrank = 2;
+
 class GameData {
 public :
 	int32_t max_turn_;
@@ -83,6 +88,9 @@ public :
 protected :
 private :
 };
+
+// 引数のPositionが盤面内を指しているかを示す
+inline bool IntoField(const Position&, const GameData&);
 
 };
 
