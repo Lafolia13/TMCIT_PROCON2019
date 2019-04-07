@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public interface Player {
 
-	public ArrayList<String> getAction();
+	public String getAction();
 
 	public void input(String str);
 }
