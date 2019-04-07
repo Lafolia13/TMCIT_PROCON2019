@@ -51,8 +51,8 @@ Point CalculationOnePoint(const base::GameData &game_data,
 						  const int32_t &team_id) {
 	// あるマスが既に調べた領域であるかを示す
 	std::vector<std::vector<bool> > checked_field(game_data.height_,
-												  std::vector<bool>(game_data.width_,
-												  false));
+												  std::vector<bool>(
+												  game_data.width_,false));
 
 	Point ret;
 	for (int32_t h = 0; h < game_data.height_; ++h) {
