@@ -29,15 +29,15 @@ int32_t FindSurroundedMasu(const base::Position &start_position,
 					   const base::TurnData &turn_data,
 					   const int32_t &team_id) {
 	int32_t ret = 0;
-	std::queue<base::Position> same_area;
+	static std::queue<base::Position> kSameArea;
 
 	kCheckedField[start_position.h_][start_position.w_] = true;
-	same_area.push(start_position);
+	kSameArea.push(start_position);
 
 	base::Position next_position;
-	while (same_area.size() > 0) {
-		base::Position now_position = same_area.front();
-		same_area.pop();
+	while (kSameArea.size() > 0) {
+		base::Position now_position = kSameArea.front();
+		kSameArea.pop();
 
 		if (now_position.h_ == 0 || now_position.h_ == game_data.height_ - 1 &&
 			now_position.w_ == 0 || now_position.w_ == game_data.width_ - 1)
@@ -52,7 +52,7 @@ int32_t FindSurroundedMasu(const base::Position &start_position,
 				turn_data.tile_data_[next_position.h_]
 				[next_position.w_] == team_id) continue;
 
-			same_area.push(next_position);
+			kSameArea.push(next_position);
 			kCheckedField[next_position.h_][next_position.w_] = true;
 		}
 	}

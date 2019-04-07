@@ -27,8 +27,8 @@ private :
 
 class Position {
 public :
-	int32_t h_;
-	int32_t w_;
+	int32_t h_ = 0;
+	int32_t w_ = 0;
 
 	Position() {};
 	constexpr Position(const int32_t &h_, const int32_t &w_) :
