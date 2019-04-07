@@ -5,7 +5,8 @@
 
 namespace action {
 
-inline bool IsSameTargetPosition(const Move &check_move, const Move &compare_move) {
+inline bool IsSameTargetPosition(const Move &check_move,
+								 const Move &compare_move) {
 	return check_move.target_position_ == compare_move.target_position_;
 }
 
