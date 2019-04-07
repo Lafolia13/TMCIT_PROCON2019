@@ -38,10 +38,15 @@ bool TurnData::Input(const GameData &game_data) {
 	// if (this->now_turn_ > game_data.max_turn_)
 	// 	return false;
 
+
+	// オブジェクトを使いまわしている場合はthis->stay_agent_のフラグが残るので、
+	// フラグを消してから新たにフラグを立てます
 	for (int32_t team_id = 0; team_id < 2; ++team_id) {
 		for (int32_t agent_id = 0; agent_id < game_data.agent_num_; ++agent_id) {
-			std::cin >> this->agents_position_[team_id][agent_id].h_ >>
-						this->agents_position_[team_id][agent_id].w_;
+			Position &check_position = this->agents_position_[team_id][agent_id];
+			this->stay_agent_[check_position.h_][check_position.w_] = false;
+			std::cin >> check_position.h_ >> check_position.w_;
+			this->stay_agent_[check_position.h_][check_position.w_] = true;
 		}
 	}
 
@@ -52,6 +57,12 @@ bool TurnData::Input(const GameData &game_data) {
 	}
 
 	return true;
+}
+
+inline bool IntoField(const Position &check_position,
+					  const GameData &game_data) {
+	return (0 <= check_position.h_ && check_position.h_ < game_data.height_ &&
+			0 <= check_position.w_ && check_position.w_ < game_data.width_);
 }
 
 }

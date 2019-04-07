@@ -11,9 +11,9 @@
 namespace base {
 
 // タイルの種類
-constexpr int32_t my_team = 0;
-constexpr int32_t rival_team = 1;
-constexpr int32_t brank = 2;
+constexpr int32_t kAllyTeam = 0;
+constexpr int32_t kRivalTeam = 1;
+constexpr int32_t kBrank = 2;
 
 class GameData {
 public :
@@ -32,31 +32,38 @@ private :
 
 class Position {
 public :
-	int32_t h_;
-	int32_t w_;
+	int32_t h_ = 0;
+	int32_t w_ = 0;
 
 	Position() {};
 	constexpr Position(const int32_t &h_, const int32_t &w_) :
 		h_(h_), w_(w_) {};
-	inline bool operator==(const Position &another) {
+	inline bool operator==(const Position &another) const {
 		return this->h_ == another.h_ && this->w_ == another.w_;
 	}
 
-	inline bool operator!=(const Position &another) {
+	inline bool operator!=(const Position &another) const {
 		return !(this->h_ == another.h_ && this->w_ == another.w_);
 	}
 
-	inline Position operator+(const Position &another) {
+	inline bool operator<(const Position &another) const {
+		return this->h_ == another.h_ ?
+			   this->w_ < another.w_ :
+			   this->h_ < another.h_;
+	}
+
+	inline Position operator+(const Position &another) const {
 		return Position(this->h_ + another.h_, this->w_ + another.w_);
 	}
 
-	inline Position operator-(const Position &another) {
+	inline Position operator-(const Position &another) const {
 		return Position(this->h_ - another.h_, this->w_ - another.w_);
 	}
 
-	inline Position operator*(const Position &another) {
+	inline Position operator*(const Position &another) const {
 		return Position(this->h_ * another.h_, this->w_ * another.w_);
 	}
+
 
 protected :
 private :
@@ -78,9 +85,12 @@ public :
 	{};
 	bool Input(const GameData&);
 
-protected:
-private:
+protected :
+private :
 };
+
+// 引数のPositionが盤面内を指しているかを示す
+inline bool IntoField(const Position&, const GameData&);
 
 };
 
