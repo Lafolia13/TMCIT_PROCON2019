@@ -38,29 +38,29 @@ public :
 	Position() {};
 	constexpr Position(const int32_t &h_, const int32_t &w_) :
 		h_(h_), w_(w_) {};
-	inline bool operator==(const Position &another) {
+	inline bool operator==(const Position &another) const {
 		return this->h_ == another.h_ && this->w_ == another.w_;
 	}
 
-	inline bool operator!=(const Position &another) {
+	inline bool operator!=(const Position &another) const {
 		return !(this->h_ == another.h_ && this->w_ == another.w_);
 	}
 
-	inline bool operator<(const Position &another) {
+	inline bool operator<(const Position &another) const {
 		return this->h_ == another.h_ ?
 			   this->w_ < another.w_ :
 			   this->h_ < another.h_;
 	}
 
-	inline Position operator+(const Position &another) {
+	inline Position operator+(const Position &another) const {
 		return Position(this->h_ + another.h_, this->w_ + another.w_);
 	}
 
-	inline Position operator-(const Position &another) {
+	inline Position operator-(const Position &another) const {
 		return Position(this->h_ - another.h_, this->w_ - another.w_);
 	}
 
-	inline Position operator*(const Position &another) {
+	inline Position operator*(const Position &another) const {
 		return Position(this->h_ * another.h_, this->w_ * another.w_);
 	}
 
