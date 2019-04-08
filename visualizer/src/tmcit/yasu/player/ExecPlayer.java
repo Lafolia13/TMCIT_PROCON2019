@@ -48,14 +48,14 @@ public class ExecPlayer implements Player{
 		//TODO: STD ERROR
 
 		stdinPrint = new PrintWriter(new PrintStream(stdin));
-		
+
 		Runtime.getRuntime().addShutdownHook(new ShutdownExecPlayer(this));
 	}
 
 	public void addCommandQueue(String str) {
 		cmdQue.add(str);
 	}
-	
+
 	public void endProcess() {
 		System.out.println("Exec Destroy");
 		process.destroy();

@@ -3,6 +3,7 @@ package tmcit.yasu.game;
 import java.awt.Point;
 import java.util.ArrayList;
 
+import tmcit.yasu.player.ExecPlayer;
 import tmcit.yasu.player.Player;
 
 public class GameMaster implements Runnable{
@@ -62,14 +63,20 @@ public class GameMaster implements Runnable{
 
 		ArrayList<Point> nowMyPlayers = nowTurnData.getMyPlayers();
 		ArrayList<Point> nowRivalPlayer = nowTurnData.getRivalPlayers();
-		int n = nowMyPlayers.size();
+		int n = gameData.getHowPlayer();
 		myPlayer.input(String.valueOf(n));
 		rivalPlayer.input(String.valueOf(n));
 		for(int i = 0;i < n;i++) {
-			String inMy = String.valueOf(nowMyPlayers.get(i).x) + " " + String.valueOf(nowMyPlayers.get(i).y);
-			String inRival = String.valueOf(nowRivalPlayer.get(i).x) + " " + String.valueOf(nowRivalPlayer.get(i).y);
-			myPlayer.input(inMy);
-			rivalPlayer.input(inRival);
+			String myPosition = String.valueOf(nowMyPlayers.get(i).x) + " " + String.valueOf(nowMyPlayers.get(i).y);
+			String rivalPosition = String.valueOf(nowRivalPlayer.get(i).x) + " " + String.valueOf(nowRivalPlayer.get(i).y);
+			myPlayer.input(myPosition);
+			rivalPlayer.input(rivalPosition);
+		}
+		for(int i = 0;i < n;i++) {
+			String myPosition = String.valueOf(nowMyPlayers.get(i).x) + " " + String.valueOf(nowMyPlayers.get(i).y);
+			String rivalPosition = String.valueOf(nowRivalPlayer.get(i).x) + " " + String.valueOf(nowRivalPlayer.get(i).y);
+			myPlayer.input(rivalPosition);
+			rivalPlayer.input(myPosition);
 		}
 	}
 
@@ -77,5 +84,14 @@ public class GameMaster implements Runnable{
 	public void run() {
 		firstInput();
 		turnInput();
+
+		for(int i = 0;i < gameData.getHowPlayer();i++) {
+			String m = myPlayer.getAction();
+			System.out.println("my[" + i + "]:" + m);
+		}
+		for(int i = 0;i < gameData.getHowPlayer();i++) {
+			String r = rivalPlayer.getAction();
+			System.out.println("rival[" + i + "]:" + r);
+		}
 	}
 }
