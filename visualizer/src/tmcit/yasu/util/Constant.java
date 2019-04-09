@@ -3,6 +3,8 @@ package tmcit.yasu.util;
 import java.awt.Color;
 import java.awt.Font;
 
+import javax.swing.border.LineBorder;
+
 public class Constant {
 	public static int MAP_SIZE = 600;
 
@@ -31,8 +33,15 @@ public class Constant {
 	public static int[] DIR_Y = {-1, -1, -1, 0, 0, 0, 1, 1, 1};
 	public static int[] DIR4_X = {0, 0, 1, -1};
 	public static int[] DIR4_Y = {1, -1, 0, 0};
-	
-	
+
+
 	// Setting
-//	public static 
+//	public static
+
+
+	// UI
+	// common
+	public static LineBorder DEFAULT_LINE_BORDER = new LineBorder(Color.BLACK);
+	public static Font DEFAULT_FONT = new Font("ÇlÇr ÉSÉVÉbÉN", Font.BOLD, 20);
+	// mainFrame
 }

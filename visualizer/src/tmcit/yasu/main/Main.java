@@ -43,8 +43,10 @@ public class Main {
 
 //		FileManager settingFile = new FileManager();
 
-		GameTester tester = new GameTester();
-		tester.startTest();
+		new MainFrame();
+
+//		GameTester tester = new GameTester();
+//		tester.startTest();
 	}
 
 }
