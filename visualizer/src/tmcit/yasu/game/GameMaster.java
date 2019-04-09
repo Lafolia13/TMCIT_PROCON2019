@@ -3,20 +3,26 @@ package tmcit.yasu.game;
 import java.awt.Point;
 import java.util.ArrayList;
 
+import tmcit.yasu.data.PaintGameData;
 import tmcit.yasu.player.ExecPlayer;
 import tmcit.yasu.player.Player;
+import tmcit.yasu.ui.game.GameFrame;
 
 public class GameMaster implements Runnable{
+	// UI
+	private GameFrame gameFrame;
+
 	private GameData gameData;
 	private Player myPlayer, rivalPlayer;
 
 	// now game data
 	private TurnData nowTurnData;
 
-	public GameMaster(GameData gameData0, Player myPlayer0, Player rivalPlayer0) {
+	public GameMaster(GameData gameData0, Player myPlayer0, Player rivalPlayer0, GameFrame gameFrame0) {
 		gameData = gameData0;
 		myPlayer = myPlayer0;
 		rivalPlayer = rivalPlayer0;
+		gameFrame = gameFrame0;
 
 		init();
 	}
@@ -89,6 +95,11 @@ public class GameMaster implements Runnable{
 		return ret;
 	}
 
+	private void paintTurnData() {
+		PaintGameData newPaintGameData = new PaintGameData(gameData.getMapWidth(), gameData.getMapHeight(), gameData.getMapScore(), nowTurnData.getTerritoryMap(), nowTurnData.getMyPlayers(), nowTurnData.getRivalPlayers());
+		gameFrame.reflectGameData(newPaintGameData);
+	}
+
 	@Override
 	public void run() {
 		firstInput();
@@ -100,6 +111,14 @@ public class GameMaster implements Runnable{
 
 			TurnData nextTurnData = nowTurnData.nextTurn(myPlayerActions, rivalPlayerActions);
 			nowTurnData = nextTurnData;
+
+			//
+			paintTurnData();
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 
 			// èIóπèàóù
 			System.out.println("[SYSTEM]:End Turn[" + nowTurnData.getNowTurn() + "]");

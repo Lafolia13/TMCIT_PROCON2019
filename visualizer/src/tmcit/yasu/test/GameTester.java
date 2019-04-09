@@ -7,6 +7,7 @@ import tmcit.yasu.data.PaintGameData;
 import tmcit.yasu.game.GameData;
 import tmcit.yasu.game.GameMaster;
 import tmcit.yasu.player.ExecPlayer;
+import tmcit.yasu.ui.game.GameFrame;
 
 public class GameTester {
 
@@ -40,7 +41,10 @@ public class GameTester {
 		ExecPlayer myPlayer = getTestExecPlayer();
 		ExecPlayer rivalPlayer = getTestExecPlayer();
 
-		GameMaster master = new GameMaster(gameData, myPlayer, rivalPlayer);
+		GameFrame gameFrame = new GameFrame(new PaintGameData(gameData.getMapWidth(), gameData.getMapHeight()
+				, gameData.getMapScore(), new int[gameData.getMapWidth()][gameData.getMapHeight()], gameData.getMyPlayers(), gameData.getRivalPlayers()));
+
+		GameMaster master = new GameMaster(gameData, myPlayer, rivalPlayer, gameFrame);
 		master.run();
 	}
 }

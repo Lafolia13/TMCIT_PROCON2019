@@ -24,6 +24,11 @@ public class GamePanel extends JPanel{
 		return Constant.MAP_SIZE / max;
 	}
 
+	public void reflectGameData(PaintGameData newPaintGameData) {
+		paintGameData = newPaintGameData;
+		repaint();
+	}
+
 	// paint
 
 	private void paintGrid(Graphics2D g2) {
