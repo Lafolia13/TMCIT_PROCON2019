@@ -8,6 +8,7 @@ import tmcit.yasu.player.ExecPlayer;
 import tmcit.yasu.test.GameTester;
 import tmcit.yasu.ui.MainFrame;
 import tmcit.yasu.ui.game.GameFrame;
+import tmcit.yasu.util.FileManager;
 
 public class Main {
 
@@ -39,8 +40,11 @@ public class Main {
 //		new GameFrame(gameData);
 //
 //		testExe();
-		GameTester tester = new GameTester();
-		tester.startTest();
+		
+		FileManager settingFile = new FileManager();
+		
+//		GameTester tester = new GameTester();
+//		tester.startTest();
 	}
 
 }

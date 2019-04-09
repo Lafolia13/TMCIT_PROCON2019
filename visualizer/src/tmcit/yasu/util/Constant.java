@@ -31,4 +31,8 @@ public class Constant {
 	public static int[] DIR_Y = {-1, -1, -1, 0, 0, 0, 1, 1, 1};
 	public static int[] DIR4_X = {0, 0, 1, -1};
 	public static int[] DIR4_Y = {1, -1, 0, 0};
+	
+	
+	// Setting
+//	public static 
 }
