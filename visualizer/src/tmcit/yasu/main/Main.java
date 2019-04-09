@@ -40,11 +40,11 @@ public class Main {
 //		new GameFrame(gameData);
 //
 //		testExe();
-		
-		FileManager settingFile = new FileManager();
-		
-//		GameTester tester = new GameTester();
-//		tester.startTest();
+
+//		FileManager settingFile = new FileManager();
+
+		GameTester tester = new GameTester();
+		tester.startTest();
 	}
 
 }

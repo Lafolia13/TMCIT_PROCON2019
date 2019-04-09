@@ -80,18 +80,32 @@ public class GameMaster implements Runnable{
 		}
 	}
 
+	private ArrayList<String> getPlayerActions(Player player){
+		ArrayList<String> ret = new ArrayList<String>();
+		for(int i = 0;i < gameData.getHowPlayer();i++) {
+			String action = player.getAction();
+			ret.add(action);
+		}
+		return ret;
+	}
+
 	@Override
 	public void run() {
 		firstInput();
-		turnInput();
 
-		for(int i = 0;i < gameData.getHowPlayer();i++) {
-			String m = myPlayer.getAction();
-			System.out.println("my[" + i + "]:" + m);
-		}
-		for(int i = 0;i < gameData.getHowPlayer();i++) {
-			String r = rivalPlayer.getAction();
-			System.out.println("rival[" + i + "]:" + r);
+		while(true) {
+			turnInput();
+			ArrayList<String> myPlayerActions = getPlayerActions(myPlayer);
+			ArrayList<String> rivalPlayerActions = getPlayerActions(rivalPlayer);
+
+			TurnData nextTurnData = nowTurnData.nextTurn(myPlayerActions, rivalPlayerActions);
+			nowTurnData = nextTurnData;
+
+			// I—¹ˆ—
+			System.out.println("[SYSTEM]:End Turn[" + nowTurnData.getNowTurn() + "]");
+			if(nowTurnData.getNowTurn() > gameData.getMaxTurn()) {
+				break;
+			}
 		}
 	}
 }
