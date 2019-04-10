@@ -3,7 +3,7 @@ package tmcit.yasu.util;
 import java.io.File;
 
 public class FileManager {
-	private File procon30Directory, settingDirectory, mapDirectory;
+	private File procon30Directory, settingDirectory, mapDirectory, solverDirectory;
 
 	public FileManager() {
 		init();
@@ -15,6 +15,7 @@ public class FileManager {
 		procon30Directory = new File(procon30Path);
 		settingDirectory = new File(procon30Path.toString() + "\\setting");
 		mapDirectory = new File(procon30Path.toString() + "\\map");
+		solverDirectory = new File(procon30Path.toString() + "\\solver");
 	}
 
 	private void createFolder() {
@@ -26,6 +27,9 @@ public class FileManager {
 		}
 		if(!mapDirectory.isDirectory()) {
 			mapDirectory.mkdir();
+		}
+		if(!solverDirectory.isDirectory()) {
+			solverDirectory.mkdir();
 		}
 	}
 
