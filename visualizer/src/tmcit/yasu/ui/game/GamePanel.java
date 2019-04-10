@@ -14,14 +14,20 @@ import tmcit.yasu.util.Constant;
 
 public class GamePanel extends JPanel{
 	private PaintGameData paintGameData;
+	private boolean isPreviewMode;
 
-	public GamePanel(PaintGameData paintGameData0) {
+	public GamePanel(PaintGameData paintGameData0, boolean isPreviewMode0) {
 		paintGameData = paintGameData0;
+		isPreviewMode = isPreviewMode0;
 	}
 
 	private int calcDrawInterval() {
 		int max = Math.max(paintGameData.getMapHeight(), paintGameData.getMapWidth());
-		return Constant.MAP_SIZE / max;
+		if(isPreviewMode) {
+			return Constant.PREVIEW_MAP_SIZE / max;
+		}else {
+			return Constant.MAP_SIZE / max;
+		}
 	}
 
 	public void reflectGameData(PaintGameData newPaintGameData) {
@@ -46,7 +52,11 @@ public class GamePanel extends JPanel{
 	}
 
 	private void paintScore(Graphics2D g2) {
-		g2.setFont(Constant.MAP_SCORE_FONT);
+		if(isPreviewMode) {
+			g2.setFont(Constant.PREVIEW_MAP_SCORE_FONT);
+		}else {
+			g2.setFont(Constant.MAP_SCORE_FONT);
+		}
 
 		int drawInterval = calcDrawInterval();
 		int[][] mapScore = paintGameData.getMapScore();
@@ -57,7 +67,8 @@ public class GamePanel extends JPanel{
 				int py = (nowY+1)*drawInterval;
 
 				String str = String.valueOf(mapScore[nowX][nowY]);
-				g2.drawString(str, px+Constant.MAP_SCORE_BIAS, py-Constant.MAP_SCORE_BIAS);
+				if(isPreviewMode) g2.drawString(str, px+Constant.PREVIEW_MAP_SCORE_BIAS, py-Constant.PREVIEW_MAP_SCORE_BIAS);
+				else g2.drawString(str, px+Constant.MAP_SCORE_BIAS, py-Constant.MAP_SCORE_BIAS);
 			}
 		}
 	}
@@ -95,10 +106,11 @@ public class GamePanel extends JPanel{
 		int bias = 6;
 
 		g2.setColor(c);
+		g2.setFont(Constant.MAP_SCORE_FONT);
 		g2.fillOval(px+spaceBias, py+spaceBias, spaceSize, spaceSize);
 		g2.setColor(Color.BLACK);
 
-		g2.drawString(str, px+drawInterval/2-bias, py+drawInterval/2+bias);
+		if(!isPreviewMode) g2.drawString(str, px+drawInterval/2-bias, py+drawInterval/2+bias);
 	}
 
 	private void paintPlayers(Graphics2D g2) {

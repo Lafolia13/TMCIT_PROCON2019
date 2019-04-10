@@ -62,4 +62,8 @@ public class ReadMapData {
 		
 		readGameData = new GameData(maxTurn, w, h, scoreMap, myPlayers, rivalPlayers);
 	}
+	
+	public GameData getReadGameData() {
+		return readGameData;
+	}
 }

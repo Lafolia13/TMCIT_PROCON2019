@@ -22,7 +22,7 @@ public class StarterPanel extends JPanel{
 	private void initLayout() {
 		setLayout(null);
 
-		mapSelectPanel.setBounds(10, 10, 400, 500);
+		mapSelectPanel.setBounds(10, 10, 400, 700);
 
 		add(mapSelectPanel);
 	}

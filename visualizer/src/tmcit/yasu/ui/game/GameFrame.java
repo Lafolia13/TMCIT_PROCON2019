@@ -25,7 +25,7 @@ public class GameFrame extends JFrame{
 	private void initLayout() {
 		this.setLayout(null);
 
-		gamePanel = new GamePanel(gameData);
+		gamePanel = new GamePanel(gameData, false);
 		gamePanel.setBounds(10, 10, Constant.MAP_SIZE+10, Constant.MAP_SIZE+10);
 
 		this.add(gamePanel);
