@@ -46,5 +46,6 @@ public class Constant {
 	// common
 	public static LineBorder DEFAULT_LINE_BORDER = new LineBorder(Color.BLACK);
 	public static Font DEFAULT_FONT = new Font("ÇlÇr ÉSÉVÉbÉN", Font.BOLD, 20);
+	public static Font SMALL_FONT = new Font("ÇlÇr ÉSÉVÉbÉN", Font.BOLD, 15);
 	// mainFrame
 }

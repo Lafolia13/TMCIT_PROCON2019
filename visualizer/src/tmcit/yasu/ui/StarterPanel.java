@@ -5,13 +5,15 @@ import javax.swing.JPanel;
 import tmcit.yasu.util.FileManager;
 
 public class StarterPanel extends JPanel{
+	private MainFrame mainFrame;
 	private FileManager fileManager;
 
 	private MapSelectPanel mapSelectPanel;
 	private AgentSelectPanel myAgentSelectPanel, rivalAgentSelectPanel;
 	private SettingPanel settingPanel;
 
-	public StarterPanel(FileManager fileManager0) {
+	public StarterPanel(MainFrame mainFrame0, FileManager fileManager0) {
+		mainFrame = mainFrame0;
 		fileManager = fileManager0;
 		init();
 		initLayout();
@@ -21,7 +23,7 @@ public class StarterPanel extends JPanel{
 		mapSelectPanel = new MapSelectPanel(fileManager);
 		myAgentSelectPanel = new AgentSelectPanel(true);
 		rivalAgentSelectPanel = new AgentSelectPanel(false);
-		settingPanel = new SettingPanel();
+		settingPanel = new SettingPanel(mainFrame);
 	}
 
 	private void initLayout() {
