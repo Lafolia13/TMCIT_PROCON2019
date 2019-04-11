@@ -39,7 +39,6 @@ public class Constant {
 
 
 	// Setting
-//	public static
 
 
 	// UI
@@ -47,5 +46,6 @@ public class Constant {
 	public static LineBorder DEFAULT_LINE_BORDER = new LineBorder(Color.BLACK);
 	public static Font DEFAULT_FONT = new Font("ＭＳ ゴシック", Font.BOLD, 20);
 	public static Font SMALL_FONT = new Font("ＭＳ ゴシック", Font.BOLD, 15);
+	public static String[] PARAM_COLUMN_NAMES = {"パラメータ名", "説明", "初期値"};
 	// mainFrame
 }
