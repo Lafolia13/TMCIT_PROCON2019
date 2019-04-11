@@ -1,5 +1,8 @@
 package tmcit.yasu.ui;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -9,14 +12,17 @@ import javax.swing.JTextField;
 
 import tmcit.yasu.util.Constant;
 
-public class AgentSettingPanel extends JPanel{
+public class AgentSettingPanel extends JPanel implements ActionListener{
+	private MainFrame mainFrame;
+	
 	private JLabel nameLabel, solverLabel, paramLabel, exeLabel;
 	private JList<String> solverList;
 	private JButton addSolverButton, deleteSolverButton, selectExeButton;
 	private JTextField exePathField;
 	private JTable paramTabel;
 
-	public AgentSettingPanel() {
+	public AgentSettingPanel(MainFrame mainFrame0) {
+		mainFrame = mainFrame0;
 		init();
 		initLayout();
 	}
@@ -29,6 +35,7 @@ public class AgentSettingPanel extends JPanel{
 		solverLabel.setFont(Constant.SMALL_FONT);
 		solverList = new JList<String>();
 		addSolverButton = new JButton("í«â¡");
+		addSolverButton.addActionListener(this);
 		deleteSolverButton = new JButton("çÌèú");
 
 		paramLabel = new JLabel("ÉpÉâÉÅÅ[É^");
@@ -67,5 +74,13 @@ public class AgentSettingPanel extends JPanel{
 		add(exeLabel);
 		add(exePathField);
 		add(selectExeButton);
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		String cmd = e.getActionCommand();
+		if(cmd == "í«â¡") {
+			new AddSolverDialog(mainFrame, "í«â¡");
+		}
 	}
 }

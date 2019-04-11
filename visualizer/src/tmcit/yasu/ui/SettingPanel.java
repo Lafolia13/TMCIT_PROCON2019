@@ -44,7 +44,7 @@ public class SettingPanel extends JPanel implements ActionListener{
 	public void actionPerformed(ActionEvent e) {
 		String cmd = e.getActionCommand();
 		if(cmd == "エージェントの設定") {
-			mainFrame.switchOrAddTabbedPanel("エージェントの設定", new AgentSettingPanel());
+			mainFrame.switchOrAddTabbedPanel("エージェントの設定", new AgentSettingPanel(mainFrame));
 		}
 	}
 }
