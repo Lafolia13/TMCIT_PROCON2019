@@ -3,6 +3,7 @@ package tmcit.yasu.ui;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -11,18 +12,22 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 
 import tmcit.yasu.util.Constant;
+import tmcit.yasu.util.FileManager;
 
 public class AgentSettingPanel extends JPanel implements ActionListener{
 	private MainFrame mainFrame;
-	
+	private FileManager fileManager;
+
 	private JLabel nameLabel, solverLabel, paramLabel, exeLabel;
+	private DefaultListModel<String> solverListModel;
 	private JList<String> solverList;
 	private JButton addSolverButton, deleteSolverButton, selectExeButton;
 	private JTextField exePathField;
 	private JTable paramTabel;
 
-	public AgentSettingPanel(MainFrame mainFrame0) {
+	public AgentSettingPanel(MainFrame mainFrame0, FileManager fileManager0) {
 		mainFrame = mainFrame0;
+		fileManager = fileManager0;
 		init();
 		initLayout();
 	}
@@ -33,7 +38,12 @@ public class AgentSettingPanel extends JPanel implements ActionListener{
 
 		solverLabel = new JLabel("É\ÉãÉoÅ[àÍóó");
 		solverLabel.setFont(Constant.SMALL_FONT);
-		solverList = new JList<String>();
+		solverListModel = new DefaultListModel<String>();
+		String[] solverNameList = fileManager.getSolverList();
+		for(String nowSolverName : solverNameList) {
+			solverListModel.addElement(nowSolverName);
+		}
+		solverList = new JList<String>(solverListModel);
 		addSolverButton = new JButton("í«â¡");
 		addSolverButton.addActionListener(this);
 		deleteSolverButton = new JButton("çÌèú");
@@ -80,7 +90,12 @@ public class AgentSettingPanel extends JPanel implements ActionListener{
 	public void actionPerformed(ActionEvent e) {
 		String cmd = e.getActionCommand();
 		if(cmd == "í«â¡") {
-			new AddSolverDialog(mainFrame, "í«â¡");
+			AddSolverDialog solverDialog = new AddSolverDialog(mainFrame, "í«â¡");
+			if(solverDialog.isApplied()) {
+				String addName = solverDialog.getName();
+				solverListModel.addElement(addName);
+				fileManager.makeSolverDir(addName);
+			}
 		}
 	}
 }

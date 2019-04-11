@@ -1,6 +1,7 @@
 package tmcit.yasu.util;
 
 import java.io.File;
+import java.io.IOException;
 
 public class FileManager {
 	private File procon30Directory, settingDirectory, mapDirectory, solverDirectory;
@@ -35,5 +36,17 @@ public class FileManager {
 
 	public File getMapDirectory() {
 		return mapDirectory;
+	}
+
+	public String[] getSolverList() {
+		String[] solverList = solverDirectory.list();
+		return solverList;
+	}
+
+	public void makeSolverDir(String solverName) {
+		File newFile = new File(solverDirectory.getAbsolutePath() + "\\" + solverName);
+		if(!newFile.exists()) {
+			newFile.mkdir();
+		}
 	}
 }

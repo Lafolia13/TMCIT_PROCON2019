@@ -8,15 +8,18 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import tmcit.yasu.util.Constant;
+import tmcit.yasu.util.FileManager;
 
 public class SettingPanel extends JPanel implements ActionListener{
 	private MainFrame mainFrame;
+	private FileManager fileManager;
 
 	private JLabel nameLabel;
 	private JButton agentSettingButton;
 
-	public SettingPanel(MainFrame mainFrame0) {
+	public SettingPanel(MainFrame mainFrame0, FileManager fileManager0) {
 		mainFrame = mainFrame0;
+		fileManager = fileManager0;
 		init();
 		initLayout();
 	}
@@ -44,7 +47,7 @@ public class SettingPanel extends JPanel implements ActionListener{
 	public void actionPerformed(ActionEvent e) {
 		String cmd = e.getActionCommand();
 		if(cmd == "エージェントの設定") {
-			mainFrame.switchOrAddTabbedPanel("エージェントの設定", new AgentSettingPanel(mainFrame));
+			mainFrame.switchOrAddTabbedPanel("エージェントの設定", new AgentSettingPanel(mainFrame, fileManager));
 		}
 	}
 }

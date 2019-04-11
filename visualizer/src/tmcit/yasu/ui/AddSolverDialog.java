@@ -63,7 +63,7 @@ public class AddSolverDialog extends JDialog implements ActionListener{
 		String cmd = e.getActionCommand();
 		if(cmd == "OK") {
 			applied = true;
-			name = nameField.getName();
+			name = nameField.getText();
 			dispose();
 		}else if(cmd == "ƒLƒƒƒ“ƒZƒ‹"){
 			applied = false;

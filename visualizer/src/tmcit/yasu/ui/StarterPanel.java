@@ -23,7 +23,7 @@ public class StarterPanel extends JPanel{
 		mapSelectPanel = new MapSelectPanel(fileManager);
 		myAgentSelectPanel = new AgentSelectPanel(true);
 		rivalAgentSelectPanel = new AgentSelectPanel(false);
-		settingPanel = new SettingPanel(mainFrame);
+		settingPanel = new SettingPanel(mainFrame, fileManager);
 	}
 
 	private void initLayout() {
