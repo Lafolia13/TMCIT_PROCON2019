@@ -80,7 +80,7 @@ public :
 	TurnData() {};
 	TurnData(const GameData &game_data) :
 		agents_position_(2, std::vector<Position>(game_data.agent_num_)),
-		tile_data_(game_data.height_, std::vector<int32_t>(game_data.width_)),
+		tile_data_(game_data.height_, std::vector<int32_t>(game_data.width_, kBrank)),
 		stay_agent_(game_data.height_, std::vector<bool>(game_data.width_))
 	{};
 	bool Input(const GameData&);

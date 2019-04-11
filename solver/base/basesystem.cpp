@@ -45,8 +45,16 @@ bool TurnData::Input(const GameData &game_data) {
 		for (int32_t agent_id = 0; agent_id < game_data.agent_num_; ++agent_id) {
 			Position &check_position = this->agents_position_[team_id][agent_id];
 			this->stay_agent_[check_position.h_][check_position.w_] = false;
+			this->tile_data_[check_position.h_][check_position.w_] = base::kBrank;
+		}
+	}
+
+	for (int32_t team_id = 0; team_id < 2; ++team_id) {
+		for (int32_t agent_id = 0; agent_id < game_data.agent_num_; ++agent_id) {
+			Position &check_position = this->agents_position_[team_id][agent_id];
 			std::cin >> check_position.h_ >> check_position.w_;
 			this->stay_agent_[check_position.h_][check_position.w_] = true;
+			this->tile_data_[check_position.h_][check_position.w_] = team_id;
 		}
 	}
 
