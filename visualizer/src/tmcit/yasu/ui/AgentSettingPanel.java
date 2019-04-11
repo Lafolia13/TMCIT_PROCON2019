@@ -15,6 +15,7 @@ import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 
+import tmcit.yasu.listener.SolverListSelectionListener;
 import tmcit.yasu.util.Constant;
 import tmcit.yasu.util.FileManager;
 
@@ -51,26 +52,29 @@ public class AgentSettingPanel extends JPanel implements ActionListener{
 		}
 		solverList = new JList<String>(solverListModel);
 		addSolverButton = new JButton("追加");
-		addSolverButton.addActionListener(this);
 		deleteSolverButton = new JButton("削除");
-		deleteSolverButton.addActionListener(this);
 
 		paramLabel = new JLabel("パラメータ");
 		paramLabel.setFont(Constant.SMALL_FONT);
 		paramTableModel = new DefaultTableModel(Constant.PARAM_COLUMN_NAMES, 0);
 		paramTabel = new JTable(paramTableModel);
 		addParamButton = new JButton("パラメータ追加");
-		addParamButton.addActionListener(this);
 		deleteParamButton = new JButton("パラメータ削除");
-		deleteParamButton.addActionListener(this);
 		paramScrollPanel = new JScrollPane(paramTabel);
 		JTableHeader paramTableHeader = paramTabel.getTableHeader();
-		paramTableHeader.setReorderingAllowed(false);
 
 		exeLabel = new JLabel("実行コマンド");
 		exeLabel.setFont(Constant.SMALL_FONT);
 		exePathField = new JTextField();
 		selectExeButton = new JButton("参照");
+
+		// set listener
+		addSolverButton.addActionListener(this);
+		deleteSolverButton.addActionListener(this);
+		addParamButton.addActionListener(this);
+		deleteParamButton.addActionListener(this);
+		paramTableHeader.setReorderingAllowed(false);
+		solverList.addListSelectionListener(new SolverListSelectionListener(fileManager, solverList, solverListModel, paramTableModel, exePathField));
 	}
 
 	private void initLayout() {
