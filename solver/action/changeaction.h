@@ -1,7 +1,7 @@
 #ifndef CHANGEACTION_H
 #define CHANGEACTION_H
 
-#include "../base/basesystem.cpp"
+#include "../base/basesystem.h"
 
 #include <cstdint>
 #include <vector>
