@@ -47,6 +47,7 @@ public class AgentSettingPanel extends JPanel implements ActionListener{
 		addSolverButton = new JButton("’Ç‰Á");
 		addSolverButton.addActionListener(this);
 		deleteSolverButton = new JButton("íœ");
+		deleteSolverButton.addActionListener(this);
 
 		paramLabel = new JLabel("ƒpƒ‰ƒ[ƒ^");
 		paramLabel.setFont(Constant.SMALL_FONT);
@@ -95,6 +96,13 @@ public class AgentSettingPanel extends JPanel implements ActionListener{
 				String addName = solverDialog.getName();
 				solverListModel.addElement(addName);
 				fileManager.makeSolverDir(addName);
+			}
+		}else if(cmd == "íœ") {
+			if(!solverList.isSelectionEmpty()) {
+				int index = solverList.getSelectedIndex();
+				String selectedSolverName = solverList.getSelectedValue();
+				fileManager.removeSolverDir(selectedSolverName);
+				solverListModel.remove(index);
 			}
 		}
 	}

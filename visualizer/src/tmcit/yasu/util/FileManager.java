@@ -49,4 +49,9 @@ public class FileManager {
 			newFile.mkdir();
 		}
 	}
+
+	public void removeSolverDir(String solverName) {
+		File removeFile = new File(solverDirectory.getAbsolutePath() + "\\" + solverName);
+		removeFile.delete();
+	}
 }
