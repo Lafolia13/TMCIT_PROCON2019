@@ -13,6 +13,8 @@
 #include "../base/basesystem.h"
 
 #include <iostream>
+#include <cmath>
+#include <algorithm>
 
 namespace base {
 
@@ -71,6 +73,15 @@ inline bool IntoField(const Position &check_position,
 					  const GameData &game_data) {
 	return (0 <= check_position.h_ && check_position.h_ < game_data.height_ &&
 			0 <= check_position.w_ && check_position.w_ < game_data.width_);
+}
+
+inline int32_t Distance(const Position &pos_1, const Position &pos_2) {
+	return std::max(std::abs(pos_1.h_ - pos_2.h_), std::abs(pos_1.w_ - pos_2.w_));
+}
+
+inline Position GetNowPosition(const TurnData &turn_data,
+							   const int32_t &team_id, const int32_t &agent_id) {
+	return turn_data.agents_position_[team_id][agent_id];
 }
 
 }

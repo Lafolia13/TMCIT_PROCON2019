@@ -11,8 +11,8 @@
 namespace base {
 
 // タイルの種類
-constexpr int32_t kAllyTeam = 0;
-constexpr int32_t kRivalTeam = 1;
+constexpr int32_t kAlly = 0;
+constexpr int32_t kRival = 1;
 constexpr int32_t kBrank = 2;
 
 class GameData {
@@ -91,6 +91,10 @@ private :
 
 // 引数のPositionが盤面内を指しているかを示す
 inline bool IntoField(const Position&, const GameData&);
+
+inline int32_t Distance(const Position&, const Position&);
+
+inline Position GetNowPosition(const TurnData &, const int32_t&, const int32_t&);
 
 };
 
