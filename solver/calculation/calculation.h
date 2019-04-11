@@ -1,7 +1,7 @@
 #ifndef CALCULATION_H_
 #define CALCULATION_H_
 
-#include "../base/basesystem.cpp"
+#include "../base/basesystem.h"
 
 #include <cstdint>
 #include <array>
