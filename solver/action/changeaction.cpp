@@ -2,7 +2,6 @@
 
 #include <algorithm>
 #include <array>
-#include <iostream>
 namespace action {
 
 inline bool IsSameTargetPosition(const Move &check_move,
@@ -131,7 +130,7 @@ bool CheckEraseAction(const base::GameData &game_data,
 					  base::TurnData &turn_data) {
 	for (int move_id = 0; move_id < agents_move.size(); ++move_id) {
 		if (moved_agent[move_id] == true ||
-			agents_move[move_id].agent_action_ == kErase)
+			agents_move[move_id].agent_action_ != kErase)
 			continue;
 		moved_agent[move_id] = true;
 
