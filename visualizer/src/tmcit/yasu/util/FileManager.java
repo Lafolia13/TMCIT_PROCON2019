@@ -1,9 +1,11 @@
 package tmcit.yasu.util;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -104,5 +106,30 @@ public class FileManager {
 		}
 
 		return ret;
+	}
+	
+	public void saveSolverParameter(String solverName, String presetName, ArrayList<String[]> parameters, String exePath) {
+		File writeFile = new File(solverDirectory.getAbsoluteFile() + "\\" + solverName + "\\" + presetName + ".txt");
+		if(!writeFile.exists()) {
+			try {
+				writeFile.createNewFile();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		
+		try {
+			FileWriter fw = new FileWriter(writeFile);
+			fw.write(exePath + "\n");
+			for(String[] nowParam : parameters) {
+				String paramName = nowParam[0], paramText = nowParam[1], paramDefaultValue = nowParam[2];
+				fw.write(paramName + " " + paramText + " " + paramDefaultValue + "\n");
+			}
+			fw.flush();
+			fw.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
 	}
 }

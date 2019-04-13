@@ -15,6 +15,7 @@ import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 
+import tmcit.yasu.listener.ParamTableModelListener;
 import tmcit.yasu.listener.SolverListSelectionListener;
 import tmcit.yasu.util.Constant;
 import tmcit.yasu.util.FileManager;
@@ -30,7 +31,10 @@ public class AgentSettingPanel extends JPanel implements ActionListener{
 	private JButton addSolverButton, deleteSolverButton, selectExeButton, addParamButton, deleteParamButton;
 	private JTextField exePathField;
 	private DefaultTableModel paramTableModel;
-	private JTable paramTabel;
+	private JTable paramTable;
+	
+	// listener
+	private ParamTableModelListener paramTableModelListener;
 
 	public AgentSettingPanel(MainFrame mainFrame0, FileManager fileManager0) {
 		mainFrame = mainFrame0;
@@ -57,16 +61,19 @@ public class AgentSettingPanel extends JPanel implements ActionListener{
 		paramLabel = new JLabel("パラメータ");
 		paramLabel.setFont(Constant.SMALL_FONT);
 		paramTableModel = new DefaultTableModel(Constant.PARAM_COLUMN_NAMES, 0);
-		paramTabel = new JTable(paramTableModel);
+		paramTable = new JTable(paramTableModel);
 		addParamButton = new JButton("パラメータ追加");
 		deleteParamButton = new JButton("パラメータ削除");
-		paramScrollPanel = new JScrollPane(paramTabel);
-		JTableHeader paramTableHeader = paramTabel.getTableHeader();
+		paramScrollPanel = new JScrollPane(paramTable);
+		JTableHeader paramTableHeader = paramTable.getTableHeader();
 
 		exeLabel = new JLabel("実行コマンド");
 		exeLabel.setFont(Constant.SMALL_FONT);
 		exePathField = new JTextField();
 		selectExeButton = new JButton("参照");
+		
+		// listener
+		paramTableModelListener = new ParamTableModelListener(solverList, paramTableModel, fileManager);
 
 		// set listener
 		addSolverButton.addActionListener(this);
@@ -74,7 +81,8 @@ public class AgentSettingPanel extends JPanel implements ActionListener{
 		addParamButton.addActionListener(this);
 		deleteParamButton.addActionListener(this);
 		paramTableHeader.setReorderingAllowed(false);
-		solverList.addListSelectionListener(new SolverListSelectionListener(fileManager, solverList, solverListModel, paramTableModel, exePathField));
+		solverList.addListSelectionListener(new SolverListSelectionListener(fileManager, solverList, solverListModel, paramTableModel, exePathField, paramTableModelListener));
+		paramTableModel.addTableModelListener(paramTableModelListener);
 	}
 
 	private void initLayout() {
@@ -129,8 +137,8 @@ public class AgentSettingPanel extends JPanel implements ActionListener{
 		}else if(cmd == "パラメータ追加") {
 			paramTableModel.addRow(new ArrayList<String>().toArray());
 		}else if(cmd == "パラメータ削除") {
-			int[] selectedRows = paramTabel.getSelectedRows();
-			int rowCount = paramTabel.getSelectedRowCount();
+			int[] selectedRows = paramTable.getSelectedRows();
+			int rowCount = paramTable.getSelectedRowCount();
 			for(int i = 0;i < rowCount;i++) {
 				int nowRow = selectedRows[i];
 				paramTableModel.removeRow(nowRow - i);

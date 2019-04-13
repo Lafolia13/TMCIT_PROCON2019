@@ -17,17 +17,23 @@ public class SolverListSelectionListener implements ListSelectionListener{
 	private JList<String> solverList;
 	private DefaultTableModel paramTableModel;
 	private JTextField exePathField;
+	private ParamTableModelListener paramTableModelListener;
 
-	public SolverListSelectionListener(FileManager fileManager0, JList<String> solverList0, DefaultListModel<String> solverListModel0, DefaultTableModel paramTableModel0, JTextField exePathField0) {
+	public SolverListSelectionListener(FileManager fileManager0, JList<String> solverList0,
+			DefaultListModel<String> solverListModel0, DefaultTableModel paramTableModel0, JTextField exePathField0,
+			ParamTableModelListener paramTableModelListener0) {
 		fileManager = fileManager0;
 		solverList = solverList0;
 		solverListModel = solverListModel0;
 		paramTableModel = paramTableModel0;
 		exePathField = exePathField0;
+		paramTableModelListener = paramTableModelListener0;
 	}
 
 	@Override
 	public void valueChanged(ListSelectionEvent e) {
+		paramTableModelListener.setSaveFlag(false);
+		
 		int index = solverList.getSelectedIndex();
 		String selectedName = solverListModel.getElementAt(index);
 
@@ -42,6 +48,8 @@ public class SolverListSelectionListener implements ListSelectionListener{
 
 		String exePath = fileManager.getSelectedSolverExePath(selectedName);
 		exePathField.setText(exePath);
+		
+		paramTableModelListener.setSaveFlag(true);
 	}
 
 }
