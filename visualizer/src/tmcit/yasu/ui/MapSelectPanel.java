@@ -29,8 +29,6 @@ import tmcit.yasu.util.FileManager;
 import tmcit.yasu.util.ReadMapData;
 
 public class MapSelectPanel extends JPanel implements ActionListener, ListSelectionListener{
-	private LookAndFeel defaultLookAndFeel;
-
 	// common
 	private FileManager fileManager;
 
@@ -39,7 +37,7 @@ public class MapSelectPanel extends JPanel implements ActionListener, ListSelect
 	private JList<String> selectMapList;
 	private DefaultListModel<String> mapListModel;
 	private JButton addFileButton, deleteFileButton;
-	
+
 	private JLabel previewLabel;
 	private GamePanel previewPanel;
 	private PaintGameData previewGameData;
@@ -50,31 +48,12 @@ public class MapSelectPanel extends JPanel implements ActionListener, ListSelect
 		initLayout();
 	}
 
-	// LookAndFeel
-	private void setWindowsLookAndFeel() {
-		try {
-			UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
-		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
-				| UnsupportedLookAndFeelException e) {
-			e.printStackTrace();
-		}
-	}
-
-	private void resetLookAndFeel() {
-		try {
-			UIManager.setLookAndFeel(defaultLookAndFeel);
-		} catch (UnsupportedLookAndFeelException e) {
-			e.printStackTrace();
-		}
-	}
-	
 	private void initPreviewGameData() {
 		int[][] mapScore = new int[1][1];
 		previewGameData = new PaintGameData(1, 1, mapScore, mapScore, new ArrayList<>(), new ArrayList<>());
 	}
 
 	private void init() {
-		defaultLookAndFeel = UIManager.getLookAndFeel();
 		setBorder(Constant.DEFAULT_LINE_BORDER);
 
 		nameLabel = new JLabel("マップ選択");
@@ -90,7 +69,7 @@ public class MapSelectPanel extends JPanel implements ActionListener, ListSelect
 		addFileButton.addActionListener(this);
 		deleteFileButton = new JButton("削除");
 		deleteFileButton.addActionListener(this);
-		
+
 		previewLabel = new JLabel("プレビュー");
 		previewLabel.setFont(Constant.DEFAULT_FONT);
 		initPreviewGameData();
@@ -119,11 +98,11 @@ public class MapSelectPanel extends JPanel implements ActionListener, ListSelect
 	public void actionPerformed(ActionEvent e) {
 		String cmd = e.getActionCommand();
 		if(cmd == "追加") {
-			setWindowsLookAndFeel();
+			fileManager.setWindowsLookAndFeel();
 			JFileChooser filechooser = new JFileChooser(fileManager.getMapDirectory());
 			filechooser.setMultiSelectionEnabled(true);
 			int selected = filechooser.showOpenDialog(this);
-			resetLookAndFeel();
+			fileManager.resetLookAndFeel();
 
 			if(selected == JFileChooser.APPROVE_OPTION) {
 				File[] selectedFiles = filechooser.getSelectedFiles();
@@ -140,7 +119,7 @@ public class MapSelectPanel extends JPanel implements ActionListener, ListSelect
 				}
 			}
 		}
-		
+
 	}
 
 	private void reflectPreviewData(ReadMapData readMapData) {
@@ -148,7 +127,7 @@ public class MapSelectPanel extends JPanel implements ActionListener, ListSelect
 		int w = readData.getMapWidth(), h = readData.getMapHeight();
 		ArrayList<Point> myPlayers = readData.getMyPlayers();
 		ArrayList<Point> rivalPlayers = readData.getRivalPlayers();
-		
+
 		int[][] territoryMap = new int[w][h];
 		for(Point myPoint : myPlayers) {
 			territoryMap[myPoint.x][myPoint.y] = Constant.MY_TERRITORY;
@@ -156,11 +135,11 @@ public class MapSelectPanel extends JPanel implements ActionListener, ListSelect
 		for(Point rivalPoint : rivalPlayers) {
 			territoryMap[rivalPoint.x][rivalPoint.y] = Constant.RIVAL_TERRITORY;
 		}
-		
+
 		previewGameData = new PaintGameData(w, h, readData.getMapScore(), territoryMap, myPlayers, rivalPlayers);
 		previewPanel.reflectGameData(previewGameData);
 	}
-	
+
 	@Override
 	public void valueChanged(ListSelectionEvent e) {
 		if(!selectMapList.isSelectionEmpty()) {

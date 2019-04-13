@@ -2,10 +2,12 @@ package tmcit.yasu.ui;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.util.ArrayList;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
@@ -32,7 +34,7 @@ public class AgentSettingPanel extends JPanel implements ActionListener{
 	private JTextField exePathField;
 	private DefaultTableModel paramTableModel;
 	private JTable paramTable;
-	
+
 	// listener
 	private ParamTableModelListener paramTableModelListener;
 
@@ -71,18 +73,20 @@ public class AgentSettingPanel extends JPanel implements ActionListener{
 		exeLabel.setFont(Constant.SMALL_FONT);
 		exePathField = new JTextField();
 		selectExeButton = new JButton("éQè∆");
-		
+
 		// listener
-		paramTableModelListener = new ParamTableModelListener(solverList, paramTableModel, fileManager);
+		paramTableModelListener = new ParamTableModelListener(solverList, exePathField, paramTableModel, fileManager);
 
 		// set listener
 		addSolverButton.addActionListener(this);
 		deleteSolverButton.addActionListener(this);
 		addParamButton.addActionListener(this);
 		deleteParamButton.addActionListener(this);
+		selectExeButton.addActionListener(this);
 		paramTableHeader.setReorderingAllowed(false);
 		solverList.addListSelectionListener(new SolverListSelectionListener(fileManager, solverList, solverListModel, paramTableModel, exePathField, paramTableModelListener));
 		paramTableModel.addTableModelListener(paramTableModelListener);
+		exePathField.getDocument().addDocumentListener(paramTableModelListener);
 	}
 
 	private void initLayout() {
@@ -142,6 +146,17 @@ public class AgentSettingPanel extends JPanel implements ActionListener{
 			for(int i = 0;i < rowCount;i++) {
 				int nowRow = selectedRows[i];
 				paramTableModel.removeRow(nowRow - i);
+			}
+		}else if(cmd == "éQè∆") {
+			fileManager.setWindowsLookAndFeel();
+			JFileChooser filechooser = new JFileChooser(fileManager.getProcon30Directory());
+			filechooser.setMultiSelectionEnabled(false);
+			int selected = filechooser.showOpenDialog(this);
+			fileManager.resetLookAndFeel();
+
+			if(selected == JFileChooser.APPROVE_OPTION) {
+				File selectedFile = filechooser.getSelectedFile();
+				exePathField.setText(selectedFile.getAbsolutePath());
 			}
 		}
 	}

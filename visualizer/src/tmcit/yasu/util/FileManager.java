@@ -9,7 +9,13 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import javax.swing.JFileChooser;
+import javax.swing.LookAndFeel;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
+
 public class FileManager {
+	private LookAndFeel defaultLookAndFeel;
 	private File procon30Directory, settingDirectory, mapDirectory, solverDirectory;
 
 	public FileManager() {
@@ -18,6 +24,7 @@ public class FileManager {
 	}
 
 	private void init() {
+		defaultLookAndFeel = UIManager.getLookAndFeel();
 		String procon30Path = System.getProperty("user.home") + "\\procon30";
 		procon30Directory = new File(procon30Path);
 		settingDirectory = new File(procon30Path.toString() + "\\setting");
@@ -40,6 +47,7 @@ public class FileManager {
 		}
 	}
 
+	// 再帰的にファイルを削除
 	private void recursiveDeleteFile(File file) {
 		if(!file.exists()) {
 			return;
@@ -55,6 +63,10 @@ public class FileManager {
 
 	public File getMapDirectory() {
 		return mapDirectory;
+	}
+
+	public File getProcon30Directory() {
+		return procon30Directory;
 	}
 
 	public String[] getSolverList() {
@@ -147,4 +159,23 @@ public class FileManager {
 		}
 
 	}
+
+	// LookAndFeel
+	public void setWindowsLookAndFeel() {
+		try {
+			UIManager.setLookAndFeel("com.sun.java.swing.plaf.windows.WindowsLookAndFeel");
+		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException
+				| UnsupportedLookAndFeelException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void resetLookAndFeel() {
+		try {
+			UIManager.setLookAndFeel(defaultLookAndFeel);
+		} catch (UnsupportedLookAndFeelException e) {
+			e.printStackTrace();
+		}
+	}
+
 }
