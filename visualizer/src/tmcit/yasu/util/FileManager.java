@@ -40,6 +40,19 @@ public class FileManager {
 		}
 	}
 
+	private void recursiveDeleteFile(File file) {
+		if(!file.exists()) {
+			return;
+		}
+		if(file.isDirectory()) {
+			for(File child : file.listFiles()) {
+				recursiveDeleteFile(child);
+			}
+		}
+		boolean res = file.delete();
+		System.out.println(res);
+	}
+
 	public File getMapDirectory() {
 		return mapDirectory;
 	}
@@ -58,7 +71,8 @@ public class FileManager {
 
 	public void removeSolverDir(String solverName) {
 		File removeFile = new File(solverDirectory.getAbsolutePath() + "\\" + solverName);
-		removeFile.delete();
+		System.out.println("[SYS]Delete File:" + removeFile.getAbsolutePath());
+		recursiveDeleteFile(removeFile);
 	}
 
 	public String getSelectedSolverExePath(String solverName) {
@@ -69,6 +83,7 @@ public class FileManager {
 			try {
 				BufferedReader br = new BufferedReader(new FileReader(readFile));
 				ret = br.readLine();
+				br.close();
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 			} catch (IOException e) {
@@ -98,7 +113,7 @@ public class FileManager {
 				String[] split = line.split(" ");
 				ret.add(split);
 			}
-
+			br.close();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -107,7 +122,7 @@ public class FileManager {
 
 		return ret;
 	}
-	
+
 	public void saveSolverParameter(String solverName, String presetName, ArrayList<String[]> parameters, String exePath) {
 		File writeFile = new File(solverDirectory.getAbsoluteFile() + "\\" + solverName + "\\" + presetName + ".txt");
 		if(!writeFile.exists()) {
@@ -117,7 +132,7 @@ public class FileManager {
 				e.printStackTrace();
 			}
 		}
-		
+
 		try {
 			FileWriter fw = new FileWriter(writeFile);
 			fw.write(exePath + "\n");
@@ -130,6 +145,6 @@ public class FileManager {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+
 	}
 }

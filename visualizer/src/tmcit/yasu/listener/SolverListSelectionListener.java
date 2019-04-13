@@ -33,13 +33,15 @@ public class SolverListSelectionListener implements ListSelectionListener{
 	@Override
 	public void valueChanged(ListSelectionEvent e) {
 		paramTableModelListener.setSaveFlag(false);
-		
-		int index = solverList.getSelectedIndex();
-		String selectedName = solverListModel.getElementAt(index);
 
 		while(paramTableModel.getRowCount() > 0) {
 			paramTableModel.removeRow(0);
 		}
+
+		if(solverList.isSelectionEmpty()) return;
+		int index = solverList.getSelectedIndex();
+		String selectedName = solverListModel.getElementAt(index);
+
 
 		ArrayList<String[]> paramList = fileManager.getSelectedSolverParameter(selectedName);
 		for(String[] nowParam : paramList) {
@@ -48,7 +50,7 @@ public class SolverListSelectionListener implements ListSelectionListener{
 
 		String exePath = fileManager.getSelectedSolverExePath(selectedName);
 		exePathField.setText(exePath);
-		
+
 		paramTableModelListener.setSaveFlag(true);
 	}
 
