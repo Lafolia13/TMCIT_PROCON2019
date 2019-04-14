@@ -11,9 +11,11 @@
 namespace base {
 
 // タイルの種類
-constexpr int32_t kAlly = 0;
-constexpr int32_t kRival = 1;
-constexpr int32_t kBrank = 2;
+enum TileColors {
+	kAlly = 0,
+	kRival = 1,
+	kBrank = 2,
+};
 
 class GameData {
 public :
@@ -36,31 +38,31 @@ public :
 	int32_t w_ = 0;
 
 	Position() {};
-	constexpr Position(const int32_t &h_, const int32_t &w_) :
-		h_(h_), w_(w_) {};
-	inline bool operator==(const Position &another) const {
+	constexpr Position(const int32_t &h, const int32_t &w) :
+		h_(h), w_(w) {};
+	bool operator==(const Position &another) const {
 		return this->h_ == another.h_ && this->w_ == another.w_;
 	}
 
-	inline bool operator!=(const Position &another) const {
+	bool operator!=(const Position &another) const {
 		return !(this->h_ == another.h_ && this->w_ == another.w_);
 	}
 
-	inline bool operator<(const Position &another) const {
+	bool operator<(const Position &another) const {
 		return this->h_ == another.h_ ?
 			   this->w_ < another.w_ :
 			   this->h_ < another.h_;
 	}
 
-	inline Position operator+(const Position &another) const {
+	Position operator+(const Position &another) const {
 		return Position(this->h_ + another.h_, this->w_ + another.w_);
 	}
 
-	inline Position operator-(const Position &another) const {
+	Position operator-(const Position &another) const {
 		return Position(this->h_ - another.h_, this->w_ - another.w_);
 	}
 
-	inline Position operator*(const Position &another) const {
+	Position operator*(const Position &another) const {
 		return Position(this->h_ * another.h_, this->w_ * another.w_);
 	}
 
@@ -80,21 +82,26 @@ public :
 	TurnData() {};
 	TurnData(const GameData &game_data) :
 		agents_position_(2, std::vector<Position>(game_data.agent_num_)),
-		tile_data_(game_data.height_, std::vector<int32_t>(game_data.width_, kBrank)),
-		stay_agent_(game_data.height_, std::vector<bool>(game_data.width_))
+		tile_data_(game_data.height_,
+				   std::vector<int32_t>(game_data.width_,kBrank)),
+		stay_agent_(game_data.height_,std::vector<bool>(game_data.width_))
 	{};
 	bool Input(const GameData&);
+	bool IsExistAgent(const Position&);
+	Position& GetNowPosition(const int32_t &team_id, const int32_t &agent_id);
+	const Position& GetNowPosition(const int32_t &team_id, const int32_t &agent_id) const;
+	int32_t& GetTileData(const Position&);
+	const int32_t& GetTileData(const Position&) const;
 
 protected :
 private :
 };
 
 // 引数のPositionが盤面内を指しているかを示す
-inline bool IntoField(const Position&, const GameData&);
+bool IntoField(const GameData&, const Position&);
 
-inline int32_t Distance(const Position&, const Position&);
-
-inline Position GetNowPosition(const TurnData &, const int32_t&, const int32_t&);
+// チェビシェフ距離を返す
+int32_t Distance(const Position&, const Position&);
 
 };
 

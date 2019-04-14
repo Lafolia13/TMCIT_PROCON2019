@@ -20,7 +20,7 @@ namespace base {
 
 bool GameData::Input() {
 	std::cin >> this->max_turn_;
-	std::cin >> this->height_ >> width_;
+	std::cin >> this->width_ >> this->height_;
 	std::cin >> this->agent_num_;
 
 	this->field_data_.resize(this->height_,
@@ -36,27 +36,28 @@ bool GameData::Input() {
 }
 
 bool TurnData::Input(const GameData &game_data) {
-	// std::cin >> this->now_turn_;
-	// if (this->now_turn_ > game_data.max_turn_)
-	// 	return false;
+	std::cin >> this->now_turn_;
+	if (this->now_turn_ > game_data.max_turn_)
+		return false;
 
 
-	// オブジェクトを使いまわしている場合はthis->stay_agent_のフラグが残るので、
-	// フラグを消してから新たにフラグを立てます
+	// オブジェクトを使いまわしている場合はthis->stay_agent_のフラグが残るため
+	// フラグを消してから新たにフラグを立てる
+	// 一度のループをしないのは、初期状態ですべてのエージェントの位置が(0,0)になるためです
 	for (int32_t team_id = 0; team_id < 2; ++team_id) {
-		for (int32_t agent_id = 0; agent_id < game_data.agent_num_; ++agent_id) {
-			Position &check_position = this->agents_position_[team_id][agent_id];
+		for (int32_t agent_id = 0; agent_id < game_data.agent_num_;
+			 ++agent_id) {
+			Position &check_position = this->GetNowPosition(team_id, agent_id);
 			this->stay_agent_[check_position.h_][check_position.w_] = false;
-			this->tile_data_[check_position.h_][check_position.w_] = base::kBrank;
 		}
 	}
 
 	for (int32_t team_id = 0; team_id < 2; ++team_id) {
-		for (int32_t agent_id = 0; agent_id < game_data.agent_num_; ++agent_id) {
-			Position &check_position = this->agents_position_[team_id][agent_id];
+		for (int32_t agent_id = 0; agent_id < game_data.agent_num_;
+			 ++agent_id) {
+			Position &check_position = this->GetNowPosition(team_id, agent_id);
 			std::cin >> check_position.h_ >> check_position.w_;
 			this->stay_agent_[check_position.h_][check_position.w_] = true;
-			this->tile_data_[check_position.h_][check_position.w_] = team_id;
 		}
 	}
 
@@ -69,19 +70,34 @@ bool TurnData::Input(const GameData &game_data) {
 	return true;
 }
 
-inline bool IntoField(const Position &check_position,
-					  const GameData &game_data) {
+bool TurnData::IsExistAgent(const Position &check_position) {
+	return this->stay_agent_[check_position.h_][check_position.w_] == true;
+}
+
+Position& TurnData::GetNowPosition(const int32_t &team_id,
+								   const int32_t &agent_id) {
+	return this->agents_position_[team_id][agent_id];
+}
+const Position& TurnData::GetNowPosition(const int32_t &team_id,
+								   		 const int32_t &agent_id) const{
+	return this->agents_position_[team_id][agent_id];
+}
+
+int32_t& TurnData::GetTileData(const Position &check_position) {
+	return this->tile_data_[check_position.h_][check_position.w_];
+}
+const int32_t& TurnData::GetTileData(const Position &check_position) const{
+	return this->tile_data_[check_position.h_][check_position.w_];
+}
+
+bool IntoField(const GameData &game_data, const Position &check_position) {
 	return (0 <= check_position.h_ && check_position.h_ < game_data.height_ &&
 			0 <= check_position.w_ && check_position.w_ < game_data.width_);
 }
 
-inline int32_t Distance(const Position &pos_1, const Position &pos_2) {
-	return std::max(std::abs(pos_1.h_ - pos_2.h_), std::abs(pos_1.w_ - pos_2.w_));
-}
-
-inline Position GetNowPosition(const TurnData &turn_data,
-							   const int32_t &team_id, const int32_t &agent_id) {
-	return turn_data.agents_position_[team_id][agent_id];
+int32_t Distance(const Position &pos_1, const Position &pos_2) {
+	return std::max(std::abs(pos_1.h_ - pos_2.h_),
+		   std::abs(pos_1.w_ - pos_2.w_));
 }
 
 }

@@ -4,35 +4,42 @@
 #include <array>
 namespace action {
 
-inline bool IsSameTargetPosition(const Move &check_move,
-								 const Move &compare_move) {
-	return check_move.target_position_ == compare_move.target_position_;
+base::Position& GetNowPositionFromMove(base::TurnData &turn_data,
+									   const Move &check_move) {
+	return turn_data.GetNowPosition(check_move.team_id_, check_move.agent_id_);
 }
 
-// 行動不可(場外、行動先にエージェント、kBrankなマスにErase、敵チームのマスにWalk) : false, 行動可能 : true
-inline bool IsAbleAction(const Move &check_move,
-					 const base::GameData &game_data,
-					 const base::TurnData &turn_data) {
-	const base::Position &target_position = check_move.target_position_;
-	const base::Position &now_position =
-		turn_data.agents_position_[check_move.team_id_][check_move.agent_id_];
-	int32_t tile_color = turn_data.tile_data_[target_position.h_]
-											 [target_position.w_];
+const base::Position& GetNowPositionFromMove(const base::TurnData &turn_data,
+											 const Move &check_move) {
+	return turn_data.GetNowPosition(check_move.team_id_, check_move.agent_id_);
+}
 
-	if (base::IntoField(target_position, game_data) == false)
-		return false;
-	if (base::Distance(target_position, now_position) > 1)
-		return false;
-	if (turn_data.stay_agent_[target_position.h_][target_position.w_] == true)
+bool IsSameTargetPosition(const base::TurnData &turn_data,
+						  const Move &check_move, const Move &compare_move) {
+	return GetNowPositionFromMove(turn_data, check_move) ==
+		   GetNowPositionFromMove(turn_data, compare_move);
+}
+
+// 行動不可(場外、kBrankなマスにErase、敵チームのマスにWalk) : false, 行動可能 : true
+bool IsAbleAction(const base::GameData &game_data,
+				  const base::TurnData &turn_data,
+				  const Move &check_move) {
+	const base::Position &agent_position =
+		GetNowPositionFromMove(turn_data, check_move);
+	const base::Position &target_position =
+		agent_position + action::kNextToNine[check_move.target_id_];
+	const int32_t &target_tile_data =
+		turn_data.GetTileData(target_position);
+	if (base::IntoField(game_data, target_position) == false)
 		return false;
 	if (check_move.agent_action_ == kWalk) {
-		int32_t rival_color = 1^check_move.agent_action_;	// Magic
+		const int32_t &rival_color = 1^check_move.agent_action_;	// Magic
 															// base::kArry : 0, base::kRival : 1のため、
 															// ビット反転すると敵チームのIDとなります
-		if (tile_color == rival_color)
+		if (target_tile_data == rival_color)
 			return false;
 	} else if (check_move.agent_action_ == kErase) {
-		if (tile_color == base::kBrank)
+		if (target_tile_data == base::kBrank)
 			return false;
 	}
 
@@ -40,48 +47,67 @@ inline bool IsAbleAction(const Move &check_move,
 }
 
 // 衝突判定とErase、Noneなエージェントの次の位置を確定します
-// agents_moveはソート済みなvectorにしてください
 bool CheckConflict(const base::GameData &game_data,
 				   const std::vector<Move> &agents_move,
 				   std::vector<bool> &moved_agent,
 				   base::TurnData &turn_data) {
-	for (int32_t move_id = 0; move_id < agents_move.size(); ++move_id) {
+	std::vector<std::vector<int32_t> > target_area(game_data.height_,
+												   std::vector<int32_t>(
+												   game_data.width_, 0));
+	// 行動位置をインクリメントします。1を超えたらコンフリクトしてます
+	for (int move_id = 0; move_id < agents_move.size(); ++move_id){
+		if (moved_agent[move_id] == true) continue;					// 仕様未定義のためアですが、行動不可領域に行動しようとしたエージェントは無視できると信じてます
 		const Move &target_move = agents_move[move_id];
-		base::Position &agent_position =
-			turn_data.agents_position_[target_move.team_id_]
-									  [target_move.agent_id_];
-		// 前回位置のフラグを折ります
-		turn_data.stay_agent_[agent_position.h_]
-							 [agent_position.w_] = false;
+		const base::Position &target_position =
+			GetNowPositionFromMove(turn_data, target_move) +
+			kNextToNine[target_move.target_id_];
+		++target_area[target_position.h_][target_position.w_];
+	}
 
-		// NoneかEraseのとき、エージェントの次の位置が確定します
-		// Noneのとき、行動は即座に完了します
-		if (target_move.agent_action_ == kNone ||
-			target_move.agent_action_ == kErase) {
-			if (target_move.agent_action_ == kNone)
-				moved_agent[move_id] = true;
-			turn_data.stay_agent_[agent_position.h_]
-								 [agent_position.w_] = true;
-			turn_data.tile_data_[agent_position.h_]
-								[agent_position.w_] = target_move.team_id_;
-		}
-		// ソート済みのため、隣接するMoveはtarget_position_が同一な場合があります
-		// この場合Conflictとなるため、行動は完了し、エージェントの次の位置も確定します
-		bool same_target = false;
-		if (move_id == 0 && agents_move.size() > 1) {
-			same_target |= IsSameTargetPosition(agents_move[move_id],
-											   agents_move[move_id + 1]);
-		}
-		if(move_id == agents_move.size() -1 && agents_move.size() > 1) {
-			same_target |= IsSameTargetPosition(agents_move[move_id],
-											   agents_move[move_id - 1]);
-		}
-		if(same_target == true) {
+	for (int move_id = 0; move_id < agents_move.size(); ++move_id) {
+		if (moved_agent[move_id] == true) continue;
+		const Move &target_move = agents_move[move_id];
+		const base::Position &agent_position =
+			GetNowPositionFromMove(turn_data, target_move);
+		const base::Position &target_position =
+			agent_position + kNextToNine[target_move.target_id_];
+		if (target_area[target_position.h_][target_position.w_] > 1 ||
+			target_move.agent_action_ == kNone) {
 			moved_agent[move_id] = true;
-			turn_data.stay_agent_[agent_position.h_]
-								 [agent_position.w_] = true;
-			turn_data.tile_data_[agent_position.h_]
-								[agent_position.w_] = target_move.team_id_;
+		} else if(target_move.agent_action_ == kWalk) {
+			turn_data.stay_agent_[agent_position.h_]				// 移動できる場合があるので一度フラグを折ります
+								 [agent_position.w_] = false;
+		}
+	}
+
+	return true;
+}
+
+// この判定を抜けると行動可能が確定します
+// Conflict判定を抜けたことは、少なくとも他のエージェントのWalkアクションによって行動が阻害されることがないことを示します
+// 存在←移動1←移動2←移動3のような場合、1,2,3の順で停留が確定するため、最大n^2回確認を行う必要があります
+bool CheckCanWalk(const base::GameData &game_data,
+				  const std::vector<Move> &agents_move,
+				  std::vector<bool> &moved_agent,
+				  base::TurnData &turn_data) {
+	bool stay_flag = true;
+	for (int i = 0; i < agents_move.size() && stay_flag == true; i++) {
+		stay_flag = false;
+		for (int move_id = 0; move_id < agents_move.size(); ++move_id) {
+			if (moved_agent[move_id] == true ||
+				agents_move[move_id].agent_action_ != kWalk)
+				continue;
+			const Move &target_move = agents_move[move_id];
+			const base::Position &agent_position =
+				GetNowPositionFromMove(turn_data, target_move);
+			const base::Position &target_position =
+				agent_position + action::kNextToNine[target_move.target_id_];
+			if (turn_data.IsExistAgent(target_position) == true) {
+				moved_agent[move_id] = true;
+				turn_data.stay_agent_[agent_position.h_]
+									 [agent_position.w_] = true;
+				stay_flag = true;
+			}
 		}
 	}
 
@@ -89,32 +115,31 @@ bool CheckConflict(const base::GameData &game_data,
 }
 
 // Walkアクションを確定します
-// Conflict判定を抜けたことは、少なくとも他のエージェントのWalkアクションによって行動が阻害されることがないことを示します
-// すなわち、行動先にエージェントが存在するか、そもそも行動可能かを調べることで結果は確定します
+// すなわち、行動先にエージェントが存在するかを調べることで結果は確定します
+// CHeckCanWalkでこれを行っているためいらないですが念の為
 bool CheckWalkAction(const base::GameData &game_data,
 					 const std::vector<Move> &agents_move,
 					 std::vector<bool> &moved_agent,
 					 base::TurnData &turn_data) {
 	for (int move_id = 0; move_id < agents_move.size(); ++move_id) {
 		if (moved_agent[move_id] == true ||
-			agents_move[move_id].agent_action_ == kErase)
+			agents_move[move_id].agent_action_ != kWalk)
 			continue;
 		moved_agent[move_id] = true;
 
 		const Move &target_move = agents_move[move_id];
-		const base::Position &target_position = target_move.target_position_;
-		base::Position &agent_position = turn_data.agents_position_
-												[target_move.team_id_]
-												[target_move.agent_id_];
-		if (IsAbleAction(target_move, game_data, turn_data) == true) {
-			turn_data.stay_agent_[target_position.h_][target_position.w_] = true;
-			turn_data.tile_data_[target_position.h_]
-								[target_position.w_] = target_move.team_id_;
+		base::Position &agent_position =
+			GetNowPositionFromMove(turn_data, target_move);
+		const base::Position &target_position =
+			agent_position + action::kNextToNine[target_move.target_id_];
+		if (turn_data.IsExistAgent(target_position) == false) {
+			turn_data.stay_agent_[target_position.h_]
+								 [target_position.w_] = true;
+			turn_data.GetTileData(target_position) = target_move.team_id_;
 			agent_position = target_position;
 		} else {
-			turn_data.stay_agent_[agent_position.h_][agent_position.w_] = true;
-			turn_data.tile_data_[agent_position.h_]
-								[agent_position.w_] = target_move.team_id_;
+			turn_data.stay_agent_[agent_position.h_]
+								 [agent_position.w_] = true;
 		}
 	}
 
@@ -135,9 +160,12 @@ bool CheckEraseAction(const base::GameData &game_data,
 		moved_agent[move_id] = true;
 
 		const Move &target_move = agents_move[move_id];
-		const base::Position &target_position = target_move.target_position_;
-		if (IsAbleAction(target_move, game_data, turn_data) == true) {
-			turn_data.tile_data_[target_position.h_][target_position.w_] = base::kBrank;
+		const base::Position &agent_position =
+			GetNowPositionFromMove(turn_data, target_move);
+		const base::Position &target_position =
+			agent_position + action::kNextToNine[target_move.target_id_];
+		if (turn_data.IsExistAgent(target_position) == false) {
+			turn_data.GetTileData(target_position) = base::kBrank;
 		}
 	}
 
@@ -146,24 +174,20 @@ bool CheckEraseAction(const base::GameData &game_data,
 
 // base::turn_dataとagents_moveから、次のターンのbase::TurnDataオブジェクトを作成します
 // 生成する方法として、Conflictを調べる→Walkアクションを確定する→Eraseアクションを確定するをしています
-inline base::TurnData NextTurnData(const std::vector<Move> &agents_move,
-							const base::GameData &game_data,
-							const base::TurnData &turn_data) {
+base::TurnData NextTurnData(const base::GameData &game_data,
+							const base::TurnData &turn_data,
+							const std::vector<Move> &agents_move) {
 	base::TurnData ret = turn_data;
-	std::vector<Move> agents_move_cp;
-	std::vector<bool> moved_agent;
-	for (auto move : agents_move) {
-		const base::Position &now_position =
-			base::GetNowPosition(turn_data, move.team_id_, move.agent_id_);
-		if (base::Distance(move.target_position_, now_position) <= 1)
-			agents_move_cp.push_back(move);
+	std::vector<bool> moved_agent(agents_move.size());
+	for (int move_id = 0; move_id < agents_move.size(); ++move_id){
+		moved_agent[move_id] = IsAbleAction(game_data, turn_data,
+											agents_move[move_id]) == false;
 	}
-	sort(agents_move_cp.begin(), agents_move_cp.end());
-	moved_agent.resize(agents_move_cp.size(), false);
 
-	CheckConflict(game_data, agents_move_cp, moved_agent, ret);
-	CheckWalkAction(game_data, agents_move_cp, moved_agent, ret);
-	CheckEraseAction(game_data, agents_move_cp, moved_agent, ret);
+	CheckConflict(game_data, agents_move, moved_agent, ret);
+	CheckCanWalk(game_data, agents_move, moved_agent, ret);
+	CheckWalkAction(game_data, agents_move, moved_agent, ret);
+	CheckEraseAction(game_data, agents_move, moved_agent, ret);
 
 	return ret;
 }
