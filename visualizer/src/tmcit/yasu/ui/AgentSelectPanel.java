@@ -1,6 +1,7 @@
 package tmcit.yasu.ui;
 
 import java.awt.Font;
+import java.util.ArrayList;
 
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
@@ -8,8 +9,12 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
+import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
 
+import tmcit.yasu.listener.PresetComboBoxListener;
 import tmcit.yasu.listener.SolverComboBoxListener;
 import tmcit.yasu.util.Constant;
 import tmcit.yasu.util.FileManager;
@@ -24,10 +29,13 @@ public class AgentSelectPanel extends JPanel{
 	private JRadioButton humanRadio, programRadio;
 	private DefaultComboBoxModel<String> solverComboBoxModel, presetComboBoxModel;
 	private JComboBox<String> solverComboBox, presetComboBox;
+	private DefaultTableModel paramTableModel;
 	private JTable paramTable;
+	private JScrollPane paramScrollPanel;
 
 	// listener
 	private SolverComboBoxListener solverComboBoxListener;
+	private PresetComboBoxListener presetComboBoxListener;
 
 	public AgentSelectPanel(boolean isMyPlayer0, FileManager filemanager0) {
 		isMyPlayer = isMyPlayer0;
@@ -64,11 +72,17 @@ public class AgentSelectPanel extends JPanel{
 		presetLabel = new JLabel("プリセット:");
 		presetLabel.setFont(new Font("MS ゴシック", Font.BOLD, 15));
 
-		paramTable = new JTable(3, 3);
+		paramTableModel = new DefaultTableModel(Constant.PARAM_COLUMN_NAMES, 0);
+		paramTable = new JTable(paramTableModel);
+		paramScrollPanel = new JScrollPane(paramTable);
+		JTableHeader paramTableHeader = paramTable.getTableHeader();
+		paramTableHeader.setReorderingAllowed(false);
 
 		// listener
 		solverComboBoxListener = new SolverComboBoxListener(this, solverComboBox);
 		solverComboBox.addActionListener(solverComboBoxListener);
+		presetComboBoxListener = new PresetComboBoxListener(this, solverComboBox, presetComboBox);
+		presetComboBox.addActionListener(presetComboBoxListener);
 	}
 
 	private void initLayout() {
@@ -80,7 +94,7 @@ public class AgentSelectPanel extends JPanel{
 		solverComboBox.setBounds(160, 70, 120, 20);
 		presetLabel.setBounds(10, 100, 150, 20);
 		presetComboBox.setBounds(100, 100, 180, 20);
-		paramTable.setBounds(10, 130, 270, 150);
+		paramScrollPanel.setBounds(10, 130, 270, 150);
 
 		add(nameLabel);
 		add(humanRadio);
@@ -88,7 +102,7 @@ public class AgentSelectPanel extends JPanel{
 		add(solverComboBox);
 		add(presetLabel);
 		add(presetComboBox);
-		add(paramTable);
+		add(paramScrollPanel);
 	}
 
 	private void refreshSolverComboBox() {
@@ -104,6 +118,16 @@ public class AgentSelectPanel extends JPanel{
 		presetComboBoxModel.removeAllElements();
 		for(String nowPreset : presetList) {
 			presetComboBoxModel.addElement(nowPreset);
+		}
+	}
+
+	public void refreshParamTable(String solverName, String presetName) {
+		ArrayList<String[]> paramList = filemanager.getSelectedSolverParameter(solverName, presetName);
+		while(paramTable.getRowCount() > 0) {
+			paramTableModel.removeRow(0);
+		}
+		for(String[] nowParam : paramList) {
+			paramTableModel.addRow(nowParam);
 		}
 	}
 }

@@ -68,6 +68,7 @@ public class AgentSettingPanel extends JPanel implements ActionListener{
 		deleteParamButton = new JButton("パラメータ削除");
 		paramScrollPanel = new JScrollPane(paramTable);
 		JTableHeader paramTableHeader = paramTable.getTableHeader();
+		paramTableHeader.setReorderingAllowed(false);
 
 		exeLabel = new JLabel("実行コマンド");
 		exeLabel.setFont(Constant.SMALL_FONT);
@@ -83,7 +84,6 @@ public class AgentSettingPanel extends JPanel implements ActionListener{
 		addParamButton.addActionListener(this);
 		deleteParamButton.addActionListener(this);
 		selectExeButton.addActionListener(this);
-		paramTableHeader.setReorderingAllowed(false);
 		solverList.addListSelectionListener(new SolverListSelectionListener(fileManager, solverList, solverListModel, paramTableModel, exePathField, paramTableModelListener));
 		paramTableModel.addTableModelListener(paramTableModelListener);
 		exePathField.getDocument().addDocumentListener(paramTableModelListener);

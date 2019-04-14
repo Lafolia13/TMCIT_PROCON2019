@@ -95,35 +95,6 @@ public class FileManager {
 		return ret;
 	}
 
-	public ArrayList<String[]> getSelectedSolverParameter(String solverName){
-		File readFile = new File(solverDirectory.getAbsolutePath() + "\\" + solverName + "\\default.txt");
-
-		if(!readFile.exists()) {
-			return new ArrayList<String[]>();
-		}
-
-		ArrayList<String[]> ret = new ArrayList<String[]>();
-
-		try {
-			BufferedReader br = new BufferedReader(new FileReader(readFile));
-
-			br.readLine();
-
-			String line;
-			while((line = br.readLine()) != null) {
-				String[] split = line.split(" ");
-				ret.add(split);
-			}
-			br.close();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		return ret;
-	}
-
 	public void saveSolverParameter(String solverName, String presetName, ArrayList<String[]> parameters, String exePath) {
 		File writeFile = new File(solverDirectory.getAbsoluteFile() + "\\" + solverName + "\\" + presetName + ".txt");
 		if(!writeFile.exists()) {
@@ -187,5 +158,38 @@ public class FileManager {
 		if(!nowSolverDir.exists()) return null;
 		String[] presetList = nowSolverDir.list();
 		return presetList;
+	}
+
+	public ArrayList<String[]> getSelectedSolverParameter(String solverName, String presetName){
+		File readFile = new File(solverDirectory.getAbsolutePath() + "\\" + solverName + "\\" + presetName);
+
+		if(!readFile.exists()) {
+			return new ArrayList<String[]>();
+		}
+
+		ArrayList<String[]> ret = new ArrayList<String[]>();
+
+		try {
+			BufferedReader br = new BufferedReader(new FileReader(readFile));
+
+			br.readLine();
+
+			String line;
+			while((line = br.readLine()) != null) {
+				String[] split = line.split(" ");
+				ret.add(split);
+			}
+			br.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		return ret;
+	}
+
+	public ArrayList<String[]> getSelectedSolverDefaultParameter(String solverName){
+		return getSelectedSolverParameter(solverName, "default.txt");
 	}
 }

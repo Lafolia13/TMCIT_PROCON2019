@@ -43,7 +43,7 @@ public class SolverListSelectionListener implements ListSelectionListener{
 		String selectedName = solverListModel.getElementAt(index);
 
 
-		ArrayList<String[]> paramList = fileManager.getSelectedSolverParameter(selectedName);
+		ArrayList<String[]> paramList = fileManager.getSelectedSolverDefaultParameter(selectedName);
 		for(String[] nowParam : paramList) {
 			paramTableModel.addRow(nowParam);
 		}
