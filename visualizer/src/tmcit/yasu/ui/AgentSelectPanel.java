@@ -16,6 +16,8 @@ import javax.swing.table.JTableHeader;
 
 import tmcit.yasu.listener.PresetComboBoxListener;
 import tmcit.yasu.listener.SolverComboBoxListener;
+import tmcit.yasu.player.ExecPlayer;
+import tmcit.yasu.player.Player;
 import tmcit.yasu.util.Constant;
 import tmcit.yasu.util.FileManager;
 
@@ -104,6 +106,31 @@ public class AgentSelectPanel extends JPanel{
 		add(presetComboBox);
 		add(paramScrollPanel);
 	}
+
+	// getter
+	public Player getPlayer() {
+		if(programRadio.isSelected()) {
+			int solverIndex = solverComboBox.getSelectedIndex();
+			String solverName = solverComboBox.getItemAt(solverIndex);
+
+			int presetIndex = presetComboBox.getSelectedIndex();
+			String presetName = presetComboBox.getItemAt(presetIndex);
+
+			String exePath = filemanager.getSelectedSolverExePath(solverName);
+			ArrayList<String[]> parameters = filemanager.getSelectedSolverParameter(solverName, presetName);
+
+			String cmd = exePath;
+			for(String[] nowParameter : parameters) {
+				cmd += " " + nowParameter[0] + "=" + nowParameter[2];
+			}
+
+			ExecPlayer execPlayer = new ExecPlayer(cmd);
+			return execPlayer;
+		}
+		return null;
+	}
+
+	// refresh
 
 	private void refreshSolverComboBox() {
 		String[] solverList = filemanager.getSolverList();

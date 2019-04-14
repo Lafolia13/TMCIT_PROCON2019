@@ -94,6 +94,19 @@ public class MapSelectPanel extends JPanel implements ActionListener, ListSelect
 		add(previewPanel);
 	}
 
+	public ArrayList<GameData> getGameDataList(){
+		ArrayList<GameData> gameDataList = new ArrayList<GameData>();
+
+		int mapListSize = mapListModel.getSize();
+		for(int index = 0;index < mapListSize;index++) {
+			String nowMapPath = mapListModel.getElementAt(index);
+			ReadMapData readMap = new ReadMapData(new File(nowMapPath));
+			gameDataList.add(readMap.getReadGameData());
+		}
+
+		return gameDataList;
+	}
+
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		String cmd = e.getActionCommand();

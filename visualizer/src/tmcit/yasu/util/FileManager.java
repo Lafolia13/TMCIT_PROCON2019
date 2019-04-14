@@ -76,24 +76,6 @@ public class FileManager {
 		recursiveDeleteFile(removeFile);
 	}
 
-	public String getSelectedSolverExePath(String solverName) {
-		File readFile = new File(solverDirectory.getAbsolutePath() + "\\" + solverName + "\\default.txt");
-
-		String ret = "";
-		if(readFile.exists()) {
-			try {
-				BufferedReader br = new BufferedReader(new FileReader(readFile));
-				ret = br.readLine();
-				br.close();
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-
-		return ret;
-	}
 
 	public void saveSolverParameter(String solverName, String presetName, ArrayList<String[]> parameters, String exePath) {
 		File writeFile = new File(solverDirectory.getAbsoluteFile() + "\\" + solverName + "\\" + presetName + ".txt");
@@ -158,6 +140,25 @@ public class FileManager {
 		if(!nowSolverDir.exists()) return null;
 		String[] presetList = nowSolverDir.list();
 		return presetList;
+	}
+
+	public String getSelectedSolverExePath(String solverName) {
+		File readFile = new File(solverDirectory.getAbsolutePath() + "\\" + solverName + "\\default.txt");
+
+		String ret = "";
+		if(readFile.exists()) {
+			try {
+				BufferedReader br = new BufferedReader(new FileReader(readFile));
+				ret = br.readLine();
+				br.close();
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+
+		return ret;
 	}
 
 	public ArrayList<String[]> getSelectedSolverParameter(String solverName, String presetName){
