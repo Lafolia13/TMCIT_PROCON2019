@@ -14,6 +14,8 @@ import javax.swing.LookAndFeel;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
+import tmcit.yasu.listener.SolverComboBoxListener;
+
 public class FileManager {
 	private LookAndFeel defaultLookAndFeel;
 	private File procon30Directory, settingDirectory, mapDirectory, solverDirectory;
@@ -59,19 +61,6 @@ public class FileManager {
 		}
 		boolean res = file.delete();
 		System.out.println(res);
-	}
-
-	public File getMapDirectory() {
-		return mapDirectory;
-	}
-
-	public File getProcon30Directory() {
-		return procon30Directory;
-	}
-
-	public String[] getSolverList() {
-		String[] solverList = solverDirectory.list();
-		return solverList;
 	}
 
 	public void makeSolverDir(String solverName) {
@@ -178,4 +167,25 @@ public class FileManager {
 		}
 	}
 
+
+	// getter
+	public File getMapDirectory() {
+		return mapDirectory;
+	}
+
+	public File getProcon30Directory() {
+		return procon30Directory;
+	}
+
+	public String[] getSolverList() {
+		String[] solverList = solverDirectory.list();
+		return solverList;
+	}
+
+	public String[] getSolverPresetList(String solverName) {
+		File nowSolverDir = new File(solverDirectory.getAbsoluteFile() + "\\" + solverName);
+		if(!nowSolverDir.exists()) return null;
+		String[] presetList = nowSolverDir.list();
+		return presetList;
+	}
 }

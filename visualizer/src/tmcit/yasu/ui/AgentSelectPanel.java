@@ -3,28 +3,39 @@ package tmcit.yasu.ui;
 import java.awt.Font;
 
 import javax.swing.ButtonGroup;
+import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTable;
 
+import tmcit.yasu.listener.SolverComboBoxListener;
 import tmcit.yasu.util.Constant;
+import tmcit.yasu.util.FileManager;
 
 public class AgentSelectPanel extends JPanel{
 	private boolean isMyPlayer;
+	private FileManager filemanager;
 
 	// UI
 	private JLabel nameLabel, presetLabel;
 	private ButtonGroup modeGroup;
 	private JRadioButton humanRadio, programRadio;
+	private DefaultComboBoxModel<String> solverComboBoxModel, presetComboBoxModel;
 	private JComboBox<String> solverComboBox, presetComboBox;
 	private JTable paramTable;
 
-	public AgentSelectPanel(boolean isMyPlayer0) {
+	// listener
+	private SolverComboBoxListener solverComboBoxListener;
+
+	public AgentSelectPanel(boolean isMyPlayer0, FileManager filemanager0) {
 		isMyPlayer = isMyPlayer0;
+		filemanager = filemanager0;
 		init();
 		initLayout();
+
+		refreshSolverComboBox();
 	}
 
 	private void init() {
@@ -45,13 +56,19 @@ public class AgentSelectPanel extends JPanel{
 		modeGroup.add(humanRadio);
 		modeGroup.add(programRadio);
 
-		solverComboBox = new JComboBox<String>();
-		presetComboBox = new JComboBox<String>();
+		solverComboBoxModel = new DefaultComboBoxModel<String>();
+		solverComboBox = new JComboBox<String>(solverComboBoxModel);
+		presetComboBoxModel = new DefaultComboBoxModel<String>();
+		presetComboBox = new JComboBox<String>(presetComboBoxModel);
 
 		presetLabel = new JLabel("プリセット:");
 		presetLabel.setFont(new Font("MS ゴシック", Font.BOLD, 15));
 
 		paramTable = new JTable(3, 3);
+
+		// listener
+		solverComboBoxListener = new SolverComboBoxListener(this, solverComboBox);
+		solverComboBox.addActionListener(solverComboBoxListener);
 	}
 
 	private void initLayout() {
@@ -72,5 +89,21 @@ public class AgentSelectPanel extends JPanel{
 		add(presetLabel);
 		add(presetComboBox);
 		add(paramTable);
+	}
+
+	private void refreshSolverComboBox() {
+		String[] solverList = filemanager.getSolverList();
+		solverComboBoxModel.removeAllElements();
+		for(String nowSolver : solverList) {
+			solverComboBoxModel.addElement(nowSolver);
+		}
+	}
+
+	public void refreshPresetComboBox(String solverName) {
+		String[] presetList = filemanager.getSolverPresetList(solverName);
+		presetComboBoxModel.removeAllElements();
+		for(String nowPreset : presetList) {
+			presetComboBoxModel.addElement(nowPreset);
+		}
 	}
 }

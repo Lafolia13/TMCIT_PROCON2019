@@ -21,8 +21,8 @@ public class StarterPanel extends JPanel{
 
 	private void init() {
 		mapSelectPanel = new MapSelectPanel(fileManager);
-		myAgentSelectPanel = new AgentSelectPanel(true);
-		rivalAgentSelectPanel = new AgentSelectPanel(false);
+		myAgentSelectPanel = new AgentSelectPanel(true, fileManager);
+		rivalAgentSelectPanel = new AgentSelectPanel(false, fileManager);
 		settingPanel = new SettingPanel(mainFrame, fileManager);
 	}
 
