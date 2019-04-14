@@ -8,42 +8,68 @@
 
 namespace action {
 
-constexpr int32_t kNone = 0;
-constexpr int32_t kWalk = 1;
-constexpr int32_t kErase = 2;
+enum AgentActions {
+	kNone = 0,
+	kWalk = 1,
+	kErase = 2,
+};
+constexpr std::array<char, 3> kToCharactor = {'n', 'w', 'e'};
+// 要は
+// 0 1 2
+// 3 4 5
+// 6 7 8
+// です
+constexpr std::array<base::Position, 9> kNextToNine = {base::Position(-1,-1),
+													   base::Position(-1,0),
+													   base::Position(-1,1),
+													   base::Position(0,-1),
+													   base::Position(0,0),
+													   base::Position(0,1),
+													   base::Position(1,-1),
+													   base::Position(1,0),
+													   base::Position(1,1)};
 
 // team_id_、agent_id_はbase::TurnDataを参考にしてください
 // agent_action_は上記の定数三種を選択してください
-// target_position_は行動先の位置を指定してください
+// target_position_は現在位置からの行動先の相対位置(kNextToNine)を指定してください
 class Move {
 public :
 	int32_t team_id_;
 	int32_t agent_id_;
+	int32_t target_id_;
 	int32_t agent_action_;
-	base::Position target_position_;
 
 	Move() {};
-	Move(const int32_t &team_id_, const int32_t &agent_id_,
-		 const int32_t &agent_action_, const base::Position &target_position_) :
-		team_id_(team_id_), agent_id_(agent_id_),
-		agent_action_(agent_action_), target_position_(target_position_)
+	Move(const int32_t &team_id, const int32_t &agent_id,
+		 const int32_t &target_id, const int32_t &agent_action) :
+		team_id_(team_id), agent_id_(agent_id),
+		target_id_(target_id), agent_action_(agent_action)
 	{};
 
-	inline bool operator<(const Move &another) {
-		return this->target_position_ < another.target_position_;
+	bool operator<(const Move &another) const {
+		return team_id_ == another.team_id_ ?
+			agent_id_ < another.agent_id_ :
+			team_id_ < another.team_id_;
 	}
 
 protected :
 private :
 };
 
-inline bool IsSameTargetPosition(const Move&, const Move&);
+base::Position& GetNowPositionFromMove(base::TurnData&, const Move&);
 
-inline bool IsAbleAction(const Move&, const base::GameData&,
-						 const base::TurnData&);
+const base::Position& GetNowPositionFromMove(const base::TurnData&,
+											 const Move&);
+
+bool IsSameTargetPosition(const base::TurnData&, const Move&, const Move&);
+
+bool IsAbleAction(const base::GameData&, const base::TurnData&, const Move&);
 
 bool CheckConflict(const base::GameData&, const std::vector<Move>&,
 				   std::vector<bool>&, base::TurnData&);
+
+bool CheckCanWalk(const base::GameData&, const std::vector<Move>&,
+				  std::vector<bool>&, base::TurnData&);
 
 bool CheckWalkAction(const base::GameData&, const std::vector<Move>&,
 					 std::vector<bool>&, base::TurnData&);
@@ -51,8 +77,8 @@ bool CheckWalkAction(const base::GameData&, const std::vector<Move>&,
 bool CheckEraseAction(const base::GameData&, const std::vector<Move>&,
 					  std::vector<bool>&, base::TurnData&);
 
-inline base::TurnData NextTurnData(const std::vector<Move>&, const base::GameData&,
-								   const base::TurnData&);
+base::TurnData NextTurnData(const base::GameData&, const base::TurnData&,
+							const std::vector<Move>&);
 
 }
 
