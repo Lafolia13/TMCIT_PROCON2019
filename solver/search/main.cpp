@@ -24,11 +24,11 @@ int main() {
 	base::TurnData turn_data(game_data);
 
 	while (turn_data.Input(game_data) == true) {
-		std::vector<Move> ret_moves;
+		std::vector<action::Move> ret_moves;
 
 		// ret_moves = Solve();
 
-		OutPutMove(ret_moves);
+		search::OutPutMove(ret_moves);
 	}
 
 	return 0;
