@@ -36,7 +36,7 @@ public class StarterPanel extends JPanel{
 		startButton.setFont(Constant.DEFAULT_FONT);
 
 		// listener
-		startButtonListener = new StartButtonListener(mapSelectPanel, myAgentSelectPanel, rivalAgentSelectPanel);
+		startButtonListener = new StartButtonListener(mainFrame, mapSelectPanel, myAgentSelectPanel, rivalAgentSelectPanel);
 		startButton.addActionListener(startButtonListener);
 	}
 

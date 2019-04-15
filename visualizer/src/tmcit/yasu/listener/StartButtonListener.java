@@ -12,14 +12,17 @@ import tmcit.yasu.game.GameMaster;
 import tmcit.yasu.game.RunGameThread;
 import tmcit.yasu.player.Player;
 import tmcit.yasu.ui.AgentSelectPanel;
+import tmcit.yasu.ui.MainFrame;
 import tmcit.yasu.ui.MapSelectPanel;
 import tmcit.yasu.ui.game.GameFrame;
 
 public class StartButtonListener implements ActionListener{
+	private MainFrame mainFrame;
 	private MapSelectPanel mapSelectPanel;
 	private AgentSelectPanel myAgentSelectPanel, rivalAgentSelectPanel;
 
-	public StartButtonListener(MapSelectPanel mapSelectPanel0, AgentSelectPanel myAgentSelectPanel0, AgentSelectPanel rivalAgentSelectPanel0) {
+	public StartButtonListener(MainFrame mainFrame0, MapSelectPanel mapSelectPanel0, AgentSelectPanel myAgentSelectPanel0, AgentSelectPanel rivalAgentSelectPanel0) {
+		mainFrame = mainFrame0;
 		mapSelectPanel = mapSelectPanel0;
 		myAgentSelectPanel = myAgentSelectPanel0;
 		rivalAgentSelectPanel = rivalAgentSelectPanel0;
@@ -33,7 +36,7 @@ public class StartButtonListener implements ActionListener{
 			Player myPlayer = myAgentSelectPanel.getPlayer();
 			Player rivalPlayer = rivalAgentSelectPanel.getPlayer();
 
-			RunGameThread runGameThread = new RunGameThread(myPlayer, rivalPlayer, nowGameData);
+			RunGameThread runGameThread = new RunGameThread(mainFrame, myPlayer, rivalPlayer, nowGameData);
 			ExecutorService exec = Executors.newSingleThreadExecutor();
 			exec.submit(runGameThread);
 		}

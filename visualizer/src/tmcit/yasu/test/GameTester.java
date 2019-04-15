@@ -44,7 +44,7 @@ public class GameTester {
 		GameFrame gameFrame = new GameFrame(new PaintGameData(gameData.getMapWidth(), gameData.getMapHeight()
 				, gameData.getMapScore(), new int[gameData.getMapWidth()][gameData.getMapHeight()], gameData.getMyPlayers(), gameData.getRivalPlayers()));
 
-		GameMaster master = new GameMaster(gameData, myPlayer, rivalPlayer, gameFrame);
-		master.run();
+//		GameMaster master = new GameMaster(gameData, myPlayer, rivalPlayer, gameFrame);
+//		master.run();
 	}
 }
