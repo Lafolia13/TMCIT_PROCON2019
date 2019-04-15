@@ -6,9 +6,9 @@
 
 // TurnDataの入力フォーマットは
 // 	現在のターン(保留、現状は無視)
+// 	盤面情報
 // 	味方エージェントの位置
 // 	敵エージェントの位置
-// 	盤面情報
 
 #include "../base/basesystem.h"
 
@@ -40,6 +40,11 @@ bool TurnData::Input(const GameData &game_data) {
 	if (this->now_turn_ > game_data.max_turn_)
 		return false;
 
+	for (int32_t h = 0; h < game_data.height_; ++h) {
+		for (int32_t w = 0; w < game_data.width_; ++w) {
+			std::cin >> this->tile_data_[h][w];
+		}
+	}
 
 	// オブジェクトを使いまわしている場合はthis->stay_agent_のフラグが残るため
 	// フラグを消してから新たにフラグを立てる
@@ -61,11 +66,6 @@ bool TurnData::Input(const GameData &game_data) {
 		}
 	}
 
-	for (int32_t h = 0; h < game_data.height_; ++h) {
-		for (int32_t w = 0; w < game_data.width_; ++w) {
-			std::cin >> this->tile_data_[h][w];
-		}
-	}
 
 	return true;
 }
