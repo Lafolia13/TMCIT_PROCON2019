@@ -7,6 +7,7 @@ import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
@@ -15,6 +16,7 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 
+import tmcit.yasu.listener.PresetButtonListener;
 import tmcit.yasu.listener.PresetComboBoxListener;
 import tmcit.yasu.listener.SolverComboBoxListener;
 import tmcit.yasu.player.ExecPlayer;
@@ -25,6 +27,7 @@ import tmcit.yasu.util.FileManager;
 public class AgentSelectPanel extends JPanel{
 	private boolean isMyPlayer;
 	private FileManager filemanager;
+	private JFrame mainFrame;
 
 	// UI
 	private JLabel nameLabel, presetLabel;
@@ -40,8 +43,10 @@ public class AgentSelectPanel extends JPanel{
 	// listener
 	private SolverComboBoxListener solverComboBoxListener;
 	private PresetComboBoxListener presetComboBoxListener;
+	private PresetButtonListener presetButtonListener;
 
-	public AgentSelectPanel(boolean isMyPlayer0, FileManager filemanager0) {
+	public AgentSelectPanel(JFrame mainFrame0, boolean isMyPlayer0, FileManager filemanager0) {
+		mainFrame = mainFrame0;
 		isMyPlayer = isMyPlayer0;
 		filemanager = filemanager0;
 		init();
@@ -90,6 +95,9 @@ public class AgentSelectPanel extends JPanel{
 		solverComboBox.addActionListener(solverComboBoxListener);
 		presetComboBoxListener = new PresetComboBoxListener(this, solverComboBox, presetComboBox);
 		presetComboBox.addActionListener(presetComboBoxListener);
+		presetButtonListener = new PresetButtonListener(mainFrame);
+		addPresetButton.addActionListener(presetButtonListener);
+		deletePresetButton.addActionListener(presetButtonListener);
 	}
 
 	private void initLayout() {
