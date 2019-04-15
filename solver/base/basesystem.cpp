@@ -61,11 +61,29 @@ bool TurnData::Input(const GameData &game_data) {
 		for (int32_t agent_id = 0; agent_id < game_data.agent_num_;
 			 ++agent_id) {
 			Position &check_position = this->GetNowPosition(team_id, agent_id);
-			std::cin >> check_position.h_ >> check_position.w_;
+			std::cin >> check_position.w_ >> check_position.h_;
 			this->stay_agent_[check_position.h_][check_position.w_] = true;
 		}
 	}
 
+	std::cerr << this->now_turn_ << std::endl;
+	for (auto x : this->tile_data_) {
+		for (auto y : x)
+			std::cerr << y << " ";
+		std::cerr << std::endl;
+	}
+	std::cerr << std::endl;
+	for (auto x : this->stay_agent_) {
+		for (auto y : x)
+			std::cerr << y << " ";
+		std::cerr << std::endl;
+	}
+	std::cerr << std::endl;
+	for (auto x : this->agents_position_) {
+		for (auto y : x)
+			std::cerr << y.h_ << " " << y.w_ << "   ";
+		std::cerr << std::endl;
+	}
 
 	return true;
 }
