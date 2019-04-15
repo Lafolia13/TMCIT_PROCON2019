@@ -7,6 +7,8 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.CopyOption;
+import java.nio.file.Files;
 import java.util.ArrayList;
 
 import javax.swing.JFileChooser;
@@ -67,6 +69,18 @@ public class FileManager {
 		File newFile = new File(solverDirectory.getAbsolutePath() + "\\" + solverName);
 		if(!newFile.exists()) {
 			newFile.mkdir();
+		}
+	}
+
+	// 新しいプリセットを追加
+	public void makeNewPreset(String solverName, String presetName) {
+		File defaultFile = new File(solverDirectory.getAbsoluteFile() + "\\" + solverName + "\\default.txt");
+		File newFile = new File(solverDirectory.getAbsoluteFile() + "\\" + solverName + "\\" + presetName + ".txt");
+		if(newFile.exists()) return;
+		try {
+			Files.copy(defaultFile.toPath(), newFile.toPath());
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 
