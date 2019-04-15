@@ -15,6 +15,7 @@ public class GameMainPanel extends JPanel{
 	// UI
 	private GameInfoPanel gameInfoPanel;
 	private GamePaintPanel gamePaintPanel;
+	private ExeStreamPanel myAgentStreamPanel, rivalAgentStreamPanel;
 	
 	public GameMainPanel(PaintGameData paintGameData0) {
 		paintGameData = paintGameData0;
@@ -25,16 +26,22 @@ public class GameMainPanel extends JPanel{
 	private void init() {
 		gameInfoPanel = new GameInfoPanel();
 		gamePaintPanel = new GamePaintPanel(paintGameData, false);
+		myAgentStreamPanel = new ExeStreamPanel();
+		rivalAgentStreamPanel = new ExeStreamPanel();
 	}
 	
 	private void initLayout() {
 		setLayout(null);
 		
-		gameInfoPanel.setBounds(200, 10, 610, 40);
-		gamePaintPanel.setBounds(200, 60, Constant.MAP_SIZE+10, Constant.MAP_SIZE+10);
+		myAgentStreamPanel.setBounds(10, 10, 200, 800);
+		gameInfoPanel.setBounds(230, 10, 610, 40);
+		gamePaintPanel.setBounds(230, 60, Constant.MAP_SIZE+10, Constant.MAP_SIZE+10);
+		rivalAgentStreamPanel.setBounds(860, 10, 200, 800);
 		
+		add(myAgentStreamPanel);
 		add(gameInfoPanel);
 		add(gamePaintPanel);
+		add(rivalAgentStreamPanel);
 	}
 	
 	public void reflectGameData(GameData gameData, TurnData nowTurnData) {
