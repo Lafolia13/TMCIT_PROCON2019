@@ -29,8 +29,8 @@ public class StarterPanel extends JPanel{
 
 	private void init() {
 		mapSelectPanel = new MapSelectPanel(fileManager);
-		myAgentSelectPanel = new AgentSelectPanel(true, fileManager);
-		rivalAgentSelectPanel = new AgentSelectPanel(false, fileManager);
+		myAgentSelectPanel = new AgentSelectPanel(mainFrame, true, fileManager);
+		rivalAgentSelectPanel = new AgentSelectPanel(mainFrame, false, fileManager);
 		settingPanel = new SettingPanel(mainFrame, fileManager);
 		startButton = new JButton("ŠJŽn");
 		startButton.setFont(Constant.DEFAULT_FONT);

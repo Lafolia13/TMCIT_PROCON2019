@@ -5,7 +5,9 @@ import java.util.ArrayList;
 
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
@@ -14,6 +16,7 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 
+import tmcit.yasu.listener.PresetButtonListener;
 import tmcit.yasu.listener.PresetComboBoxListener;
 import tmcit.yasu.listener.SolverComboBoxListener;
 import tmcit.yasu.player.ExecPlayer;
@@ -24,6 +27,7 @@ import tmcit.yasu.util.FileManager;
 public class AgentSelectPanel extends JPanel{
 	private boolean isMyPlayer;
 	private FileManager filemanager;
+	private JFrame mainFrame;
 
 	// UI
 	private JLabel nameLabel, presetLabel;
@@ -34,12 +38,15 @@ public class AgentSelectPanel extends JPanel{
 	private DefaultTableModel paramTableModel;
 	private JTable paramTable;
 	private JScrollPane paramScrollPanel;
+	private JButton addPresetButton, deletePresetButton;
 
 	// listener
 	private SolverComboBoxListener solverComboBoxListener;
 	private PresetComboBoxListener presetComboBoxListener;
+	private PresetButtonListener presetButtonListener;
 
-	public AgentSelectPanel(boolean isMyPlayer0, FileManager filemanager0) {
+	public AgentSelectPanel(JFrame mainFrame0, boolean isMyPlayer0, FileManager filemanager0) {
+		mainFrame = mainFrame0;
 		isMyPlayer = isMyPlayer0;
 		filemanager = filemanager0;
 		init();
@@ -80,11 +87,17 @@ public class AgentSelectPanel extends JPanel{
 		JTableHeader paramTableHeader = paramTable.getTableHeader();
 		paramTableHeader.setReorderingAllowed(false);
 
+		addPresetButton = new JButton("プリセット追加");
+		deletePresetButton = new JButton("プリセット削除");
+
 		// listener
 		solverComboBoxListener = new SolverComboBoxListener(this, solverComboBox);
 		solverComboBox.addActionListener(solverComboBoxListener);
 		presetComboBoxListener = new PresetComboBoxListener(this, solverComboBox, presetComboBox);
 		presetComboBox.addActionListener(presetComboBoxListener);
+		presetButtonListener = new PresetButtonListener(mainFrame, filemanager, solverComboBox, presetComboBox);
+		addPresetButton.addActionListener(presetButtonListener);
+		deletePresetButton.addActionListener(presetButtonListener);
 	}
 
 	private void initLayout() {
@@ -97,6 +110,8 @@ public class AgentSelectPanel extends JPanel{
 		presetLabel.setBounds(10, 100, 150, 20);
 		presetComboBox.setBounds(100, 100, 180, 20);
 		paramScrollPanel.setBounds(10, 130, 270, 150);
+		addPresetButton.setBounds(10, 290, 130, 30);
+		deletePresetButton.setBounds(150, 290, 130, 30);
 
 		add(nameLabel);
 		add(humanRadio);
@@ -105,6 +120,8 @@ public class AgentSelectPanel extends JPanel{
 		add(presetLabel);
 		add(presetComboBox);
 		add(paramScrollPanel);
+		add(addPresetButton);
+		add(deletePresetButton);
 	}
 
 	// getter
