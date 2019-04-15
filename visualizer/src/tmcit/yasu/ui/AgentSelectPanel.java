@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 import javax.swing.ButtonGroup;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -34,6 +35,7 @@ public class AgentSelectPanel extends JPanel{
 	private DefaultTableModel paramTableModel;
 	private JTable paramTable;
 	private JScrollPane paramScrollPanel;
+	private JButton addPresetButton, deletePresetButton;
 
 	// listener
 	private SolverComboBoxListener solverComboBoxListener;
@@ -80,6 +82,9 @@ public class AgentSelectPanel extends JPanel{
 		JTableHeader paramTableHeader = paramTable.getTableHeader();
 		paramTableHeader.setReorderingAllowed(false);
 
+		addPresetButton = new JButton("プリセット追加");
+		deletePresetButton = new JButton("プリセット削除");
+
 		// listener
 		solverComboBoxListener = new SolverComboBoxListener(this, solverComboBox);
 		solverComboBox.addActionListener(solverComboBoxListener);
@@ -97,6 +102,8 @@ public class AgentSelectPanel extends JPanel{
 		presetLabel.setBounds(10, 100, 150, 20);
 		presetComboBox.setBounds(100, 100, 180, 20);
 		paramScrollPanel.setBounds(10, 130, 270, 150);
+		addPresetButton.setBounds(10, 290, 130, 30);
+		deletePresetButton.setBounds(150, 290, 130, 30);
 
 		add(nameLabel);
 		add(humanRadio);
@@ -105,6 +112,8 @@ public class AgentSelectPanel extends JPanel{
 		add(presetLabel);
 		add(presetComboBox);
 		add(paramScrollPanel);
+		add(addPresetButton);
+		add(deletePresetButton);
 	}
 
 	// getter
