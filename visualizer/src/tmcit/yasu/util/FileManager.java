@@ -84,6 +84,12 @@ public class FileManager {
 		}
 	}
 
+	// プリセットを削除
+	public void deletePreset(String solverName, String presetName) {
+		File deleteFile = new File(solverDirectory.getAbsoluteFile() + "\\" + solverName + "\\" + presetName);
+		recursiveDeleteFile(deleteFile);
+	}
+
 	public void removeSolverDir(String solverName) {
 		File removeFile = new File(solverDirectory.getAbsolutePath() + "\\" + solverName);
 		System.out.println("[SYS]Delete File:" + removeFile.getAbsolutePath());

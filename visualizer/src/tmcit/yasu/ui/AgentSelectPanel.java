@@ -95,7 +95,7 @@ public class AgentSelectPanel extends JPanel{
 		solverComboBox.addActionListener(solverComboBoxListener);
 		presetComboBoxListener = new PresetComboBoxListener(this, solverComboBox, presetComboBox);
 		presetComboBox.addActionListener(presetComboBoxListener);
-		presetButtonListener = new PresetButtonListener(mainFrame, filemanager, solverComboBox);
+		presetButtonListener = new PresetButtonListener(mainFrame, filemanager, solverComboBox, presetComboBox);
 		addPresetButton.addActionListener(presetButtonListener);
 		deletePresetButton.addActionListener(presetButtonListener);
 	}
