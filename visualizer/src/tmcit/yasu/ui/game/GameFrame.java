@@ -28,6 +28,11 @@ public class GameFrame extends JFrame{
 		ArrayList<Point> rivalPlayers = gameData0.getRivalPlayers();
 
 		int[][] territoryMap = new int[mapWidth][mapHeight];
+		for(int i = 0;i < mapHeight;i++) {
+			for(int j = 0;j < mapWidth;j++) {
+				territoryMap[j][i] = Constant.NONE_TERRITORY;
+			}
+		}
 		myPlayers.stream().forEach(p -> territoryMap[p.x][p.y] = Constant.MY_TERRITORY);
 		rivalPlayers.stream().forEach(p -> territoryMap[p.x][p.y] = Constant.RIVAL_TERRITORY);
 
@@ -50,9 +55,5 @@ public class GameFrame extends JFrame{
 		gamePaintPanel.setBounds(10, 10, Constant.MAP_SIZE+10, Constant.MAP_SIZE+10);
 
 		this.add(gamePaintPanel);
-	}
-
-	public void reflectGameData(PaintGameData newPaintGameData) {
-		gamePaintPanel.reflectGameData(newPaintGameData);
 	}
 }

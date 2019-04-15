@@ -22,7 +22,7 @@ public class RunGameThread extends Thread{
 		rivalPlayer = rivalPlayer0;
 		gameData = gameData0;
 	}
-	
+
 	private PaintGameData getInitPaintGameData() {
 		int mapWidth = gameData.getMapWidth();
 		int mapHeight = gameData.getMapHeight();
@@ -31,19 +31,24 @@ public class RunGameThread extends Thread{
 		ArrayList<Point> rivalPlayers = gameData.getRivalPlayers();
 
 		int[][] territoryMap = new int[mapWidth][mapHeight];
+		for(int i = 0;i < mapHeight;i++) {
+			for(int j = 0;j < mapWidth;j++) {
+				territoryMap[j][i] = Constant.NONE_TERRITORY;
+			}
+		}
 		myPlayers.stream().forEach(p -> territoryMap[p.x][p.y] = Constant.MY_TERRITORY);
 		rivalPlayers.stream().forEach(p -> territoryMap[p.x][p.y] = Constant.RIVAL_TERRITORY);
 
 		PaintGameData paintGameData = new PaintGameData(mapWidth, mapHeight, mapScore, territoryMap, myPlayers, rivalPlayers);
 		return paintGameData;
 	}
-	
+
 	@Override
 	public void run() {
 		GameMainPanel gameMainPanel = new GameMainPanel(getInitPaintGameData(), myPlayer, rivalPlayer);
-		
+
 		mainFrame.addTabbedPanel("ÉQÅ[ÉÄ", gameMainPanel);
-		
+
 		GameMaster gameMaster = new GameMaster(gameData, myPlayer, rivalPlayer, gameMainPanel);
 		gameMaster.run();
 	}
