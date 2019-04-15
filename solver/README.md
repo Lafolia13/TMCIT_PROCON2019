@@ -17,13 +17,13 @@ agentの数
 point_data
 
 TurnDataのフォーマット:  
-now_turn
-tile_data
-ally_agent_position
-rival_agent_position
+now_turn  
+tile_data  
+ally_agent_position  
+rival_agent_position  
 
 出力のフォーマット:  
-ally_agent_i_action(方向(数字)、行動(char)) (空白をいれるかはIssue)
+ally_agent_i_action(方向(数字)、行動(char)) (空白はいれません)
 
 ## base
 

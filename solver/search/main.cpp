@@ -11,7 +11,7 @@ namespace search {
 bool OutPutMove(std::vector<action::Move> &ret_moves) {
 	sort(ret_moves.begin(), ret_moves.end());
 	for (auto agent_move : ret_moves) {
-		std::cout << agent_move.target_id_ << " " <<
+		std::cout << agent_move.target_id_ <<
 			action::kToCharactor[agent_move.agent_action_] << std::endl;
 	}
 }
