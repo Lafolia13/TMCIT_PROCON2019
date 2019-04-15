@@ -23,7 +23,7 @@ import javax.swing.event.ListSelectionListener;
 
 import tmcit.yasu.data.PaintGameData;
 import tmcit.yasu.game.GameData;
-import tmcit.yasu.ui.game.GamePanel;
+import tmcit.yasu.ui.game.GamePaintPanel;
 import tmcit.yasu.util.Constant;
 import tmcit.yasu.util.FileManager;
 import tmcit.yasu.util.ReadMapData;
@@ -39,7 +39,7 @@ public class MapSelectPanel extends JPanel implements ActionListener, ListSelect
 	private JButton addFileButton, deleteFileButton;
 
 	private JLabel previewLabel;
-	private GamePanel previewPanel;
+	private GamePaintPanel previewPanel;
 	private PaintGameData previewGameData;
 
 	public MapSelectPanel(FileManager fileManager0) {
@@ -73,7 +73,7 @@ public class MapSelectPanel extends JPanel implements ActionListener, ListSelect
 		previewLabel = new JLabel("ÉvÉåÉrÉÖÅ[");
 		previewLabel.setFont(Constant.DEFAULT_FONT);
 		initPreviewGameData();
-		previewPanel = new GamePanel(previewGameData, true);
+		previewPanel = new GamePaintPanel(previewGameData, true);
 	}
 
 	private void initLayout() {
@@ -92,6 +92,19 @@ public class MapSelectPanel extends JPanel implements ActionListener, ListSelect
 		add(deleteFileButton);
 		add(previewLabel);
 		add(previewPanel);
+	}
+
+	public ArrayList<GameData> getGameDataList(){
+		ArrayList<GameData> gameDataList = new ArrayList<GameData>();
+
+		int mapListSize = mapListModel.getSize();
+		for(int index = 0;index < mapListSize;index++) {
+			String nowMapPath = mapListModel.getElementAt(index);
+			ReadMapData readMap = new ReadMapData(new File(nowMapPath));
+			gameDataList.add(readMap.getReadGameData());
+		}
+
+		return gameDataList;
 	}
 
 	@Override

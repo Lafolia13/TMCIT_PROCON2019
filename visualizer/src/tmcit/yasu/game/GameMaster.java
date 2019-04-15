@@ -7,10 +7,12 @@ import tmcit.yasu.data.PaintGameData;
 import tmcit.yasu.player.ExecPlayer;
 import tmcit.yasu.player.Player;
 import tmcit.yasu.ui.game.GameFrame;
+import tmcit.yasu.ui.game.GameMainPanel;
+import tmcit.yasu.ui.game.GamePaintPanel;
 
 public class GameMaster implements Runnable{
 	// UI
-	private GameFrame gameFrame;
+	private GameMainPanel gamePanel;
 
 	private GameData gameData;
 	private Player myPlayer, rivalPlayer;
@@ -18,11 +20,11 @@ public class GameMaster implements Runnable{
 	// now game data
 	private TurnData nowTurnData;
 
-	public GameMaster(GameData gameData0, Player myPlayer0, Player rivalPlayer0, GameFrame gameFrame0) {
+	public GameMaster(GameData gameData0, Player myPlayer0, Player rivalPlayer0, GameMainPanel gamePanel0) {
 		gameData = gameData0;
 		myPlayer = myPlayer0;
 		rivalPlayer = rivalPlayer0;
-		gameFrame = gameFrame0;
+		gamePanel = gamePanel0;
 
 		init();
 	}
@@ -35,9 +37,11 @@ public class GameMaster implements Runnable{
 		myPlayer.input(String.valueOf(gameData.getMaxTurn()));
 		myPlayer.input(String.valueOf(gameData.getMapWidth()));
 		myPlayer.input(String.valueOf(gameData.getMapHeight()));
+		myPlayer.input(String.valueOf(gameData.getHowPlayer()));
 		rivalPlayer.input(String.valueOf(gameData.getMaxTurn()));
 		rivalPlayer.input(String.valueOf(gameData.getMapWidth()));
 		rivalPlayer.input(String.valueOf(gameData.getMapHeight()));
+		rivalPlayer.input(String.valueOf(gameData.getHowPlayer()));
 
 		int[][] mapScore = gameData.getMapScore();
 
@@ -70,8 +74,6 @@ public class GameMaster implements Runnable{
 		ArrayList<Point> nowMyPlayers = nowTurnData.getMyPlayers();
 		ArrayList<Point> nowRivalPlayer = nowTurnData.getRivalPlayers();
 		int n = gameData.getHowPlayer();
-		myPlayer.input(String.valueOf(n));
-		rivalPlayer.input(String.valueOf(n));
 		for(int i = 0;i < n;i++) {
 			String myPosition = String.valueOf(nowMyPlayers.get(i).x) + " " + String.valueOf(nowMyPlayers.get(i).y);
 			String rivalPosition = String.valueOf(nowRivalPlayer.get(i).x) + " " + String.valueOf(nowRivalPlayer.get(i).y);
@@ -96,8 +98,7 @@ public class GameMaster implements Runnable{
 	}
 
 	private void paintTurnData() {
-		PaintGameData newPaintGameData = new PaintGameData(gameData.getMapWidth(), gameData.getMapHeight(), gameData.getMapScore(), nowTurnData.getTerritoryMap(), nowTurnData.getMyPlayers(), nowTurnData.getRivalPlayers());
-		gameFrame.reflectGameData(newPaintGameData);
+		gamePanel.reflectGameData(gameData, nowTurnData);
 	}
 
 	@Override
@@ -106,16 +107,20 @@ public class GameMaster implements Runnable{
 
 		while(true) {
 			turnInput();
+			System.out.println("[SYSTEM]:End input data.");
 			ArrayList<String> myPlayerActions = getPlayerActions(myPlayer);
+			System.out.println("[SYSTEM]:End my player action.");
 			ArrayList<String> rivalPlayerActions = getPlayerActions(rivalPlayer);
+			System.out.println("[SYSTEM]:End rival player action.");
 
 			TurnData nextTurnData = nowTurnData.nextTurn(myPlayerActions, rivalPlayerActions);
 			nowTurnData = nextTurnData;
+			System.out.println("[SYSTEM]:End calc turn.");
 
 			//
 			paintTurnData();
 			try {
-				Thread.sleep(1000);
+				Thread.sleep(100);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}

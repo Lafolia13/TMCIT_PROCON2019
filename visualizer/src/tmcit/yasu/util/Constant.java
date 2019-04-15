@@ -10,8 +10,8 @@ public class Constant {
 	public static int PREVIEW_MAP_SIZE = 350;
 
 	public static int NONE_TERRITORY = 0;
-	public static int MY_TERRITORY = 1;
-	public static int RIVAL_TERRITORY = 2;
+	public static int RIVAL_TERRITORY = 1;
+	public static int MY_TERRITORY = 2;
 
 	public static Font MAP_SCORE_FONT = new Font("Arial", Font.BOLD, 20);
 	public static Font PREVIEW_MAP_SCORE_FONT = new Font("Arial", Font.BOLD, 10);
