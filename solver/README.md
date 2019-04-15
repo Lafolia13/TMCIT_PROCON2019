@@ -13,14 +13,14 @@ TurnDataには各ターン毎に入力をします。
 GameDataのフォーマット:  
 max_turn  
 width height  
-agentの数(Visualiserと相違ですがIssueを投げてます)  
+agentの数  
 point_data
 
 TurnDataのフォーマット:  
 now_turn
-ally_agent_i_position
-rival_agent_i_position
 tile_data
+ally_agent_position
+rival_agent_position
 
 出力のフォーマット:  
 ally_agent_i_action(方向(数字)、行動(char)) (空白をいれるかはIssue)
