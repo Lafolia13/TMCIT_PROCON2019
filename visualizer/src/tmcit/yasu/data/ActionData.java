@@ -2,6 +2,8 @@ package tmcit.yasu.data;
 
 import java.awt.Point;
 
+import tmcit.yasu.util.Constant;
+
 public class ActionData {
 	public int playerNum, way, agentIndex;
 	public Point target;
@@ -14,6 +16,8 @@ public class ActionData {
 		command = command0;
 		agentChar = agentChar0;
 		agentIndex = agentIndex0;
+
+		if(playerNum == Constant.NONE_TERRITORY) System.out.println("!!!!!!!!!!!!!!");
 	}
 
 }

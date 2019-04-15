@@ -9,6 +9,7 @@ import tmcit.yasu.player.Player;
 import tmcit.yasu.ui.game.GameFrame;
 import tmcit.yasu.ui.game.GameMainPanel;
 import tmcit.yasu.ui.game.GamePaintPanel;
+import tmcit.yasu.util.Constant;
 
 public class GameMaster implements Runnable{
 	// UI
@@ -62,13 +63,25 @@ public class GameMaster implements Runnable{
 
 		int[][] territoryMap = nowTurnData.getTerritoryMap();
 		for(int i = 0;i < gameData.getMapHeight();i++) {
-			String line = "";
+			String myLine = "", rivalLine = "";
 			for(int j = 0;j < gameData.getMapWidth();j++) {
-				if(j != gameData.getMapWidth()-1) line += String.valueOf(territoryMap[j][i]) + " ";
-				else line += String.valueOf(territoryMap[j][i]);
+				myLine += String.valueOf(territoryMap[j][i]);
+
+				if(territoryMap[j][i] == Constant.MY_TERRITORY) {
+					rivalLine += String.valueOf(Constant.RIVAL_TERRITORY) + " ";
+				}else if(territoryMap[j][i] == Constant.RIVAL_TERRITORY) {
+					rivalLine += String.valueOf(Constant.MY_TERRITORY) + " ";
+				}else if(territoryMap[j][i] == Constant.NONE_TERRITORY) {
+					rivalLine += String.valueOf(Constant.NONE_TERRITORY) + " ";
+				}
+
+				if(j != gameData.getMapWidth()-1) {
+					myLine += " ";
+					rivalLine += " ";
+				}
 			}
-			myPlayer.input(line);
-			rivalPlayer.input(line);
+			myPlayer.input(myLine);
+			rivalPlayer.input(rivalLine);
 		}
 
 		ArrayList<Point> nowMyPlayers = nowTurnData.getMyPlayers();
@@ -103,7 +116,10 @@ public class GameMaster implements Runnable{
 
 	@Override
 	public void run() {
+		System.out.println("[SYSTEM]:Start GameMaster.");
+		paintTurnData();
 		firstInput();
+		System.out.println("[SYSTEM]:End first input.");
 
 		while(true) {
 			turnInput();

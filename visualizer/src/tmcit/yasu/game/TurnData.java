@@ -39,6 +39,11 @@ public class TurnData {
 		nowTurn = 0;
 
 		territoryMap = new int[mapWidth][mapHeight];
+		for(int i = 0;i < mapHeight;i++) {
+			for(int j = 0;j < mapWidth;j++) {
+				territoryMap[j][i] = Constant.NONE_TERRITORY;
+			}
+		}
 		for(Point np:myPlayers) {
 			territoryMap[np.x][np.y] = Constant.MY_TERRITORY;
 		}
@@ -63,10 +68,13 @@ public class TurnData {
 
 		// territory score
 		boolean[][][] used = new boolean[21][21][3];
+		int[] teams = new int[2];
+		teams[0] = Constant.MY_TERRITORY;
+		teams[1] = Constant.RIVAL_TERRITORY;
 		for(int nowY = 0;nowY < mapHeight;nowY++){
 			for(int nowX = 0;nowX < mapWidth;nowX++){
-				for(int nowTeam = 1;nowTeam <= 2;nowTeam++){
-					if(used[nowX][nowY][nowTeam]){
+				for(int nowTeamIndex = 0;nowTeamIndex <= 1;nowTeamIndex++){
+					if(used[nowX][nowY][nowTeamIndex]){
 						continue;
 					}
 					int nowScore = 0;
@@ -81,9 +89,9 @@ public class TurnData {
 							noneScoreFlag = true;
 							continue;
 						}
-						if(used[nowP.x][nowP.y][nowTeam]) continue;
-						if(territoryMap[nowP.x][nowP.y] == nowTeam) continue;
-						used[nowP.x][nowP.y][nowTeam] = true;
+						if(used[nowP.x][nowP.y][nowTeamIndex]) continue;
+						if(territoryMap[nowP.x][nowP.y] == teams[nowTeamIndex]) continue;
+						used[nowP.x][nowP.y][nowTeamIndex] = true;
 						nowScore += Math.abs(scoreMap[nowP.x][nowP.y]);
 
 						for(int i = 0;i < 4;i++){
@@ -94,15 +102,15 @@ public class TurnData {
 								continue;
 							}
 
-							if(territoryMap[tx][ty] == nowTeam) continue;
-							if(used[tx][ty][nowTeam] == true) continue;
+							if(territoryMap[tx][ty] == teams[nowTeamIndex]) continue;
+							if(used[tx][ty][nowTeamIndex] == true) continue;
 							que.add(new Point(tx, ty));
 						}
 					}
 					if(noneScoreFlag) nowScore = 0;
-					if(nowTeam == 1){
+					if(teams[nowTeamIndex] == Constant.MY_TERRITORY){
 						myTerritoryScore += nowScore;
-					}else if(nowTeam == 2){
+					}else if(teams[nowTeamIndex] == Constant.RIVAL_TERRITORY){
 						rivalTerritoryScore += nowScore;
 					}
 				}
