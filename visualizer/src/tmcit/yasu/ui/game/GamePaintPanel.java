@@ -12,11 +12,11 @@ import javax.swing.JPanel;
 import tmcit.yasu.data.PaintGameData;
 import tmcit.yasu.util.Constant;
 
-public class GamePanel extends JPanel{
+public class GamePaintPanel extends JPanel{
 	private PaintGameData paintGameData;
 	private boolean isPreviewMode;
 
-	public GamePanel(PaintGameData paintGameData0, boolean isPreviewMode0) {
+	public GamePaintPanel(PaintGameData paintGameData0, boolean isPreviewMode0) {
 		paintGameData = paintGameData0;
 		isPreviewMode = isPreviewMode0;
 	}

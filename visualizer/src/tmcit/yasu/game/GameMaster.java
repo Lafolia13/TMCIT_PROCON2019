@@ -7,11 +7,12 @@ import tmcit.yasu.data.PaintGameData;
 import tmcit.yasu.player.ExecPlayer;
 import tmcit.yasu.player.Player;
 import tmcit.yasu.ui.game.GameFrame;
-import tmcit.yasu.ui.game.GamePanel;
+import tmcit.yasu.ui.game.GameMainPanel;
+import tmcit.yasu.ui.game.GamePaintPanel;
 
 public class GameMaster implements Runnable{
 	// UI
-	private GamePanel gamePanel;
+	private GameMainPanel gamePanel;
 
 	private GameData gameData;
 	private Player myPlayer, rivalPlayer;
@@ -19,7 +20,7 @@ public class GameMaster implements Runnable{
 	// now game data
 	private TurnData nowTurnData;
 
-	public GameMaster(GameData gameData0, Player myPlayer0, Player rivalPlayer0, GamePanel gamePanel0) {
+	public GameMaster(GameData gameData0, Player myPlayer0, Player rivalPlayer0, GameMainPanel gamePanel0) {
 		gameData = gameData0;
 		myPlayer = myPlayer0;
 		rivalPlayer = rivalPlayer0;
@@ -97,8 +98,7 @@ public class GameMaster implements Runnable{
 	}
 
 	private void paintTurnData() {
-		PaintGameData newPaintGameData = new PaintGameData(gameData.getMapWidth(), gameData.getMapHeight(), gameData.getMapScore(), nowTurnData.getTerritoryMap(), nowTurnData.getMyPlayers(), nowTurnData.getRivalPlayers());
-		gamePanel.reflectGameData(newPaintGameData);
+		gamePanel.reflectGameData(gameData, nowTurnData);
 	}
 
 	@Override

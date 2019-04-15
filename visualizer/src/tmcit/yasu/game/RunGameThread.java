@@ -7,7 +7,8 @@ import tmcit.yasu.data.PaintGameData;
 import tmcit.yasu.player.Player;
 import tmcit.yasu.ui.MainFrame;
 import tmcit.yasu.ui.game.GameFrame;
-import tmcit.yasu.ui.game.GamePanel;
+import tmcit.yasu.ui.game.GameMainPanel;
+import tmcit.yasu.ui.game.GamePaintPanel;
 import tmcit.yasu.util.Constant;
 
 public class RunGameThread extends Thread{
@@ -39,11 +40,11 @@ public class RunGameThread extends Thread{
 
 	@Override
 	public void run() {
-		GamePanel gamePanel = new GamePanel(getInitPaintGameData(), false);
+		GameMainPanel gameMainPanel = new GameMainPanel(getInitPaintGameData());
 		
-		mainFrame.addTabbedPanel("ÉQÅ[ÉÄ", gamePanel);
+		mainFrame.addTabbedPanel("ÉQÅ[ÉÄ", gameMainPanel);
 		
-		GameMaster gameMaster = new GameMaster(gameData, myPlayer, rivalPlayer, gamePanel);
+		GameMaster gameMaster = new GameMaster(gameData, myPlayer, rivalPlayer, gameMainPanel);
 		gameMaster.run();
 	}
 }

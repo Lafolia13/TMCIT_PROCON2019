@@ -11,7 +11,7 @@ import tmcit.yasu.util.Constant;
 
 public class GameFrame extends JFrame{
 	private PaintGameData gameData;
-	private GamePanel gamePanel;
+	private GamePaintPanel gamePaintPanel;
 
 	public GameFrame(PaintGameData gameData0) {
 		gameData = gameData0;
@@ -46,13 +46,13 @@ public class GameFrame extends JFrame{
 	private void initLayout() {
 		this.setLayout(null);
 
-		gamePanel = new GamePanel(gameData, false);
-		gamePanel.setBounds(10, 10, Constant.MAP_SIZE+10, Constant.MAP_SIZE+10);
+		gamePaintPanel = new GamePaintPanel(gameData, false);
+		gamePaintPanel.setBounds(10, 10, Constant.MAP_SIZE+10, Constant.MAP_SIZE+10);
 
-		this.add(gamePanel);
+		this.add(gamePaintPanel);
 	}
 
 	public void reflectGameData(PaintGameData newPaintGameData) {
-		gamePanel.reflectGameData(newPaintGameData);
+		gamePaintPanel.reflectGameData(newPaintGameData);
 	}
 }
