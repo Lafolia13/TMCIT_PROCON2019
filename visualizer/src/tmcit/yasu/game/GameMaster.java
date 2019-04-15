@@ -103,8 +103,10 @@ public class GameMaster implements Runnable{
 
 	@Override
 	public void run() {
+		System.out.println("[SYSTEM]:Start GameMaster.");
 		paintTurnData();
 		firstInput();
+		System.out.println("[SYSTEM]:End first input.");
 
 		while(true) {
 			turnInput();
