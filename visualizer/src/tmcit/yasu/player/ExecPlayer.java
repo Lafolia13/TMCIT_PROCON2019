@@ -51,6 +51,9 @@ public class ExecPlayer implements Player{
 		execStdout.submit(outReaderRunnable);
 
 		//TODO: STD ERROR
+		errReaderRunnable = new StreamReaderRunnable(this, stderr, false);
+		ExecutorService execStderr = Executors.newSingleThreadExecutor();
+		execStderr.submit(errReaderRunnable);
 
 		stdinPrint = new PrintWriter(new PrintStream(stdin));
 
@@ -68,6 +71,7 @@ public class ExecPlayer implements Player{
 	
 	public void setExeStreamPanel(ExeStreamPanel exeStreamPanel0){
 		outReaderRunnable.setExeStreamPanel(exeStreamPanel0);
+		errReaderRunnable.setExeStreamPanel(exeStreamPanel0);	
 	}
 
 	@Override
