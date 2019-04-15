@@ -37,9 +37,11 @@ public class GameMaster implements Runnable{
 		myPlayer.input(String.valueOf(gameData.getMaxTurn()));
 		myPlayer.input(String.valueOf(gameData.getMapWidth()));
 		myPlayer.input(String.valueOf(gameData.getMapHeight()));
+		myPlayer.input(String.valueOf(gameData.getHowPlayer()));
 		rivalPlayer.input(String.valueOf(gameData.getMaxTurn()));
 		rivalPlayer.input(String.valueOf(gameData.getMapWidth()));
 		rivalPlayer.input(String.valueOf(gameData.getMapHeight()));
+		rivalPlayer.input(String.valueOf(gameData.getHowPlayer()));
 
 		int[][] mapScore = gameData.getMapScore();
 
@@ -72,8 +74,6 @@ public class GameMaster implements Runnable{
 		ArrayList<Point> nowMyPlayers = nowTurnData.getMyPlayers();
 		ArrayList<Point> nowRivalPlayer = nowTurnData.getRivalPlayers();
 		int n = gameData.getHowPlayer();
-		myPlayer.input(String.valueOf(n));
-		rivalPlayer.input(String.valueOf(n));
 		for(int i = 0;i < n;i++) {
 			String myPosition = String.valueOf(nowMyPlayers.get(i).x) + " " + String.valueOf(nowMyPlayers.get(i).y);
 			String rivalPosition = String.valueOf(nowRivalPlayer.get(i).x) + " " + String.valueOf(nowRivalPlayer.get(i).y);
