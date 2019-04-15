@@ -37,10 +37,10 @@ public class RunGameThread extends Thread{
 		PaintGameData paintGameData = new PaintGameData(mapWidth, mapHeight, mapScore, territoryMap, myPlayers, rivalPlayers);
 		return paintGameData;
 	}
-
+	
 	@Override
 	public void run() {
-		GameMainPanel gameMainPanel = new GameMainPanel(getInitPaintGameData());
+		GameMainPanel gameMainPanel = new GameMainPanel(getInitPaintGameData(), myPlayer, rivalPlayer);
 		
 		mainFrame.addTabbedPanel("ÉQÅ[ÉÄ", gameMainPanel);
 		

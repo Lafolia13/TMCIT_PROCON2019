@@ -14,7 +14,7 @@ public class Main {
 
 	private static void testExe() {
 		String str = "E:\\Users\\yasu\\Desktop\\a.exe";
-		ExecPlayer player = new ExecPlayer(str);
+//		ExecPlayer player = new ExecPlayer(str);
 	}
 
 	public static void main(String[] args) {

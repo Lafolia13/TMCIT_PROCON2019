@@ -8,17 +8,19 @@ import javax.swing.JTextArea;
 import tmcit.yasu.util.Constant;
 
 public class ExeStreamPanel extends JPanel{
+	private String agentName;
 	private JLabel agentNameLabel, outLabel, errLabel;
 	private JScrollPane outScrollPanel, errScrollPanel;
 	private JTextArea outTextArea, errTextArea;
 	
-	public ExeStreamPanel() {
+	public ExeStreamPanel(String agentName0) {
+		agentName = agentName0;
 		init();
 		initLayout();
 	}
 	
 	private void init() {
-		agentNameLabel = new JLabel("NAME");
+		agentNameLabel = new JLabel(agentName);
 		agentNameLabel.setFont(Constant.DEFAULT_FONT);
 		
 		outLabel = new JLabel("ïWèÄèoóÕ");
@@ -48,5 +50,13 @@ public class ExeStreamPanel extends JPanel{
 		add(outScrollPanel);
 		add(errLabel);
 		add(errScrollPanel);
+	}
+	
+	public void addStream(String str, boolean isStdout) {
+		if(isStdout) {
+			outTextArea.append(str + "\n");
+		}else {
+			errTextArea.append(str + "\n");
+		}
 	}
 }

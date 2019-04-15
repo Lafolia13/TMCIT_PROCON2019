@@ -12,6 +12,8 @@ import java.util.Queue;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import tmcit.yasu.ui.game.ExeStreamPanel;
+import tmcit.yasu.ui.game.GameInfoPanel;
 import tmcit.yasu.util.Constant;
 
 public class ExecPlayer implements Player{
@@ -20,6 +22,8 @@ public class ExecPlayer implements Player{
 
 	private Queue<String> cmdQue;
 
+	// stream
+	private StreamReaderRunnable outReaderRunnable, errReaderRunnable;
 	private PrintWriter stdinPrint;
 
 	public ExecPlayer(String cmd) {
@@ -42,8 +46,9 @@ public class ExecPlayer implements Player{
 		OutputStream stdin = process.getOutputStream();
 
 		// run thread
+		outReaderRunnable = new StreamReaderRunnable(this, stdout, true);
 		ExecutorService execStdout = Executors.newSingleThreadExecutor();
-		execStdout.submit(new StreamReaderRunnable(this, stdout, true));
+		execStdout.submit(outReaderRunnable);
 
 		//TODO: STD ERROR
 
@@ -60,7 +65,10 @@ public class ExecPlayer implements Player{
 		System.out.println("Exec Destroy");
 		process.destroy();
 	}
-
+	
+	public void setExeStreamPanel(ExeStreamPanel exeStreamPanel0){
+		outReaderRunnable.setExeStreamPanel(exeStreamPanel0);
+	}
 
 	@Override
 	public String getAction() {

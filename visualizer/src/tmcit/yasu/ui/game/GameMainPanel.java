@@ -6,6 +6,8 @@ import tmcit.yasu.data.PaintGameData;
 import tmcit.yasu.data.ScoreData;
 import tmcit.yasu.game.GameData;
 import tmcit.yasu.game.TurnData;
+import tmcit.yasu.player.ExecPlayer;
+import tmcit.yasu.player.Player;
 import tmcit.yasu.util.Constant;
 
 public class GameMainPanel extends JPanel{
@@ -17,17 +19,23 @@ public class GameMainPanel extends JPanel{
 	private GamePaintPanel gamePaintPanel;
 	private ExeStreamPanel myAgentStreamPanel, rivalAgentStreamPanel;
 	
-	public GameMainPanel(PaintGameData paintGameData0) {
+	// Player
+	private Player myPlayer, rivalPlayer;
+	
+	public GameMainPanel(PaintGameData paintGameData0, Player myPlayer0, Player rivalPlayer0) {
+		myPlayer = myPlayer0;
+		rivalPlayer = rivalPlayer0;
 		paintGameData = paintGameData0;
 		init();
 		initLayout();
+		initExecPlayerStream();
 	}
 	
 	private void init() {
 		gameInfoPanel = new GameInfoPanel();
 		gamePaintPanel = new GamePaintPanel(paintGameData, false);
-		myAgentStreamPanel = new ExeStreamPanel();
-		rivalAgentStreamPanel = new ExeStreamPanel();
+		myAgentStreamPanel = new ExeStreamPanel("MyAgent");
+		rivalAgentStreamPanel = new ExeStreamPanel("RivalAgent");
 	}
 	
 	private void initLayout() {
@@ -42,6 +50,15 @@ public class GameMainPanel extends JPanel{
 		add(gameInfoPanel);
 		add(gamePaintPanel);
 		add(rivalAgentStreamPanel);
+	}
+	
+	private void initExecPlayerStream() {
+		if(myPlayer instanceof ExecPlayer) {
+			((ExecPlayer) myPlayer).setExeStreamPanel(myAgentStreamPanel);
+		}
+		if(rivalPlayer instanceof ExecPlayer) {
+			((ExecPlayer) rivalPlayer).setExeStreamPanel(rivalAgentStreamPanel);
+		}
 	}
 	
 	public void reflectGameData(GameData gameData, TurnData nowTurnData) {
