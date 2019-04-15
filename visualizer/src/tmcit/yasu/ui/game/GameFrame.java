@@ -51,8 +51,4 @@ public class GameFrame extends JFrame{
 
 		this.add(gamePaintPanel);
 	}
-
-	public void reflectGameData(PaintGameData newPaintGameData) {
-		gamePaintPanel.reflectGameData(newPaintGameData);
-	}
 }

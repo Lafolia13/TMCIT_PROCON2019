@@ -103,6 +103,7 @@ public class GameMaster implements Runnable{
 
 	@Override
 	public void run() {
+		paintTurnData();
 		firstInput();
 
 		while(true) {
