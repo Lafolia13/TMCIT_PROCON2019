@@ -66,25 +66,6 @@ bool TurnData::Input(const GameData &game_data) {
 		}
 	}
 
-	std::cerr << this->now_turn_ << std::endl;
-	for (auto x : this->tile_data_) {
-		for (auto y : x)
-			std::cerr << y << " ";
-		std::cerr << std::endl;
-	}
-	std::cerr << std::endl;
-	for (auto x : this->stay_agent_) {
-		for (auto y : x)
-			std::cerr << y << " ";
-		std::cerr << std::endl;
-	}
-	std::cerr << std::endl;
-	for (auto x : this->agents_position_) {
-		for (auto y : x)
-			std::cerr << y.h_ << " " << y.w_ << "   ";
-		std::cerr << std::endl;
-	}
-
 	return true;
 }
 
