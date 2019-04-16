@@ -3,6 +3,7 @@ package tmcit.yasu.game;
 import java.awt.Point;
 import java.util.ArrayList;
 
+import tmcit.yasu.data.GameManageData;
 import tmcit.yasu.data.PaintGameData;
 import tmcit.yasu.player.Player;
 import tmcit.yasu.ui.MainFrame;
@@ -15,12 +16,14 @@ public class RunGameThread extends Thread{
 	private MainFrame mainFrame;
 	private Player myPlayer, rivalPlayer;
 	private GameData gameData;
+	private GameManageData gameManageData;
 
-	public RunGameThread(MainFrame mainFrame0, Player myPlayer0, Player rivalPlayer0, GameData gameData0) {
+	public RunGameThread(MainFrame mainFrame0, Player myPlayer0, Player rivalPlayer0, GameData gameData0, GameManageData gameManageData0) {
 		mainFrame = mainFrame0;
 		myPlayer = myPlayer0;
 		rivalPlayer = rivalPlayer0;
 		gameData = gameData0;
+		gameManageData = gameManageData0;
 	}
 
 	private PaintGameData getInitPaintGameData() {
@@ -49,7 +52,7 @@ public class RunGameThread extends Thread{
 
 		mainFrame.addTabbedPanel("ÉQÅ[ÉÄ", gameMainPanel);
 
-		GameMaster gameMaster = new GameMaster(gameData, myPlayer, rivalPlayer, gameMainPanel);
+		GameMaster gameMaster = new GameMaster(gameData, myPlayer, rivalPlayer, gameMainPanel, gameManageData);
 		gameMaster.run();
 	}
 }
