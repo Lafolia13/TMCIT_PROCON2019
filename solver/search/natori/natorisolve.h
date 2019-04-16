@@ -8,12 +8,14 @@
 namespace search {
 namespace natori {
 
+// beamsearchに回すよ
+// root_move_は一回目の行動を入れます
 class Node {
 public :
-	std::vector<action::Move> root_move_;
-	base::TurnData turn_data_;
+	std::vector<action::Move> root_move_ = {};
+	base::TurnData turn_data_ = {};
 	std::vector<action::Move> agnts_move_;
-	int32_t evaluation_;
+	int32_t evaluation_ = 0;
 
 	Node() {};
 	Node(const base::TurnData &turn_data,
@@ -32,8 +34,19 @@ protected :
 private :
 };
 
-std::vector<action::Move> NatoriSolver(const base::GameData&,
-									   const base::TurnData&);
+// vector<int32_t = index>配列から次のMoveの組み合わせを作ります
+bool NextPermutation(const std::vector<std::vector<action::Move> >&,
+					 int32_t, std::vector<int32_t> &,
+					 std::vector<action::Move>&);
+
+// エージェントの周囲に対する行動を返します
+std::vector<action::Move> GetAgentActions(const base::GameData&,
+										  const base::TurnData&,
+										  const int32_t&, const int32_t&);
+
+// びーむさーちをします
+std::vector<action::Move> BeamSearch(const base::GameData&,
+									 const base::TurnData&);
 
 }
 }
