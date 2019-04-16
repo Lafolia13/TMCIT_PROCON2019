@@ -64,7 +64,7 @@ std::vector<action::Move> GetAgentActions(const base::GameData &game_data,
 }
 
 std::vector<action::Move> BeamSearch(const base::GameData &game_data,
-									   const base::TurnData &turn_data) {
+									 const base::TurnData &turn_data) {
 	std::priority_queue<Node, std::vector<Node>,
 						std::greater<Node> > p_queue, next_queue;
 
@@ -73,20 +73,22 @@ std::vector<action::Move> BeamSearch(const base::GameData &game_data,
 	std::vector<int32_t> moves_id(game_data.agent_num_);
 	Node next_node;
 	p_queue.push(Node(turn_data, check_moves, 0));
-	for (int i = 0; i < beam_depth; ++i) {
+	for (int32_t i = 0; i < beam_depth; ++i) {
 		while (p_queue.size() > 0) {
 			Node now_node = p_queue.top();
 			p_queue.pop();
 			for (int agent_id = 0; agent_id < game_data.agent_num_;
 				 ++agent_id) {
-				agents_moves[agent_id] =
-					GetAgentActions(game_data, turn_data,
-									base::kAlly, agent_id);
+				agents_moves[agent_id] = GetAgentActions(game_data, turn_data,
+														 base::kAlly,
+														 agent_id);
 			}
 
 			std::fill(moves_id.begin(), moves_id.end(), 0);
-			for (int agent_id = 0; agent_id < game_data.agent_num_; ++agent_id)
+			for (int32_t agent_id = 0; agent_id < game_data.agent_num_;
+				++agent_id) {
 				check_moves[agent_id] = agents_moves[agent_id][0];
+			}
 
 			while (NextPermutation(agents_moves, 0, moves_id,
 								  check_moves) == true) {
@@ -111,6 +113,7 @@ std::vector<action::Move> BeamSearch(const base::GameData &game_data,
 				if (next_queue.size() == 0 ||
 					next_queue.top().evaluation_ < evaluation)
 					next_queue.push(next_node);
+
 				if (next_queue.size() > beam_width)
 					next_queue.pop();
 			}

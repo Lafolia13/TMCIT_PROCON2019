@@ -1,6 +1,7 @@
 #include "../base/basesystem.cpp"
 #include "../calculation/calculation.cpp"
 #include "../action/changeaction.cpp"
+#include "../search/natori/natorisolve.cpp"
 
 #include <cstdint>
 #include <iostream>
@@ -26,7 +27,7 @@ int main() {
 	while (turn_data.Input(game_data) == true) {
 		std::vector<action::Move> ret_moves;
 
-		// ret_moves = Solve();
+		ret_moves = search::natori::BeamSearch(game_data, turn_data);
 
 		search::OutPutMove(ret_moves);
 	}
