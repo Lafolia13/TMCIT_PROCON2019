@@ -47,5 +47,6 @@ public class Constant {
 	public static Font DEFAULT_FONT = new Font("ＭＳ ゴシック", Font.BOLD, 20);
 	public static Font SMALL_FONT = new Font("ＭＳ ゴシック", Font.BOLD, 15);
 	public static String[] PARAM_COLUMN_NAMES = {"パラメータ名", "説明", "初期値"};
+	public static String[] PRESET_PARAM_COLUMN_NAMES = {"パラメータ名", "説明", "値"};
 	// mainFrame
 }
