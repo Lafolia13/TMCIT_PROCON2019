@@ -96,9 +96,15 @@ public class FileManager {
 		recursiveDeleteFile(removeFile);
 	}
 
+	private String getTextExtension(String fileName) {
+		if(fileName.endsWith(".txt")) return fileName;
+		return fileName.concat(".txt");
+	}
 
+	// パラメータを新しく保存
 	public void saveSolverParameter(String solverName, String presetName, ArrayList<String[]> parameters, String exePath) {
-		File writeFile = new File(solverDirectory.getAbsoluteFile() + "\\" + solverName + "\\" + presetName + ".txt");
+		presetName = getTextExtension(presetName);
+		File writeFile = new File(solverDirectory.getAbsoluteFile() + "\\" + solverName + "\\" + presetName);
 		if(!writeFile.exists()) {
 			try {
 				writeFile.createNewFile();
@@ -121,6 +127,17 @@ public class FileManager {
 		}
 
 	}
+
+	// パラメータを上書き保存
+	public void overwriteSolverParameter(String solverName, String presetName, ArrayList<String[]> parameters) {
+		presetName = getTextExtension(presetName);
+		File overwriteFile = new File(solverDirectory.getAbsoluteFile() + "\\" + solverName + "\\" + presetName);
+		if(!overwriteFile.exists()) return;
+
+		String exePath = getSelectedSolverExePath(solverName);
+		saveSolverParameter(solverName, presetName, parameters, exePath);
+	}
+
 
 	// LookAndFeel
 	public void setWindowsLookAndFeel() {
