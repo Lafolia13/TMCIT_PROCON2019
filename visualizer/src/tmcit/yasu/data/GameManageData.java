@@ -1,10 +1,11 @@
 package tmcit.yasu.data;
 
 public class GameManageData {
-	private int runningGame;
+	private int runningGame, maxGame;
 
-	public GameManageData() {
+	public GameManageData(int maxGame0) {
 		runningGame = 0;
+		maxGame = maxGame0;
 	}
 
 	public void plusRunningGame() {
@@ -18,5 +19,9 @@ public class GameManageData {
 	// getter
 	public int getRunningGame() {
 		return runningGame;
+	}
+
+	public int getMaxGame() {
+		return maxGame;
 	}
 }
