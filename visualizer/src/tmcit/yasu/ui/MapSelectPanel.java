@@ -50,7 +50,9 @@ public class MapSelectPanel extends JPanel implements ActionListener, ListSelect
 
 	private void initPreviewGameData() {
 		int[][] mapScore = new int[1][1];
-		previewGameData = new PaintGameData(1, 1, mapScore, mapScore, new ArrayList<>(), new ArrayList<>());
+		int[][] territoryMap = new int[1][1];
+		territoryMap[0][0] = Constant.NONE_TERRITORY;
+		previewGameData = new PaintGameData(1, 1, mapScore, territoryMap, new ArrayList<>(), new ArrayList<>());
 	}
 
 	private void init() {
@@ -142,6 +144,11 @@ public class MapSelectPanel extends JPanel implements ActionListener, ListSelect
 		ArrayList<Point> rivalPlayers = readData.getRivalPlayers();
 
 		int[][] territoryMap = new int[w][h];
+		for(int i = 0;i < h;i++) {
+			for(int j = 0;j < w;j++) {
+				territoryMap[j][i] = Constant.NONE_TERRITORY;
+			}
+		}
 		for(Point myPoint : myPlayers) {
 			territoryMap[myPoint.x][myPoint.y] = Constant.MY_TERRITORY;
 		}
