@@ -169,6 +169,7 @@ public class AgentSettingPanel extends JPanel implements ActionListener{
 			}
 		}else if(cmd == "Š®—¹") {
 			starterPanel.refreshAgent();
+			mainFrame.deleteTabbedPanel(this);
 		}
 	}
 }
