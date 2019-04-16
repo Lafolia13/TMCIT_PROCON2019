@@ -154,7 +154,7 @@ public class AgentSelectPanel extends JPanel{
 
 	// refresh
 
-	private void refreshSolverComboBox() {
+	public void refreshSolverComboBox() {
 		String[] solverList = filemanager.getSolverList();
 		solverComboBoxModel.removeAllElements();
 		for(String nowSolver : solverList) {
