@@ -14,6 +14,7 @@ import tmcit.yasu.util.FileManager;
 
 public class SettingPanel extends JPanel implements ActionListener{
 	private MainFrame mainFrame;
+	private StarterPanel starterPanel;
 	private FileManager fileManager;
 
 	private JLabel nameLabel, maxGameLabel;
@@ -21,8 +22,9 @@ public class SettingPanel extends JPanel implements ActionListener{
 	private SpinnerNumberModel maxGameSpinnerModel;
 	private JSpinner maxGameSpinner;
 
-	public SettingPanel(MainFrame mainFrame0, FileManager fileManager0) {
+	public SettingPanel(MainFrame mainFrame0, StarterPanel starterPanel0, FileManager fileManager0) {
 		mainFrame = mainFrame0;
+		starterPanel = starterPanel0;
 		fileManager = fileManager0;
 		init();
 		initLayout();
@@ -68,7 +70,7 @@ public class SettingPanel extends JPanel implements ActionListener{
 	public void actionPerformed(ActionEvent e) {
 		String cmd = e.getActionCommand();
 		if(cmd == "エージェントの設定") {
-			mainFrame.switchOrAddTabbedPanel("エージェントの設定", new AgentSettingPanel(mainFrame, fileManager));
+			mainFrame.switchOrAddTabbedPanel("エージェントの設定", new AgentSettingPanel(mainFrame, starterPanel, fileManager));
 		}
 	}
 }

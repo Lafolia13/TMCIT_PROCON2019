@@ -19,7 +19,11 @@ public class SolverComboBoxListener implements ActionListener{
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		int index = solverComboBox.getSelectedIndex();
+		if(index == -1) return;
+
 		String selectedSolver = solverComboBox.getItemAt(index);
+
+		System.out.println("[SYSTEM]SolverComboBoxListener:index=" + index + ", selectedSolver=" + selectedSolver);
 
 		agentSelectPanel.refreshPresetComboBox(selectedSolver);
 	}
