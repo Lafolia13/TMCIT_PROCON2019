@@ -20,7 +20,7 @@ import tmcit.yasu.listener.SolverComboBoxListener;
 
 public class FileManager {
 	private LookAndFeel defaultLookAndFeel;
-	private File procon30Directory, settingDirectory, mapDirectory, solverDirectory;
+	private File procon30Directory, settingDirectory, mapDirectory, solverDirectory, logDirectory;
 
 	public FileManager() {
 		init();
@@ -34,6 +34,7 @@ public class FileManager {
 		settingDirectory = new File(procon30Path.toString() + "\\setting");
 		mapDirectory = new File(procon30Path.toString() + "\\map");
 		solverDirectory = new File(procon30Path.toString() + "\\solver");
+		logDirectory = new File(procon30Path.toString() + "\\log");
 	}
 
 	private void createFolder() {
@@ -48,6 +49,9 @@ public class FileManager {
 		}
 		if(!solverDirectory.isDirectory()) {
 			solverDirectory.mkdir();
+		}
+		if(!logDirectory.isDirectory()) {
+			logDirectory.mkdir();
 		}
 	}
 
