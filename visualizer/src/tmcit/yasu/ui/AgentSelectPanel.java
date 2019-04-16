@@ -16,6 +16,7 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 
+import tmcit.yasu.data.PresetTableModel;
 import tmcit.yasu.listener.PresetButtonListener;
 import tmcit.yasu.listener.PresetComboBoxListener;
 import tmcit.yasu.listener.PresetParamTableModelListener;
@@ -36,7 +37,7 @@ public class AgentSelectPanel extends JPanel{
 	private JRadioButton humanRadio, programRadio;
 	private DefaultComboBoxModel<String> solverComboBoxModel, presetComboBoxModel;
 	private JComboBox<String> solverComboBox, presetComboBox;
-	private DefaultTableModel paramTableModel;
+	private PresetTableModel paramTableModel;
 	private JTable paramTable;
 	private JScrollPane paramScrollPanel;
 	private JButton addPresetButton, deletePresetButton;
@@ -83,7 +84,7 @@ public class AgentSelectPanel extends JPanel{
 		presetLabel = new JLabel("プリセット:");
 		presetLabel.setFont(new Font("MS ゴシック", Font.BOLD, 15));
 
-		paramTableModel = new DefaultTableModel(Constant.PARAM_COLUMN_NAMES, 0);
+		paramTableModel = new PresetTableModel(Constant.PRESET_PARAM_COLUMN_NAMES, 0);
 		paramTable = new JTable(paramTableModel);
 		paramScrollPanel = new JScrollPane(paramTable);
 		JTableHeader paramTableHeader = paramTable.getTableHeader();
@@ -171,6 +172,14 @@ public class AgentSelectPanel extends JPanel{
 
 	public void refreshParamTable(String solverName, String presetName) {
 		presetParamTableModelListener.setListenMode(false);
+
+		if(presetName != null && presetName.equals("default.txt")) {
+			paramTableModel.setDefaultFlag(true);
+		}else {
+			paramTableModel.setDefaultFlag(false);
+		}
+
+		// set preset
 		ArrayList<String[]> paramList = filemanager.getSelectedSolverParameter(solverName, presetName);
 		while(paramTable.getRowCount() > 0) {
 			paramTableModel.removeRow(0);
