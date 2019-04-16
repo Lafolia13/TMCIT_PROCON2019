@@ -29,7 +29,7 @@ public class GameStarter implements Runnable{
 	public void run() {
 		for(GameData nowGameData : gameDataList) {
 			while(true) {
-				if(gameManageData.getRunningGame() < 2) break;
+				if(gameManageData.getRunningGame() < gameManageData.getMaxGame()) break;
 				try {
 					Thread.sleep(500);
 				} catch (InterruptedException e1) {

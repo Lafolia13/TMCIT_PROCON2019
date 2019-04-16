@@ -59,6 +59,11 @@ public class SettingPanel extends JPanel implements ActionListener{
 		add(maxGameSpinner);
 	}
 
+	// getter
+	public int getMaxGame() {
+		return (int) maxGameSpinner.getValue();
+	}
+
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		String cmd = e.getActionCommand();
