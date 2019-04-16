@@ -3,6 +3,7 @@ package tmcit.yasu.game;
 import java.awt.Point;
 import java.util.ArrayList;
 
+import tmcit.yasu.data.GameManageData;
 import tmcit.yasu.data.PaintGameData;
 import tmcit.yasu.player.ExecPlayer;
 import tmcit.yasu.player.Player;
@@ -12,6 +13,8 @@ import tmcit.yasu.ui.game.GamePaintPanel;
 import tmcit.yasu.util.Constant;
 
 public class GameMaster implements Runnable{
+	private GameManageData gameManageData;
+
 	// UI
 	private GameMainPanel gamePanel;
 
@@ -21,11 +24,12 @@ public class GameMaster implements Runnable{
 	// now game data
 	private TurnData nowTurnData;
 
-	public GameMaster(GameData gameData0, Player myPlayer0, Player rivalPlayer0, GameMainPanel gamePanel0) {
+	public GameMaster(GameData gameData0, Player myPlayer0, Player rivalPlayer0, GameMainPanel gamePanel0, GameManageData gameManageData0) {
 		gameData = gameData0;
 		myPlayer = myPlayer0;
 		rivalPlayer = rivalPlayer0;
 		gamePanel = gamePanel0;
+		gameManageData = gameManageData0;
 
 		init();
 	}
@@ -114,6 +118,10 @@ public class GameMaster implements Runnable{
 		gamePanel.reflectGameData(gameData, nowTurnData);
 	}
 
+	private void endGameMaster() {
+		gameManageData.minusRunningGame();
+	}
+
 	@Override
 	public void run() {
 		System.out.println("[SYSTEM]:Start GameMaster.");
@@ -147,5 +155,7 @@ public class GameMaster implements Runnable{
 				break;
 			}
 		}
+
+		endGameMaster();
 	}
 }

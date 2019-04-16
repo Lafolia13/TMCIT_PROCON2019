@@ -6,9 +6,11 @@ import java.util.ArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import tmcit.yasu.data.GameManageData;
 import tmcit.yasu.data.PaintGameData;
 import tmcit.yasu.game.GameData;
 import tmcit.yasu.game.GameMaster;
+import tmcit.yasu.game.GameStarter;
 import tmcit.yasu.game.RunGameThread;
 import tmcit.yasu.player.Player;
 import tmcit.yasu.ui.AgentSelectPanel;
@@ -31,15 +33,11 @@ public class StartButtonListener implements ActionListener{
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		ArrayList<GameData> gameDataList = mapSelectPanel.getGameDataList();
+		GameManageData gameManageData = new GameManageData();
 
-		for(GameData nowGameData : gameDataList) {
-			Player myPlayer = myAgentSelectPanel.getPlayer();
-			Player rivalPlayer = rivalAgentSelectPanel.getPlayer();
-
-			RunGameThread runGameThread = new RunGameThread(mainFrame, myPlayer, rivalPlayer, nowGameData);
-			ExecutorService exec = Executors.newSingleThreadExecutor();
-			exec.submit(runGameThread);
-		}
+		GameStarter gameStarter = new GameStarter(mainFrame, myAgentSelectPanel, rivalAgentSelectPanel, gameDataList, gameManageData);
+		ExecutorService exec = Executors.newSingleThreadExecutor();
+		exec.submit(gameStarter);
 	}
 
 }
