@@ -44,6 +44,11 @@ std::vector<action::Move> GetAgentActions(const base::GameData&,
 										  const base::TurnData&,
 										  const int32_t&, const int32_t&);
 
+int32_t NodesEvaluation(const base::GameData&,
+						const base::TurnData &now_turn_data,
+						const base::TurnData &next_turn_data,
+						const base::TurnData &start_turn_data);
+
 // びーむさーちをします
 std::vector<action::Move> BeamSearch(const base::GameData&,
 									 const base::TurnData&);
