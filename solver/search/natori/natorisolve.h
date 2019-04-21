@@ -8,7 +8,7 @@
 namespace search {
 namespace natori {
 
-// beamsearchに回すよ
+// beamsearchに回すよう
 // root_move_は一回目の行動を入れます
 class Node {
 public :

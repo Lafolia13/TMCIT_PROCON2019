@@ -1,4 +1,5 @@
-#include "../../search/Natori/natorisolve.h"
+#include "../../search/natori/natorisolve.h"
+#include "../../search/natori/evaluation.h"
 
 #include <queue>
 
@@ -7,15 +8,6 @@ namespace natori {
 
 constexpr int32_t beam_width = 1000;
 constexpr int32_t beam_depth = 7;
-
-
-constexpr int32_t tile_bias = 3;
-constexpr int32_t area_bias = 1;
-
-constexpr int32_t first_bias = 2;
-constexpr int32_t after_second_bias = 1;
-
-constexpr int32_t meaningful_action_bias = 1;
 
 // agents_movesはGetAgentActionsで作成した近傍に対する行動群のリストです
 // agent_idはいま行動を変えようとしているエージェントのidを指し、
@@ -30,11 +22,10 @@ constexpr int32_t meaningful_action_bias = 1;
 // ...
 // のような順で組み合わせが更新されていきます
 // 関数の開始時に最後の組み合わせだとfalseが返り、それ以外ではtrueが返ります
-bool NextPermutation(const std::vector<std::vector<action::Move> >
-					 &agents_moves,
-					 int32_t agent_id,
-					 std::vector<int32_t> &moves_id,
-					 std::vector<action::Move> &ret_move) {
+bool NextPermutation(
+		const std::vector<std::vector<action::Move> > &agents_moves,
+		const int32_t agent_id, std::vector<int32_t> &moves_id,
+		std::vector<action::Move> &ret_move) {
 	if (agent_id == agents_moves.size())
 		return false;
 
@@ -87,56 +78,15 @@ std::vector<action::Move> GetAgentActions(const base::GameData &game_data,
 	return ret;
 }
 
-// 評価関数です。雑っぽいです。いつかちゃんと書きます
+// 評価関数です。
 int32_t NodesEvaluation(const base::GameData &game_data,
 						const base::TurnData &now_turn_data,
 						const base::TurnData &next_turn_data,
 						const base::TurnData &start_turn_data,
 						const std::vector<action::Move> check_moves) {
-	// ここほんとは構造化束縛つかってスタイリッシュに書けるけどMinGWのGCCが6.3.0までしか対応してないのでできないやつです
-	auto all_point =
-		calculation::CalculationAllPoint(game_data,
-										 next_turn_data);
-	const calculation::Point &ally_point = all_point.first;
-	const calculation::Point &rival_point = all_point.second;
-	calculation::Point defference, ret_evaluation;
-	defference.tile_point_ = ally_point.tile_point_ - rival_point.tile_point_;
-	defference.area_point_ = ally_point.area_point_ - rival_point.area_point_;
+	int32_t ret_evaluation = 0;
 
-	// タイルポイントと領域ポイントの重視配分
-	ret_evaluation.tile_point_ += defference.tile_point_ * tile_bias;
-	ret_evaluation.area_point_ += defference.area_point_ * area_bias;
-
-	// 最初のターンのを重視
-	if (now_turn_data.now_turn_ == start_turn_data.now_turn_) {
-		ret_evaluation.tile_point_ += defference.tile_point_ * first_bias;
-		ret_evaluation.area_point_ += defference.area_point_ * first_bias;
-	} else {
-		ret_evaluation.tile_point_ += defference.tile_point_ * after_second_bias;
-		ret_evaluation.area_point_ += defference.area_point_ * after_second_bias;
-	}
-
-	// アクションが移動で、既に自分のタイルだったら低評価(それ以外に高評価)
-	int32_t meaning_bias_all = 0;
-	for (auto &move : check_moves) {
-		if (move.agent_action_ == action::kWalk) {
-			const base::Position &now_position =
-				now_turn_data.agents_position_[move.team_id_][move.agent_id_];
-			const base::Position &next_position =
-				next_turn_data.agents_position_[move.team_id_][move.agent_id_];
-			if (now_position == next_position) continue;
-
-			const int32_t &now_tile_data =
-				now_turn_data.GetTileData(next_position);
-			if (now_tile_data == base::kAlly) continue;
-		}
-		meaning_bias_all += meaning_bias_all;
-	}
-	ret_evaluation.tile_point_ += defference.tile_point_ * meaning_bias_all;
-	ret_evaluation.area_point_ += defference.area_point_ * meaning_bias_all;
-
-	return ret_evaluation.all_point_ = ret_evaluation.tile_point_ +
-									   ret_evaluation.area_point_;
+	return ret_evaluation;
 }
 
 // 名取高専の部誌に書いてある感じでビームサーチを書きます
