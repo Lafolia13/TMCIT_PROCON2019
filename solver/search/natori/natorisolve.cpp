@@ -15,8 +15,7 @@ void EraseRivalAgent(const base::GameData &game_data,
 	for (int agent_id = 0; agent_id < game_data.agent_num_; agent_id++) {
 		const base::Position &agent_position =
 			turn_data.GetNowPosition(base::kRival, agent_id);
-		auto &stay_agent = turn_data.stay_agent_;
-		stay_agent[agent_position.h_][agent_position.w_] = false;
+		turn_data.stay_agent_[agent_position.h_][agent_position.w_] = false;
 	}
 
 	return;
