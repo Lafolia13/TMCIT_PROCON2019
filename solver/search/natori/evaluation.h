@@ -6,7 +6,7 @@
 
 
 #ifndef EVALUATION_H
-#include EVALUATION_H
+#define EVALUATION_H
 
 #include "../../base/basesystem.h"
 #include "../../calculation/calculation.h"

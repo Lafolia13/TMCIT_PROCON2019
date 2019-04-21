@@ -100,7 +100,7 @@ std::vector<action::Move> BeamSearch(const base::GameData &game_data,
 	std::vector<action::Move> check_moves(game_data.agent_num_);				// agents_movesからできる組み合わせ。NextTurnData()をします
 	std::vector<int32_t> moves_id(game_data.agent_num_);						// 組み合わせのインデックス
 	Node next_node;																// input用
-	p_queue.push(Node(turn_data, check_moves, 0));
+	p_queue.push(Node(turn_data, 0));
 	for (int32_t i = 0; i < std::min(beam_depth, game_data.max_turn_ -
 									 turn_data.now_turn_); ++i) {
 		while (p_queue.size() > 0) {
@@ -133,7 +133,7 @@ std::vector<action::Move> BeamSearch(const base::GameData &game_data,
 					NodesEvaluation(game_data, now_node.turn_data_,
 									next_turn_data, turn_data, check_moves);
 
-				next_node = Node(next_turn_data, check_moves, evaluation);
+				next_node = Node(next_turn_data, evaluation);
 				// root_move_に一番初め(i = 0)のときのcheck_movesを入れます
 				if (i == 0) {
 					next_node.root_move_ = check_moves;
