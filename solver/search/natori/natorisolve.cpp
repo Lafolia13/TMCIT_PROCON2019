@@ -10,6 +10,18 @@ namespace natori {
 constexpr int32_t beam_width = 3000;
 constexpr int32_t beam_depth = 7;
 
+void EraseRivalAgent(const base::GameData &game_data,
+					 base::TurnData &turn_data) {
+	for (int agent_id = 0; agent_id < game_data.agent_num_; agent_id++) {
+		const base::Position &agent_position =
+			turn_data.GetNowPosition(base::kRival, agent_id);
+		auto &stay_agent = turn_data.stay_agent_;
+		stay_agent[agent_position.h_][agent_position.w_] = false;
+	}
+
+	return;
+}
+
 // agents_movesはGetAgentActionsで作成した近傍に対する行動群のリストです
 // agent_idはいま行動を変えようとしているエージェントのidを指し、
 // moves_idは各エージェントがどのMoveとなっているかを表します
@@ -94,7 +106,7 @@ bool NotYetCheckNode(
 	std::vector<base::Position> &targeted_positions =
 		check_node.targeted_positions_;
 
-	for (int agent_id = 0; agent_id < check_moves.size(); ++agent_id) {	// check_moves.size() = agents_num_
+	for (int32_t agent_id = 0; agent_id < check_moves.size(); ++agent_id) {	// check_moves.size() = agents_num_
 		const base::Position &targeted_position =
 			before_turn_data.agents_position_[base::kAlly][agent_id] +
 			action::kNextToNine[check_moves[agent_id].target_id_];
@@ -130,6 +142,9 @@ int32_t NodesEvaluation(const base::GameData &game_data,
 // 名取高専の部誌に書いてある感じでビームサーチを書きます
 std::vector<action::Move> BeamSearch(const base::GameData &game_data,
 									 const base::TurnData &turn_data) {
+	base::TurnData start_turn_data = turn_data;
+	EraseRivalAgent(game_data, start_turn_data);
+
 	std::priority_queue<Node, std::vector<Node>,
 						std::greater<Node> > p_queue, next_queue;
 	std::set<std::vector<std::vector<base::Position> >> checked_states;
@@ -139,7 +154,7 @@ std::vector<action::Move> BeamSearch(const base::GameData &game_data,
 	std::vector<action::Move> check_moves(game_data.agent_num_);				// agents_movesからできる組み合わせ。NextTurnData()をします
 	std::vector<int32_t> moves_id(game_data.agent_num_);						// 組み合わせのインデックス
 	Node next_node;																// input用
-	p_queue.push(Node(turn_data, next_node));									// next_nodeはempty
+	p_queue.push(Node(start_turn_data, next_node));									// next_nodeはempty
 	for (int32_t i = 0; i < std::min(beam_depth, game_data.max_turn_ -
 									 turn_data.now_turn_); ++i) {
 		while (p_queue.size() > 0) {
@@ -177,7 +192,7 @@ std::vector<action::Move> BeamSearch(const base::GameData &game_data,
 				next_node.evaluation_ =
 					now_node.evaluation_ +
 					NodesEvaluation(game_data, now_node.turn_data_,
-									next_turn_data, turn_data, check_moves);
+									next_turn_data, start_turn_data, check_moves);
 
 				// root_move_に一番初め(i = 0)のときのcheck_movesを入れます
 				if (i == 0)
