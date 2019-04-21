@@ -14,13 +14,15 @@ class Node {
 public :
 	std::vector<action::Move> root_move_ = {};
 	base::TurnData turn_data_ = {};
+	std::vector<base::Position> targeted_positions_ = {};	// 指定した座標をソート済で入れる
 	int32_t evaluation_ = 0;
 
 	Node() {};
 	Node(const base::TurnData &turn_data,
-		 const int32_t evaluation) :
+		 const Node &node) :
 		turn_data_(turn_data),
-		evaluation_(evaluation)
+		root_move_(node.root_move_),
+		targeted_positions_(node.targeted_positions_)
 	{};
 
 	bool operator>(const Node &another) const {

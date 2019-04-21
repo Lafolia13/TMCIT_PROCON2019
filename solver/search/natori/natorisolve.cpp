@@ -2,6 +2,7 @@
 #include "../../search/natori/evaluation.h"
 
 #include <queue>
+#include <set>
 
 namespace search {
 namespace natori {
@@ -78,6 +79,41 @@ std::vector<action::Move> GetAgentActions(const base::GameData &game_data,
 	return ret;
 }
 
+// Nodeの同一判定
+// 指定した座標群、プレイヤーの位置がchecked_state内に存在していたらfalse
+// なかったら追加してtrue
+// また、このときにプレイヤーの位置、指定座標群をソートします
+// 初期状態以外では、エージェントはswapしても問題はないです
+// 逆をいえば、初期状態のときにするとroot_moves_が壊れるのでソートしてはいけない
+bool NotYetCheckNode(
+		const std::vector<action::Move> &check_moves,
+		const base::TurnData &before_turn_data, Node &check_node,
+		std::set<std::vector<std::vector<base::Position> >> &checked_states) {
+	std::vector<std::vector<base::Position> > check_state;
+
+	std::vector<base::Position> &targeted_positions =
+		check_node.targeted_positions_;
+
+	for (int agent_id = 0; agent_id < check_moves.size(); ++agent_id) {	// check_moves.size() = agents_num_
+		const base::Position &targeted_position =
+			before_turn_data.agents_position_[base::kAlly][agent_id] +
+			action::kNextToNine[check_moves[agent_id].target_id_];
+		targeted_positions.push_back(targeted_position);
+	}
+	sort(targeted_positions.begin(), targeted_positions.end());
+	check_state.push_back(targeted_positions);
+
+	std::vector<base::Position> &agents_position =
+		check_node.turn_data_.agents_position_[base::kAlly];
+	sort(agents_position.begin(), agents_position.end());
+	check_state.push_back(agents_position);
+
+	if (checked_states.count(check_state) == 1) return false;
+
+	checked_states.insert(check_state);
+	return true;
+}
+
 // 評価関数です。
 int32_t NodesEvaluation(const base::GameData &game_data,
 						const base::TurnData &now_turn_data,
@@ -94,13 +130,14 @@ std::vector<action::Move> BeamSearch(const base::GameData &game_data,
 									 const base::TurnData &turn_data) {
 	std::priority_queue<Node, std::vector<Node>,
 						std::greater<Node> > p_queue, next_queue;
+	std::set<std::vector<std::vector<base::Position> >> checked_states;
 
 	// ここらへん新しくオブジェクトを作りたくないので一番上にまとめてます
 	std::vector<std::vector<action::Move> > agents_moves(game_data.agent_num_); // あるTurnDataでの味方全員の行動群のリスト
 	std::vector<action::Move> check_moves(game_data.agent_num_);				// agents_movesからできる組み合わせ。NextTurnData()をします
 	std::vector<int32_t> moves_id(game_data.agent_num_);						// 組み合わせのインデックス
 	Node next_node;																// input用
-	p_queue.push(Node(turn_data, 0));
+	p_queue.push(Node(turn_data, next_node));									// next_nodeはempty
 	for (int32_t i = 0; i < std::min(beam_depth, game_data.max_turn_ -
 									 turn_data.now_turn_); ++i) {
 		while (p_queue.size() > 0) {
@@ -127,22 +164,24 @@ std::vector<action::Move> BeamSearch(const base::GameData &game_data,
 				base::TurnData next_turn_data =
 					NextTurnData(game_data, now_node.turn_data_, check_moves);
 				++next_turn_data.now_turn_;
+				next_node = Node(next_turn_data, now_node);
 
-				const int32_t evaluation =
+				if (NotYetCheckNode(check_moves, now_node.turn_data_,
+									next_node, checked_states) == false) {
+					continue;
+				}
+
+				next_node.evaluation_ =
 					now_node.evaluation_ +
 					NodesEvaluation(game_data, now_node.turn_data_,
 									next_turn_data, turn_data, check_moves);
 
-				next_node = Node(next_turn_data, evaluation);
 				// root_move_に一番初め(i = 0)のときのcheck_movesを入れます
-				if (i == 0) {
+				if (i == 0)
 					next_node.root_move_ = check_moves;
-				} else {
-					next_node.root_move_ = now_node.root_move_;
-				}
 
 				if (next_queue.size() == 0 ||
-					next_queue.top().evaluation_ < evaluation)
+					next_queue.top().evaluation_ < next_node.evaluation_)
 					next_queue.push(next_node);
 
 				if (next_queue.size() > beam_width)
@@ -152,6 +191,7 @@ std::vector<action::Move> BeamSearch(const base::GameData &game_data,
 
 		// p_queueは空なのでswapすると移す動作を書かなくて良いし早いです
 		swap(p_queue, next_queue);
+		checked_states.clear();
 	}
 
 	std::vector<action::Move> ret;
