@@ -7,7 +7,7 @@
 namespace search {
 namespace natori {
 
-constexpr int32_t beam_width = 1000;
+constexpr int32_t beam_width = 3000;
 constexpr int32_t beam_depth = 7;
 
 // agents_movesはGetAgentActionsで作成した近傍に対する行動群のリストです
@@ -122,6 +122,8 @@ int32_t NodesEvaluation(const base::GameData &game_data,
 						const std::vector<action::Move> check_moves) {
 	int32_t ret_evaluation = 0;
 
+	ret_evaluation = GetPointDefference(game_data, next_turn_data);
+
 	return ret_evaluation;
 }
 
@@ -170,6 +172,7 @@ std::vector<action::Move> BeamSearch(const base::GameData &game_data,
 									next_node, checked_states) == false) {
 					continue;
 				}
+
 
 				next_node.evaluation_ =
 					now_node.evaluation_ +

@@ -15,6 +15,8 @@
 namespace search {
 namespace natori {
 
+int32_t GetPointDefference(const base::GameData&, const base::TurnData&);
+
 }
 }
 
