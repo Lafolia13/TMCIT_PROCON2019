@@ -48,6 +48,11 @@ int32_t NodesEvaluation(const base::GameData&,
 						const base::TurnData &next_turn_data,
 						const base::TurnData &start_turn_data);
 
+// 同一盤面の除去
+bool NotYetCheckNode(const std::vector<action::Move>&,
+					 const base::TurnData&, Node&,
+					 std::set<std::vector<std::vector<base::Position> >>&);
+
 // びーむさーちをします
 std::vector<action::Move> BeamSearch(const base::GameData&,
 									 const base::TurnData&);
