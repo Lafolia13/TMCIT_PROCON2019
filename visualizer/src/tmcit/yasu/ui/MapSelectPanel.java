@@ -122,7 +122,7 @@ public class MapSelectPanel extends JPanel implements ActionListener, ListSelect
 			if(selected == JFileChooser.APPROVE_OPTION) {
 				File[] selectedFiles = filechooser.getSelectedFiles();
 				for(File nowFile : selectedFiles) {
-					fileManager.mapCopyToMapDirectory(nowFile);
+					fileManager.mapCopyToMapDirectory(nowFile, this);
 					mapListModel.addElement(nowFile.getAbsolutePath());
 				}
 			}
