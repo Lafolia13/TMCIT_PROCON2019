@@ -48,7 +48,7 @@ public class RunGameThread extends Thread{
 
 	@Override
 	public void run() {
-		GameMainPanel gameMainPanel = new GameMainPanel(getInitPaintGameData(), myPlayer, rivalPlayer);
+		GameMainPanel gameMainPanel = new GameMainPanel(mainFrame, getInitPaintGameData(), myPlayer, rivalPlayer);
 
 		mainFrame.addTabbedPanel("ÉQÅ[ÉÄ", gameMainPanel);
 
