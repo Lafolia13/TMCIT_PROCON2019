@@ -137,6 +137,22 @@ public class FileManager {
 		String exePath = getSelectedSolverExePath(solverName);
 		saveSolverParameter(solverName, presetName, parameters, exePath);
 	}
+	
+	// mapを選択したときmapDirectoryになかったらコピー
+	public void mapCopyToMapDirectory(File mapFile) {
+		File parent = mapFile.getParentFile();
+		File newFile = new File(mapDirectory.getAbsoluteFile() + "//" + mapFile.getName());
+		
+		System.out.println(newFile.getAbsolutePath());
+		
+		if(!parent.equals(mapDirectory)) {
+			try {
+				Files.copy(mapFile.toPath(), newFile.toPath());
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
 
 
 	// LookAndFeel
