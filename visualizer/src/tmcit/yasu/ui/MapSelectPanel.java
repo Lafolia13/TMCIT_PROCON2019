@@ -108,7 +108,7 @@ public class MapSelectPanel extends JPanel implements ActionListener, ListSelect
 
 		return gameDataList;
 	}
-
+	
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		String cmd = e.getActionCommand();
@@ -122,6 +122,7 @@ public class MapSelectPanel extends JPanel implements ActionListener, ListSelect
 			if(selected == JFileChooser.APPROVE_OPTION) {
 				File[] selectedFiles = filechooser.getSelectedFiles();
 				for(File nowFile : selectedFiles) {
+					fileManager.mapCopyToMapDirectory(nowFile, this);
 					mapListModel.addElement(nowFile.getAbsolutePath());
 				}
 			}

@@ -1,5 +1,6 @@
 package tmcit.yasu.util;
 
+import java.awt.Component;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -12,6 +13,7 @@ import java.nio.file.Files;
 import java.util.ArrayList;
 
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import javax.swing.LookAndFeel;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -136,6 +138,31 @@ public class FileManager {
 
 		String exePath = getSelectedSolverExePath(solverName);
 		saveSolverParameter(solverName, presetName, parameters, exePath);
+	}
+	
+	// mapを選択したときmapDirectoryになかったらコピー
+	public void mapCopyToMapDirectory(File mapFile, Component component) {
+		File parent = mapFile.getParentFile();
+		File newFile = new File(mapDirectory.getAbsoluteFile() + "//" + mapFile.getName());
+		
+		System.out.println(newFile.getAbsolutePath());
+		
+		if(!parent.equals(mapDirectory)) {
+			
+			if(newFile.exists()) {
+				int optione = JOptionPane.showConfirmDialog(component, "同じファイル名が存在します。上書きますか？", "警告", JOptionPane.YES_NO_OPTION);
+				if(optione == JOptionPane.NO_OPTION) {
+					return;
+				}
+				newFile.delete();
+			}
+			
+			try {
+				Files.copy(mapFile.toPath(), newFile.toPath());
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 
