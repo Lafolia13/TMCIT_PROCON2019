@@ -1,5 +1,6 @@
 package tmcit.yasu.ui.game;
 
+import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -126,6 +127,43 @@ public class GamePaintPanel extends JPanel{
 			paintPlayer(g2, rivalPlayers.get(i), Constant.RIVAL_COLOR, str);
 		}
 	}
+	
+	// startからendへの矢印の描画(Pointはマスの座標)
+	private void paintArrow(Graphics2D g2, Point start, Point end) {
+		int drawInterval = calcDrawInterval();
+		int plusInterval = (int)(0.5 * drawInterval);
+		int sx = start.x * drawInterval + plusInterval;
+		int sy = start.y * drawInterval + plusInterval;
+		int ex = end.x * drawInterval + plusInterval;
+		int ey = end.y * drawInterval + plusInterval;
+		
+		double h = drawInterval / 2; // 先端の長さ
+		double w = drawInterval / 2; // 先端の幅
+
+		// 使用する変数の準備
+		double vx = ex - sx;
+		double vy = ey - sy;
+		double v = Math.sqrt(vx*vx + vy*vy);
+		double ux = vx / v;
+		double uy = vy / v;
+		
+		// 矢尻の位置を求める
+		double lx = ex - uy*w - ux*h;
+		double ly = ey + ux*w - uy*h;
+		double rx = ex + uy*w - ux*h;
+		double ry = ey - ux*w - uy*h;
+		
+		g2.setStroke(new BasicStroke(drawInterval / 2));
+		double newsx = sx + vx*drawInterval/v/2.0;
+		double newsy = sy + vy*drawInterval/v/2.0;
+		double newex = (lx + rx) / 2.0;
+		double mewey = (ly + ry) / 2.0;
+		g2.drawLine((int)newsx, (int)newsy, (int)newex, (int)mewey);
+		
+		int[] triangleX = {ex, (int)lx, (int)rx};
+		int[] triangleY = {ey, (int)ly, (int)ry};
+		g2.fillPolygon(triangleX, triangleY, 3);
+	}
 
 	@Override
 	protected void paintComponent(Graphics g) {
@@ -137,5 +175,7 @@ public class GamePaintPanel extends JPanel{
 		paintGrid(g2);
 		paintScore(g2);
 		paintPlayers(g2);
+		
+//		paintArrow(g2, new Point(0, 0), new Point(1, 1));
 	}
 }
