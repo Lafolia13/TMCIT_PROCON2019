@@ -3,6 +3,7 @@ package tmcit.yasu.util;
 import java.awt.Point;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 
@@ -13,18 +14,21 @@ public class LogManager {
 	private PrintWriter pw;
 
 	public LogManager(FileManager fileManager) {
-		logFile = fileManager.getLogFile();
-		initPrintWriter();
-	}
-
-	private void initPrintWriter() {
 		try {
-			pw = new PrintWriter(logFile);
-		} catch (FileNotFoundException e) {
+			init();
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		logFile = fileManager.getLogFile();
 	}
-
+	
+	private void init() throws IOException {
+		if(!logFile.exists()) {
+			logFile.createNewFile();
+		}
+		
+		pw = new PrintWriter(logFile);
+	}
 	private void logMapOrTerritory(int[][] map) {
 		int w = map.length;
 		int h = map[0].length;

@@ -36,13 +36,13 @@ public class GameMaster implements Runnable{
 		rivalPlayer = rivalPlayer0;
 		gamePanel = gamePanel0;
 		gameManageData = gameManageData0;
-		logManager = new LogManager(fileManager);
 
-		init();
+		init(fileManager);
 	}
 
-	private void init() {
+	private void init(FileManager fileManager) {
 		nowTurnData = new TurnData(gameData);
+		logManager = new LogManager(fileManager);
 	}
 
 	private void firstInput() {
