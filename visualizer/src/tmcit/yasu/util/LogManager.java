@@ -12,8 +12,8 @@ public class LogManager {
 	private File logFile;
 	private PrintWriter pw;
 
-	public LogManager(File logFile0) {
-		logFile = logFile0;
+	public LogManager(FileManager fileManager) {
+		logFile = fileManager.getLogFile();
 		initPrintWriter();
 	}
 

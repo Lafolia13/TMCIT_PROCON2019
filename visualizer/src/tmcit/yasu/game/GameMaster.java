@@ -11,6 +11,8 @@ import tmcit.yasu.ui.game.GameFrame;
 import tmcit.yasu.ui.game.GameMainPanel;
 import tmcit.yasu.ui.game.GamePaintPanel;
 import tmcit.yasu.util.Constant;
+import tmcit.yasu.util.FileManager;
+import tmcit.yasu.util.LogManager;
 
 public class GameMaster implements Runnable{
 	private GameManageData gameManageData;
@@ -23,13 +25,18 @@ public class GameMaster implements Runnable{
 
 	// now game data
 	private TurnData nowTurnData;
+	
+	// util
+	private LogManager logManager;
 
-	public GameMaster(GameData gameData0, Player myPlayer0, Player rivalPlayer0, GameMainPanel gamePanel0, GameManageData gameManageData0) {
+	public GameMaster(GameData gameData0, Player myPlayer0, Player rivalPlayer0
+			, GameMainPanel gamePanel0, GameManageData gameManageData0, FileManager fileManager) {
 		gameData = gameData0;
 		myPlayer = myPlayer0;
 		rivalPlayer = rivalPlayer0;
 		gamePanel = gamePanel0;
 		gameManageData = gameManageData0;
+		logManager = new LogManager(fileManager);
 
 		init();
 	}

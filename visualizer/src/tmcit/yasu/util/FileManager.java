@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.nio.file.CopyOption;
 import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import javax.swing.JFileChooser;
 import javax.swing.LookAndFeel;
@@ -160,6 +161,19 @@ public class FileManager {
 			e.printStackTrace();
 		}
 	}
+	
+	// util
+	private String getDateString() {
+		Calendar calendar = Calendar.getInstance();
+		int year = calendar.get(Calendar.YEAR);
+		int month = calendar.get(Calendar.MONTH) + 1;
+		int day = calendar.get(Calendar.DAY_OF_MONTH);
+		int hour = calendar.get(Calendar.HOUR_OF_DAY);
+		int minute = calendar.get(Calendar.MINUTE);
+		int second = calendar.get(Calendar.SECOND);
+		
+		return String.format("%tY_%tm_%td_%tH_%tM_%tS.txt", year, month, day, hour, minute, second);
+	}
 
 
 	// getter
@@ -169,6 +183,13 @@ public class FileManager {
 
 	public File getProcon30Directory() {
 		return procon30Directory;
+	}
+	
+	public File getLogFile() {
+		File logFile = logDirectory.getAbsoluteFile();
+		// YYYY_MM_DD_hh_mm_ss.txt
+		String fileName = getDateString();
+		return new File(logFile.getAbsoluteFile() + "\\" + fileName);
 	}
 
 	public String[] getSolverList() {

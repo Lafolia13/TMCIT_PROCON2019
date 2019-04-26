@@ -8,21 +8,24 @@ import tmcit.yasu.data.GameManageData;
 import tmcit.yasu.player.Player;
 import tmcit.yasu.ui.AgentSelectPanel;
 import tmcit.yasu.ui.MainFrame;
+import tmcit.yasu.util.FileManager;
 
 public class GameStarter implements Runnable{
 	private MainFrame mainFrame;
+	private FileManager fileManager;
 	private AgentSelectPanel myAgentSelectPanel, rivalAgentSelectPanel;
 	private ArrayList<GameData> gameDataList;
 	private GameManageData gameManageData;
 
 
 	public GameStarter(MainFrame mainFrame0, AgentSelectPanel myAgentSelectPanel0, AgentSelectPanel rivalAgentSelectPanel0
-			, ArrayList<GameData> gameDataList0, GameManageData gameManageData0) {
+			, ArrayList<GameData> gameDataList0, GameManageData gameManageData0, FileManager fileManager0) {
 		mainFrame = mainFrame0;
 		myAgentSelectPanel = myAgentSelectPanel0;
 		rivalAgentSelectPanel = rivalAgentSelectPanel0;
 		gameDataList = gameDataList0;
 		gameManageData = gameManageData0;
+		fileManager = fileManager0;
 	}
 
 	@Override
@@ -42,7 +45,7 @@ public class GameStarter implements Runnable{
 			Player myPlayer = myAgentSelectPanel.getPlayer();
 			Player rivalPlayer = rivalAgentSelectPanel.getPlayer();
 
-			RunGameThread runGameThread = new RunGameThread(mainFrame, myPlayer, rivalPlayer, nowGameData, gameManageData);
+			RunGameThread runGameThread = new RunGameThread(mainFrame, myPlayer, rivalPlayer, nowGameData, gameManageData, fileManager);
 			ExecutorService exec = Executors.newSingleThreadExecutor();
 			exec.submit(runGameThread);
 		}
