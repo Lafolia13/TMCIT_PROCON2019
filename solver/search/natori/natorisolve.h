@@ -8,24 +8,26 @@
 namespace search {
 namespace natori {
 
-// beamsearchに回すよ
+// beamsearchに回すよう
 // root_move_は一回目の行動を入れます
 class Node {
 public :
 	std::vector<action::Move> root_move_ = {};
 	base::TurnData turn_data_ = {};
-	std::vector<action::Move> agnts_move_;
+	std::vector<base::Position> targeted_positions_ = {};	// 指定した座標をソート済で入れる
 	int32_t evaluation_ = 0;
 
 	Node() {};
 	Node(const base::TurnData &turn_data,
-		 const std::vector<action::Move> &agents_move,
-		 const int32_t evaluation) :
+		 const Node &node) :
 		turn_data_(turn_data),
-		agnts_move_(agents_move),
-		evaluation_(evaluation)
+		root_move_(node.root_move_),
+		targeted_positions_(node.targeted_positions_)
 	{};
 
+	bool operator<(const Node &another) const {
+		return this->evaluation_ < another.evaluation_;
+	};
 	bool operator>(const Node &another) const {
 		return this->evaluation_ > another.evaluation_;
 	};
@@ -48,6 +50,11 @@ int32_t NodesEvaluation(const base::GameData&,
 						const base::TurnData &now_turn_data,
 						const base::TurnData &next_turn_data,
 						const base::TurnData &start_turn_data);
+
+// 同一盤面の除去
+bool NotYetCheckNode(const std::vector<action::Move>&,
+					 const base::TurnData&, Node&,
+					 std::set<std::vector<std::vector<base::Position> >>&);
 
 // びーむさーちをします
 std::vector<action::Move> BeamSearch(const base::GameData&,

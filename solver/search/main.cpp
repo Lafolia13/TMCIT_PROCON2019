@@ -2,6 +2,7 @@
 #include "../calculation/calculation.cpp"
 #include "../action/changeaction.cpp"
 #include "../search/natori/natorisolve.cpp"
+#include "../search/natori/evaluation.cpp"
 
 #include <cstdint>
 #include <iostream>
@@ -36,3 +37,28 @@ int main() {
 
 	return 0;
 }
+
+/*
+debug
+
+10
+5 5
+2
+2 3 5 6 7
+1 2 3 4 5
+-2 -4 -5 -4 -2
+1 2 3 4 5
+2 3 5 6 7
+
+0
+2 2 2 2 2
+2 0 2 0 2
+2 2 2 2 2
+2 1 2 1 2
+2 2 2 2 2
+1 1
+3 1
+1 3
+3 3
+
+*/
