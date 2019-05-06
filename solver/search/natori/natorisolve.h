@@ -25,6 +25,9 @@ public :
 		targeted_positions_(node.targeted_positions_)
 	{};
 
+	bool operator<(const Node &another) const {
+		return this->evaluation_ < another.evaluation_;
+	};
 	bool operator>(const Node &another) const {
 		return this->evaluation_ > another.evaluation_;
 	};
