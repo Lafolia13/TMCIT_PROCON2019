@@ -3,12 +3,26 @@
 
 #include <queue>
 #include <set>
+#include <algorithm>
 
 namespace search {
 namespace natori {
 
-constexpr int32_t beam_width = 1000;
-constexpr int32_t beam_depth = 7;
+constexpr int32_t beam_width = 3000;
+constexpr int32_t beam_depth = 5;
+
+
+// タイルはそのままで、敵の存在だけ消します
+void EraseRivalAgent(const base::GameData &game_data,
+					 base::TurnData &turn_data) {
+	for (int agent_id = 0; agent_id < game_data.agent_num_; agent_id++) {
+		const base::Position &agent_position =
+			turn_data.GetNowPosition(base::kRival, agent_id);
+		turn_data.stay_agent_[agent_position.h_][agent_position.w_] = false;
+	}
+
+	return;
+}
 
 // agents_movesはGetAgentActionsで作成した近傍に対する行動群のリストです
 // agent_idはいま行動を変えようとしているエージェントのidを指し、
@@ -94,13 +108,13 @@ bool NotYetCheckNode(
 	std::vector<base::Position> &targeted_positions =
 		check_node.targeted_positions_;
 
-	for (int agent_id = 0; agent_id < check_moves.size(); ++agent_id) {	// check_moves.size() = agents_num_
+	for (int32_t agent_id = 0; agent_id < check_moves.size(); ++agent_id) {	// check_moves.size() = agents_num_
 		const base::Position &targeted_position =
 			before_turn_data.agents_position_[base::kAlly][agent_id] +
 			action::kNextToNine[check_moves[agent_id].target_id_];
 		targeted_positions.push_back(targeted_position);
 	}
-	sort(targeted_positions.begin(), targeted_positions.end());
+	std::sort(targeted_positions.begin(), targeted_positions.end());
 	check_state.push_back(targeted_positions);
 
 	std::vector<base::Position> &agents_position =
@@ -114,13 +128,27 @@ bool NotYetCheckNode(
 	return true;
 }
 
-// 評価関数です。
+// 評価関数です
+// evaluation.cppにまとめるべきな気もしますが、なんとなくこっちに書いてます
+// 引数は実はこんなにいりません。消してないだけです
 int32_t NodesEvaluation(const base::GameData &game_data,
 						const base::TurnData &now_turn_data,
 						const base::TurnData &next_turn_data,
 						const base::TurnData &start_turn_data,
-						const std::vector<action::Move> check_moves) {
+						const std::vector<action::Move> &check_moves) {
+
 	int32_t ret_evaluation = 0;
+
+	auto before_point = calculation::CalculationAllPoint(game_data,
+														 now_turn_data);
+	auto now_point = calculation::CalculationAllPoint(game_data,
+													  next_turn_data);
+	// ret_evaluation += GetPointDefference(before_point.first, now_point.first);
+	ret_evaluation += GetTileDefference(before_point.first, now_point.first);
+	ret_evaluation += GetAreaDefference(before_point.first, now_point.first);
+	ret_evaluation += GetEraseRivalTile(before_point.second, now_point.second);
+	if (now_turn_data.now_turn_ == start_turn_data.now_turn_)
+		ret_evaluation += GetFirstEvaluation(ret_evaluation);
 
 	return ret_evaluation;
 }
@@ -128,8 +156,13 @@ int32_t NodesEvaluation(const base::GameData &game_data,
 // 名取高専の部誌に書いてある感じでビームサーチを書きます
 std::vector<action::Move> BeamSearch(const base::GameData &game_data,
 									 const base::TurnData &turn_data) {
-	std::priority_queue<Node, std::vector<Node>,
-						std::greater<Node> > p_queue, next_queue;
+	if (turn_data.now_turn_ == 0)
+		MakeEvaluationCorrection(game_data);
+
+	base::TurnData start_turn_data = turn_data;
+	EraseRivalAgent(game_data, start_turn_data);
+
+	std::priority_queue<Node, std::vector<Node>, std::greater<Node> > p_queue, next_queue;
 	std::set<std::vector<std::vector<base::Position> >> checked_states;
 
 	// ここらへん新しくオブジェクトを作りたくないので一番上にまとめてます
@@ -137,7 +170,9 @@ std::vector<action::Move> BeamSearch(const base::GameData &game_data,
 	std::vector<action::Move> check_moves(game_data.agent_num_);				// agents_movesからできる組み合わせ。NextTurnData()をします
 	std::vector<int32_t> moves_id(game_data.agent_num_);						// 組み合わせのインデックス
 	Node next_node;																// input用
-	p_queue.push(Node(turn_data, next_node));									// next_nodeはempty
+	p_queue.push(Node(start_turn_data, next_node));									// next_nodeはempty
+
+	int32_t state_count = 0;
 	for (int32_t i = 0; i < std::min(beam_depth, game_data.max_turn_ -
 									 turn_data.now_turn_); ++i) {
 		while (p_queue.size() > 0) {
@@ -171,21 +206,25 @@ std::vector<action::Move> BeamSearch(const base::GameData &game_data,
 					continue;
 				}
 
+
 				next_node.evaluation_ =
 					now_node.evaluation_ +
 					NodesEvaluation(game_data, now_node.turn_data_,
-									next_turn_data, turn_data, check_moves);
+									next_turn_data, start_turn_data, check_moves);
 
 				// root_move_に一番初め(i = 0)のときのcheck_movesを入れます
 				if (i == 0)
 					next_node.root_move_ = check_moves;
 
-				if (next_queue.size() == 0 ||
+				if (next_queue.size() <= beam_width ||
 					next_queue.top().evaluation_ < next_node.evaluation_)
 					next_queue.push(next_node);
 
 				if (next_queue.size() > beam_width)
 					next_queue.pop();
+
+				// std::cerr << next_queue.top().evaluation_ << std::endl;
+				state_count++;
 			}
 		}
 
@@ -193,12 +232,23 @@ std::vector<action::Move> BeamSearch(const base::GameData &game_data,
 		swap(p_queue, next_queue);
 		checked_states.clear();
 	}
+	std::cerr << "count is " << state_count << std::endl;
 
 	std::vector<action::Move> ret;
 	// キューの中は昇順なので一番下が最も評価の高いノードです
 	while (p_queue.size() > 0) {
 		ret = p_queue.top().root_move_;
 		p_queue.pop();
+
+		if (p_queue.size() == 1) {
+			std::cerr << "last state" << std::endl;
+			for (auto x : p_queue.top().turn_data_.tile_data_) {
+				for (auto y : x)
+					std::cerr << y << " ";
+				std::cerr << std::endl;
+			}
+			std::cerr << std::endl;
+		}
 	}
 	return ret;
 }
