@@ -11,6 +11,8 @@ import tmcit.yasu.ui.game.GameFrame;
 import tmcit.yasu.ui.game.GameMainPanel;
 import tmcit.yasu.ui.game.GamePaintPanel;
 import tmcit.yasu.util.Constant;
+import tmcit.yasu.util.FileManager;
+import tmcit.yasu.util.LogManager;
 
 public class GameMaster implements Runnable{
 	private GameManageData gameManageData;
@@ -24,18 +26,24 @@ public class GameMaster implements Runnable{
 	// now game data
 	private TurnData nowTurnData;
 
-	public GameMaster(GameData gameData0, Player myPlayer0, Player rivalPlayer0, GameMainPanel gamePanel0, GameManageData gameManageData0) {
+	// util
+	private LogManager logManager;
+
+	public GameMaster(GameData gameData0, Player myPlayer0, Player rivalPlayer0
+			, GameMainPanel gamePanel0, GameManageData gameManageData0, FileManager fileManager) {
 		gameData = gameData0;
 		myPlayer = myPlayer0;
 		rivalPlayer = rivalPlayer0;
 		gamePanel = gamePanel0;
 		gameManageData = gameManageData0;
 
-		init();
+		init(fileManager);
 	}
 
-	private void init() {
+	private void init(FileManager fileManager) {
 		nowTurnData = new TurnData(gameData);
+		logManager = new LogManager(fileManager);
+		logManager.logGameData(gameData);
 	}
 
 	private void firstInput() {
@@ -131,17 +139,20 @@ public class GameMaster implements Runnable{
 
 		while(true) {
 			turnInput();
+			// ÇªÇÍÇºÇÍÇÃçsìÆÇéÊìæ
 			System.out.println("[SYSTEM]:End input data.");
 			ArrayList<String> myPlayerActions = getPlayerActions(myPlayer);
 			System.out.println("[SYSTEM]:End my player action.");
 			ArrayList<String> rivalPlayerActions = getPlayerActions(rivalPlayer);
 			System.out.println("[SYSTEM]:End rival player action.");
 
+			// çsìÆÇîΩâf
 			TurnData nextTurnData = nowTurnData.nextTurn(myPlayerActions, rivalPlayerActions);
 			nowTurnData = nextTurnData;
 			System.out.println("[SYSTEM]:End calc turn.");
 
-			//
+			// ÉçÉOÇ…ãLò^ÇµÇƒï`âÊÇ…îΩâf
+			logManager.logTurnAction(myPlayerActions, rivalPlayerActions);
 			paintTurnData();
 			try {
 				Thread.sleep(100);

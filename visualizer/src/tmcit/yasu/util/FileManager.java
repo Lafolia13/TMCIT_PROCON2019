@@ -10,7 +10,11 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.CopyOption;
 import java.nio.file.Files;
+import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
@@ -22,7 +26,7 @@ import tmcit.yasu.listener.SolverComboBoxListener;
 
 public class FileManager {
 	private LookAndFeel defaultLookAndFeel;
-	private File procon30Directory, settingDirectory, mapDirectory, solverDirectory;
+	private File procon30Directory, settingDirectory, mapDirectory, solverDirectory, logDirectory;
 
 	public FileManager() {
 		init();
@@ -36,6 +40,7 @@ public class FileManager {
 		settingDirectory = new File(procon30Path.toString() + "\\setting");
 		mapDirectory = new File(procon30Path.toString() + "\\map");
 		solverDirectory = new File(procon30Path.toString() + "\\solver");
+		logDirectory = new File(procon30Path.toString() + "\\log");
 	}
 
 	private void createFolder() {
@@ -50,6 +55,9 @@ public class FileManager {
 		}
 		if(!solverDirectory.isDirectory()) {
 			solverDirectory.mkdir();
+		}
+		if(!logDirectory.isDirectory()) {
+			logDirectory.mkdir();
 		}
 	}
 
@@ -184,6 +192,14 @@ public class FileManager {
 		}
 	}
 
+	// util
+	private String getDateString() {
+		DateTimeFormatter f = DateTimeFormatter.ofPattern("yyyy_MM_dd_HH_mm_ss");
+		ZonedDateTime zonedDateTime = ZonedDateTime.now();
+		String ret = zonedDateTime.format(f);
+		return ret + ".txt";
+	}
+
 
 	// getter
 	public File getMapDirectory() {
@@ -192,6 +208,14 @@ public class FileManager {
 
 	public File getProcon30Directory() {
 		return procon30Directory;
+	}
+
+	public File getLogFile() {
+		File logFile = logDirectory.getAbsoluteFile();
+		// YYYY_MM_DD_hh_mm_ss.txt
+		String fileName = getDateString();
+		System.out.println(fileName);
+		return new File(logFile.getAbsoluteFile() + "\\" + fileName);
 	}
 
 	public String[] getSolverList() {
