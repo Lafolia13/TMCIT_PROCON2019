@@ -25,7 +25,7 @@ public class GameMaster implements Runnable{
 
 	// now game data
 	private TurnData nowTurnData;
-	
+
 	// util
 	private LogManager logManager;
 

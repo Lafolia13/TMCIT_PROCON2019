@@ -14,19 +14,19 @@ public class LogManager {
 	private PrintWriter pw;
 
 	public LogManager(FileManager fileManager) {
+		logFile = fileManager.getLogFile();
 		try {
 			init();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		logFile = fileManager.getLogFile();
 	}
-	
+
 	private void init() throws IOException {
 		if(!logFile.exists()) {
 			logFile.createNewFile();
 		}
-		
+
 		pw = new PrintWriter(logFile);
 	}
 	private void logMapOrTerritory(int[][] map) {
