@@ -57,6 +57,7 @@ public class LogManager {
 		pw.println(gameData.getHowPlayer());
 		logPlayers(gameData.getMyPlayers());
 		logPlayers(gameData.getRivalPlayers());
+		pw.flush();
 	}
 
 	public void logTurnAction(ArrayList<String> myActions, ArrayList<String> rivalActions) {
@@ -66,5 +67,6 @@ public class LogManager {
 		for(String str : rivalActions) {
 			pw.println(str);
 		}
+		pw.flush();
 	}
 }

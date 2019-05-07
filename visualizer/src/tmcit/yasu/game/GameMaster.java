@@ -43,6 +43,7 @@ public class GameMaster implements Runnable{
 	private void init(FileManager fileManager) {
 		nowTurnData = new TurnData(gameData);
 		logManager = new LogManager(fileManager);
+		logManager.logGameData(gameData);
 	}
 
 	private void firstInput() {
@@ -138,17 +139,20 @@ public class GameMaster implements Runnable{
 
 		while(true) {
 			turnInput();
+			// ‚»‚ê‚¼‚ê‚Ìs“®‚ğæ“¾
 			System.out.println("[SYSTEM]:End input data.");
 			ArrayList<String> myPlayerActions = getPlayerActions(myPlayer);
 			System.out.println("[SYSTEM]:End my player action.");
 			ArrayList<String> rivalPlayerActions = getPlayerActions(rivalPlayer);
 			System.out.println("[SYSTEM]:End rival player action.");
 
+			// s“®‚ğ”½‰f
 			TurnData nextTurnData = nowTurnData.nextTurn(myPlayerActions, rivalPlayerActions);
 			nowTurnData = nextTurnData;
 			System.out.println("[SYSTEM]:End calc turn.");
 
-			//
+			// ƒƒO‚É‹L˜^‚µ‚Ä•`‰æ‚É”½‰f
+			logManager.logTurnAction(myPlayerActions, rivalPlayerActions);
 			paintTurnData();
 			try {
 				Thread.sleep(100);
