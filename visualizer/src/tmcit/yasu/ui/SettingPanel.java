@@ -3,6 +3,7 @@ package tmcit.yasu.ui;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import javax.swing.JButton;
@@ -46,6 +47,11 @@ public class SettingPanel extends JPanel implements ActionListener{
 		fileManager = fileManager0;
 		init();
 		initLayout();
+		try {
+			settingManager.loadSetting();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	private void init() {
@@ -128,6 +134,19 @@ public class SettingPanel extends JPanel implements ActionListener{
 	
 	public boolean isSelectedShowActionRadioButton() {
 		return showActionRadioButton.isSelected();
+	}
+	
+	// setter
+	public void setMaxGame(int value) {
+		maxGameSpinner.setValue(value);
+	}
+	
+	public void setSleepTime(int value) {
+		sleepTimeSpinner.setValue(value);
+	}
+	
+	public void setSelectedShowActionRadioButton(boolean value) {
+		showActionRadioButton.setSelected(value);
 	}
 
 	@Override
