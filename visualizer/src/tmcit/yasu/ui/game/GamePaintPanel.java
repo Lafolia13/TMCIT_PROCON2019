@@ -129,13 +129,16 @@ public class GamePaintPanel extends JPanel{
 	}
 	
 	// startからendへの矢印の描画(Pointはマスの座標)
-	private void paintArrow(Graphics2D g2, Point start, Point end) {
+	private void paintArrow(Graphics2D g2, Point start, Point end, boolean isWalk) {
+		
 		int drawInterval = calcDrawInterval();
 		int plusInterval = (int)(0.5 * drawInterval);
 		int sx = start.x * drawInterval + plusInterval;
 		int sy = start.y * drawInterval + plusInterval;
 		int ex = end.x * drawInterval + plusInterval;
 		int ey = end.y * drawInterval + plusInterval;
+		
+		double lineLength = Math.sqrt((ex-sx)*(ex-sx) + (ey-sy)*(ey-sy)) * 0.9;
 		
 		double h = drawInterval / 2; // 先端の長さ
 		double w = drawInterval / 2; // 先端の幅
@@ -147,22 +150,39 @@ public class GamePaintPanel extends JPanel{
 		double ux = vx / v;
 		double uy = vy / v;
 		
+		// 直線部分を求める
+		double llx1 = ex - uy*w*0.5 - ux*lineLength;
+		double lly1 = ey + ux*w*0.5 - uy*lineLength; 
+		double rrx1 = ex + uy*w*0.5 - ux*lineLength;
+		double rry1 = ey - ux*w*0.5 - uy*lineLength;
+		
+		double llx2 = ex - uy*w*0.5 - ux*h;
+		double lly2 = ey + ux*w*0.5 - uy*h; 
+		double rrx2 = ex + uy*w*0.5 - ux*h;
+		double rry2 = ey - ux*w*0.5 - uy*h;
+		
 		// 矢尻の位置を求める
 		double lx = ex - uy*w - ux*h;
 		double ly = ey + ux*w - uy*h;
 		double rx = ex + uy*w - ux*h;
 		double ry = ey - ux*w - uy*h;
 		
-		g2.setStroke(new BasicStroke(drawInterval / 2));
-		double newsx = sx + vx*drawInterval/v/2.0;
-		double newsy = sy + vy*drawInterval/v/2.0;
-		double newex = (lx + rx) / 2.0;
-		double mewey = (ly + ry) / 2.0;
-		g2.drawLine((int)newsx, (int)newsy, (int)newex, (int)mewey);
+		int[] arrowX = {(int)llx1, (int)rrx1, (int)rrx2, (int)rx, ex, (int)lx, (int)llx2};
+		int[] arrowY = {(int)lly1, (int)rry1, (int)rry2, (int)ry, ey, (int)ly, (int)lly2};
 		
-		int[] triangleX = {ex, (int)lx, (int)rx};
-		int[] triangleY = {ey, (int)ly, (int)ry};
-		g2.fillPolygon(triangleX, triangleY, 3);
+		// 中身
+		if(isWalk) {
+			g2.setColor(Constant.WALK_COLOR);
+		}else {
+			g2.setColor(Constant.ERASE_COLOR);
+		}
+		g2.fillPolygon(arrowX, arrowY, 7);
+		// 枠
+		g2.setColor(Color.BLACK);
+		g2.setStroke(new BasicStroke(2.0f));
+		g2.drawPolygon(arrowX, arrowY, 7);
+		
+		g2.setColor(Color.BLACK);
 	}
 
 	@Override
@@ -176,6 +196,6 @@ public class GamePaintPanel extends JPanel{
 		paintScore(g2);
 		paintPlayers(g2);
 		
-//		paintArrow(g2, new Point(0, 0), new Point(1, 1));
+//		paintArrow(g2, new Point(0, 0), new Point(1, 1), false);
 	}
 }
