@@ -24,6 +24,7 @@ import tmcit.yasu.util.FileManager;
 
 public class AgentSettingPanel extends JPanel implements ActionListener{
 	private MainFrame mainFrame;
+	private StarterPanel starterPanel;
 	private FileManager fileManager;
 
 	private JLabel nameLabel, solverLabel, paramLabel, exeLabel;
@@ -34,12 +35,14 @@ public class AgentSettingPanel extends JPanel implements ActionListener{
 	private JTextField exePathField;
 	private DefaultTableModel paramTableModel;
 	private JTable paramTable;
+	private JButton okButton;
 
 	// listener
 	private ParamTableModelListener paramTableModelListener;
 
-	public AgentSettingPanel(MainFrame mainFrame0, FileManager fileManager0) {
+	public AgentSettingPanel(MainFrame mainFrame0, StarterPanel starterPanel0, FileManager fileManager0) {
 		mainFrame = mainFrame0;
+		starterPanel = starterPanel0;
 		fileManager = fileManager0;
 		init();
 		initLayout();
@@ -75,6 +78,8 @@ public class AgentSettingPanel extends JPanel implements ActionListener{
 		exePathField = new JTextField();
 		selectExeButton = new JButton("éQè∆");
 
+		okButton = new JButton("äÆóπ");
+
 		// listener
 		paramTableModelListener = new ParamTableModelListener(solverList, exePathField, paramTableModel, fileManager);
 
@@ -84,6 +89,7 @@ public class AgentSettingPanel extends JPanel implements ActionListener{
 		addParamButton.addActionListener(this);
 		deleteParamButton.addActionListener(this);
 		selectExeButton.addActionListener(this);
+		okButton.addActionListener(this);
 		solverList.addListSelectionListener(new SolverListSelectionListener(fileManager, solverList, solverListModel, paramTableModel, exePathField, paramTableModelListener));
 		paramTableModel.addTableModelListener(paramTableModelListener);
 		exePathField.getDocument().addDocumentListener(paramTableModelListener);
@@ -95,17 +101,19 @@ public class AgentSettingPanel extends JPanel implements ActionListener{
 		nameLabel.setBounds(10, 10, 200, 20);
 		solverLabel.setBounds(10, 40, 200, 20);
 		solverList.setBounds(10, 70, 200, 300);
-		addSolverButton.setBounds(10, 380, 80, 20);
-		deleteSolverButton.setBounds(100, 380, 80, 20);
+		addSolverButton.setBounds(10, 380, 80, 30);
+		deleteSolverButton.setBounds(100, 380, 80, 30);
 
 		paramLabel.setBounds(250, 40, 200, 20);
 		paramScrollPanel.setBounds(250, 70, 400, 300);
-		addParamButton.setBounds(250, 380, 150, 20);
-		deleteParamButton.setBounds(410, 380, 150, 20);
+		addParamButton.setBounds(250, 380, 150, 30);
+		deleteParamButton.setBounds(410, 380, 150, 30);
 
 		exeLabel.setBounds(690, 40, 200, 20);
 		exePathField.setBounds(690, 70, 300, 20);
-		selectExeButton.setBounds(690, 100, 80, 20);
+		selectExeButton.setBounds(690, 100, 80, 30);
+
+		okButton.setBounds(690, 380, 80, 30);
 
 		add(nameLabel);
 		add(solverLabel);
@@ -119,6 +127,7 @@ public class AgentSettingPanel extends JPanel implements ActionListener{
 		add(exeLabel);
 		add(exePathField);
 		add(selectExeButton);
+		add(okButton);
 	}
 
 	@Override
@@ -158,6 +167,9 @@ public class AgentSettingPanel extends JPanel implements ActionListener{
 				File selectedFile = filechooser.getSelectedFile();
 				exePathField.setText(selectedFile.getAbsolutePath());
 			}
+		}else if(cmd == "äÆóπ") {
+			starterPanel.refreshAgent();
+			mainFrame.deleteTabbedPanel(this);
 		}
 	}
 }

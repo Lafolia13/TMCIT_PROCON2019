@@ -31,12 +31,12 @@ public class StarterPanel extends JPanel{
 		mapSelectPanel = new MapSelectPanel(fileManager);
 		myAgentSelectPanel = new AgentSelectPanel(mainFrame, true, fileManager);
 		rivalAgentSelectPanel = new AgentSelectPanel(mainFrame, false, fileManager);
-		settingPanel = new SettingPanel(mainFrame, fileManager);
+		settingPanel = new SettingPanel(mainFrame, this, fileManager);
 		startButton = new JButton("ŠJŽn");
 		startButton.setFont(Constant.DEFAULT_FONT);
 
 		// listener
-		startButtonListener = new StartButtonListener(mainFrame, mapSelectPanel, myAgentSelectPanel, rivalAgentSelectPanel);
+		startButtonListener = new StartButtonListener(mainFrame, mapSelectPanel, myAgentSelectPanel, rivalAgentSelectPanel, settingPanel, fileManager);
 		startButton.addActionListener(startButtonListener);
 	}
 
@@ -54,5 +54,10 @@ public class StarterPanel extends JPanel{
 		add(rivalAgentSelectPanel);
 		add(settingPanel);
 		add(startButton);
+	}
+
+	public void refreshAgent() {
+		myAgentSelectPanel.refreshSolverComboBox();
+		rivalAgentSelectPanel.refreshSolverComboBox();
 	}
 }

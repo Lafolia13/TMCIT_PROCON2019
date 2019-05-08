@@ -3,24 +3,35 @@ package tmcit.yasu.game;
 import java.awt.Point;
 import java.util.ArrayList;
 
+import tmcit.yasu.data.GameManageData;
 import tmcit.yasu.data.PaintGameData;
 import tmcit.yasu.player.Player;
 import tmcit.yasu.ui.MainFrame;
+import tmcit.yasu.ui.SettingPanel;
 import tmcit.yasu.ui.game.GameFrame;
 import tmcit.yasu.ui.game.GameMainPanel;
 import tmcit.yasu.ui.game.GamePaintPanel;
 import tmcit.yasu.util.Constant;
+import tmcit.yasu.util.FileManager;
 
 public class RunGameThread extends Thread{
 	private MainFrame mainFrame;
+	private SettingPanel settingPanel;
 	private Player myPlayer, rivalPlayer;
 	private GameData gameData;
+	private GameManageData gameManageData;
+	private FileManager fileManager;
 
-	public RunGameThread(MainFrame mainFrame0, Player myPlayer0, Player rivalPlayer0, GameData gameData0) {
+	public RunGameThread(MainFrame mainFrame0, Player myPlayer0, Player rivalPlayer0
+			, GameData gameData0, GameManageData gameManageData0, FileManager fileManager0
+			, SettingPanel settingPanel0) {
 		mainFrame = mainFrame0;
+		settingPanel = settingPanel0;
 		myPlayer = myPlayer0;
 		rivalPlayer = rivalPlayer0;
 		gameData = gameData0;
+		gameManageData = gameManageData0;
+		fileManager = fileManager0;
 	}
 
 	private PaintGameData getInitPaintGameData() {
@@ -45,11 +56,12 @@ public class RunGameThread extends Thread{
 
 	@Override
 	public void run() {
-		GameMainPanel gameMainPanel = new GameMainPanel(getInitPaintGameData(), myPlayer, rivalPlayer);
+		GameMainPanel gameMainPanel = new GameMainPanel(mainFrame, getInitPaintGameData(), myPlayer, rivalPlayer);
 
 		mainFrame.addTabbedPanel("ÉQÅ[ÉÄ", gameMainPanel);
 
-		GameMaster gameMaster = new GameMaster(gameData, myPlayer, rivalPlayer, gameMainPanel);
+		GameMaster gameMaster = new GameMaster(gameData, myPlayer, rivalPlayer, gameMainPanel, gameManageData, fileManager
+				, settingPanel.getSleepTime(), settingPanel.isSelectedShowActionRadioButton());
 		gameMaster.run();
 	}
 }

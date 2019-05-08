@@ -1,5 +1,6 @@
 package tmcit.yasu.util;
 
+import java.awt.Component;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -9,9 +10,14 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.CopyOption;
 import java.nio.file.Files;
+import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
 import javax.swing.LookAndFeel;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -20,7 +26,7 @@ import tmcit.yasu.listener.SolverComboBoxListener;
 
 public class FileManager {
 	private LookAndFeel defaultLookAndFeel;
-	private File procon30Directory, settingDirectory, mapDirectory, solverDirectory;
+	private File procon30Directory, settingDirectory, mapDirectory, solverDirectory, logDirectory;
 
 	public FileManager() {
 		init();
@@ -34,6 +40,7 @@ public class FileManager {
 		settingDirectory = new File(procon30Path.toString() + "\\setting");
 		mapDirectory = new File(procon30Path.toString() + "\\map");
 		solverDirectory = new File(procon30Path.toString() + "\\solver");
+		logDirectory = new File(procon30Path.toString() + "\\log");
 	}
 
 	private void createFolder() {
@@ -48,6 +55,9 @@ public class FileManager {
 		}
 		if(!solverDirectory.isDirectory()) {
 			solverDirectory.mkdir();
+		}
+		if(!logDirectory.isDirectory()) {
+			logDirectory.mkdir();
 		}
 	}
 
@@ -96,9 +106,15 @@ public class FileManager {
 		recursiveDeleteFile(removeFile);
 	}
 
+	private String getTextExtension(String fileName) {
+		if(fileName.endsWith(".txt")) return fileName;
+		return fileName.concat(".txt");
+	}
 
+	// パラメータを新しく保存
 	public void saveSolverParameter(String solverName, String presetName, ArrayList<String[]> parameters, String exePath) {
-		File writeFile = new File(solverDirectory.getAbsoluteFile() + "\\" + solverName + "\\" + presetName + ".txt");
+		presetName = getTextExtension(presetName);
+		File writeFile = new File(solverDirectory.getAbsoluteFile() + "\\" + solverName + "\\" + presetName);
 		if(!writeFile.exists()) {
 			try {
 				writeFile.createNewFile();
@@ -122,6 +138,42 @@ public class FileManager {
 
 	}
 
+	// パラメータを上書き保存
+	public void overwriteSolverParameter(String solverName, String presetName, ArrayList<String[]> parameters) {
+		presetName = getTextExtension(presetName);
+		File overwriteFile = new File(solverDirectory.getAbsoluteFile() + "\\" + solverName + "\\" + presetName);
+		if(!overwriteFile.exists()) return;
+
+		String exePath = getSelectedSolverExePath(solverName);
+		saveSolverParameter(solverName, presetName, parameters, exePath);
+	}
+	
+	// mapを選択したときmapDirectoryになかったらコピー
+	public void mapCopyToMapDirectory(File mapFile, Component component) {
+		File parent = mapFile.getParentFile();
+		File newFile = new File(mapDirectory.getAbsoluteFile() + "//" + mapFile.getName());
+		
+		System.out.println(newFile.getAbsolutePath());
+		
+		if(!parent.equals(mapDirectory)) {
+			
+			if(newFile.exists()) {
+				int optione = JOptionPane.showConfirmDialog(component, "同じファイル名が存在します。上書きますか？", "警告", JOptionPane.YES_NO_OPTION);
+				if(optione == JOptionPane.NO_OPTION) {
+					return;
+				}
+				newFile.delete();
+			}
+			
+			try {
+				Files.copy(mapFile.toPath(), newFile.toPath());
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+
 	// LookAndFeel
 	public void setWindowsLookAndFeel() {
 		try {
@@ -140,14 +192,39 @@ public class FileManager {
 		}
 	}
 
+	// util
+	private String getDateString() {
+		DateTimeFormatter f = DateTimeFormatter.ofPattern("yyyy_MM_dd_HH_mm_ss");
+		ZonedDateTime zonedDateTime = ZonedDateTime.now();
+		String ret = zonedDateTime.format(f);
+		return ret + ".txt";
+	}
+
 
 	// getter
 	public File getMapDirectory() {
 		return mapDirectory;
 	}
+	
+	public File getLogDirectory() {
+		return logDirectory;
+	}
 
 	public File getProcon30Directory() {
 		return procon30Directory;
+	}
+	
+	public File getSettingFile() {
+		File settingFile = settingDirectory.getAbsoluteFile();
+		return new File(settingFile.getAbsoluteFile() + "\\setting.txt");
+	}
+
+	public File getLogFile() {
+		File logFile = logDirectory.getAbsoluteFile();
+		// YYYY_MM_DD_hh_mm_ss.txt
+		String fileName = getDateString();
+		System.out.println(fileName);
+		return new File(logFile.getAbsoluteFile() + "\\" + fileName);
 	}
 
 	public String[] getSolverList() {

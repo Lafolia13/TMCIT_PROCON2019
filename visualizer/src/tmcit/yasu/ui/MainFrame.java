@@ -1,5 +1,7 @@
 package tmcit.yasu.ui;
 
+import java.awt.Component;
+
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
@@ -45,5 +47,14 @@ public class MainFrame extends JFrame{
 		}else {
 			tabbedPanel.setSelectedIndex(index);
 		}
+	}
+
+	public void deleteTabbedPanel(Component comp) {
+		int index = tabbedPanel.indexOfComponent(comp);
+		if(index == -1) {
+			System.err.println("[SYSTEM]deteleTabbedPanel:index = -1");
+			return;
+		}
+		tabbedPanel.remove(index);
 	}
 }

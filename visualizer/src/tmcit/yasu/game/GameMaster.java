@@ -3,6 +3,7 @@ package tmcit.yasu.game;
 import java.awt.Point;
 import java.util.ArrayList;
 
+import tmcit.yasu.data.GameManageData;
 import tmcit.yasu.data.PaintGameData;
 import tmcit.yasu.player.ExecPlayer;
 import tmcit.yasu.player.Player;
@@ -10,8 +11,12 @@ import tmcit.yasu.ui.game.GameFrame;
 import tmcit.yasu.ui.game.GameMainPanel;
 import tmcit.yasu.ui.game.GamePaintPanel;
 import tmcit.yasu.util.Constant;
+import tmcit.yasu.util.FileManager;
+import tmcit.yasu.util.LogManager;
 
 public class GameMaster implements Runnable{
+	private GameManageData gameManageData;
+
 	// UI
 	private GameMainPanel gamePanel;
 
@@ -21,17 +26,31 @@ public class GameMaster implements Runnable{
 	// now game data
 	private TurnData nowTurnData;
 
-	public GameMaster(GameData gameData0, Player myPlayer0, Player rivalPlayer0, GameMainPanel gamePanel0) {
+	// util
+	private LogManager logManager;
+	
+	// setting
+	private int sleepTime;
+	private boolean showActionFlag;
+
+	public GameMaster(GameData gameData0, Player myPlayer0, Player rivalPlayer0
+			, GameMainPanel gamePanel0, GameManageData gameManageData0, FileManager fileManager,
+			int sleepTime0, boolean showActionFlag0) {
 		gameData = gameData0;
 		myPlayer = myPlayer0;
 		rivalPlayer = rivalPlayer0;
 		gamePanel = gamePanel0;
+		gameManageData = gameManageData0;
+		sleepTime = sleepTime0;
+		showActionFlag = showActionFlag0;
 
-		init();
+		init(fileManager);
 	}
 
-	private void init() {
+	private void init(FileManager fileManager) {
 		nowTurnData = new TurnData(gameData);
+		logManager = new LogManager(fileManager);
+		logManager.logGameData(gameData);
 	}
 
 	private void firstInput() {
@@ -110,42 +129,54 @@ public class GameMaster implements Runnable{
 		return ret;
 	}
 
-	private void paintTurnData() {
-		gamePanel.reflectGameData(gameData, nowTurnData);
+	private void paintTurnData(ArrayList<String> myPlayerCmds, ArrayList<String> rivalPlayerCmds) {
+		gamePanel.reflectGameData(gameData, nowTurnData, myPlayerCmds, rivalPlayerCmds);
+	}
+
+	private void endGameMaster() {
+		gameManageData.minusRunningGame();
 	}
 
 	@Override
 	public void run() {
 		System.out.println("[SYSTEM]:Start GameMaster.");
-		paintTurnData();
+		paintTurnData(new ArrayList<>(), new ArrayList<>());
 		firstInput();
 		System.out.println("[SYSTEM]:End first input.");
 
 		while(true) {
 			turnInput();
+			// get players actions
 			System.out.println("[SYSTEM]:End input data.");
 			ArrayList<String> myPlayerActions = getPlayerActions(myPlayer);
 			System.out.println("[SYSTEM]:End my player action.");
 			ArrayList<String> rivalPlayerActions = getPlayerActions(rivalPlayer);
 			System.out.println("[SYSTEM]:End rival player action.");
 
+			// reflect actions
 			TurnData nextTurnData = nowTurnData.nextTurn(myPlayerActions, rivalPlayerActions);
-			nowTurnData = nextTurnData;
 			System.out.println("[SYSTEM]:End calc turn.");
-
-			//
-			paintTurnData();
+			
+			// write log and paint
+			logManager.logTurnAction(myPlayerActions, rivalPlayerActions);
+			
+			if(showActionFlag) paintTurnData(myPlayerActions, rivalPlayerActions);
+      
 			try {
-				Thread.sleep(100);
+				Thread.sleep(sleepTime);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
+			nowTurnData = nextTurnData;
+			paintTurnData(new ArrayList<>(), new ArrayList<>());
 
-			// I—¹ˆ—
+			// exit
 			System.out.println("[SYSTEM]:End Turn[" + nowTurnData.getNowTurn() + "]");
 			if(nowTurnData.getNowTurn() > gameData.getMaxTurn()) {
 				break;
 			}
 		}
+
+		endGameMaster();
 	}
 }
