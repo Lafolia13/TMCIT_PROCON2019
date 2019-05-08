@@ -88,4 +88,14 @@ public class GameMainPanel extends JPanel{
 	public GamePaintPanel getGamePaintPanel() {
 		return gamePaintPanel;
 	}
+	
+	// 
+	public void endExec() {
+		if(myPlayer instanceof ExecPlayer) {
+			((ExecPlayer) myPlayer).endProcess();
+		}
+		if(rivalPlayer instanceof ExecPlayer) {
+			((ExecPlayer) rivalPlayer).endProcess();
+		}
+	}
 }

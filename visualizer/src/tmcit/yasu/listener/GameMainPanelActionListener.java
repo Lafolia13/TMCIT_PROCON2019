@@ -20,6 +20,7 @@ public class GameMainPanelActionListener implements ActionListener{
 		String cmd = e.getActionCommand();
 		if(cmd.equals("•Â‚¶‚é")) {
 			mainFrame.deleteTabbedPanel(gameMainPanel);
+			gameMainPanel.endExec();
 		}
 	}
 
