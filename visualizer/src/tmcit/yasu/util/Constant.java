@@ -26,6 +26,10 @@ public class Constant {
 	// player color
 	public static Color MY_COLOR = new Color(0, 0, 255, 95);
 	public static Color RIVAL_COLOR = new Color(255, 0, 0, 95);
+	
+	// arrow color
+	public static Color WALK_COLOR = new Color(0, 255, 0);
+	public static Color ERASE_COLOR = new Color(148, 0, 211);
 
 	// Game
 	public static int SLEEP_TIME = 50;

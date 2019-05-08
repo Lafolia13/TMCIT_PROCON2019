@@ -7,6 +7,7 @@ public class PaintGameData {
 	private int mapWidth, mapHeight;
 	private int[][] mapScore, territoryMap;
 	private ArrayList<Point> myPlayers, rivalPlayers;
+	private ArrayList<String> myPlayerCmds, rivalPlayerCmds;
 
 	public PaintGameData(int mapWidth0, int mapHeight0, int[][] mapScore0, int[][] territoryMap0
 			,ArrayList<Point> myPlayers0, ArrayList<Point> rivalPlayers0) {
@@ -16,6 +17,21 @@ public class PaintGameData {
 		territoryMap = territoryMap0;
 		myPlayers = myPlayers0;
 		rivalPlayers = rivalPlayers0;
+		myPlayerCmds = new ArrayList<>();
+		rivalPlayerCmds = new ArrayList<>();
+	}
+	
+	public PaintGameData(int mapWidth0, int mapHeight0, int[][] mapScore0, int[][] territoryMap0
+			,ArrayList<Point> myPlayers0, ArrayList<Point> rivalPlayers0
+			, ArrayList<String> myPlayerCmds0, ArrayList<String> rivalPlayerCmds0) {
+		mapWidth = mapWidth0;
+		mapHeight = mapHeight0;
+		mapScore = mapScore0;
+		territoryMap = territoryMap0;
+		myPlayers = myPlayers0;
+		rivalPlayers = rivalPlayers0;
+		myPlayerCmds = myPlayerCmds0;
+		rivalPlayerCmds = rivalPlayerCmds0;
 	}
 
 	// getter
@@ -41,5 +57,13 @@ public class PaintGameData {
 
 	public ArrayList<Point> getRivalPlayers(){
 		return rivalPlayers;
+	}
+	
+	public ArrayList<String> getMyPlayerCmds(){
+		return myPlayerCmds;
+	}
+	
+	public ArrayList<String> getRivalPlayerCmds(){
+		return rivalPlayerCmds;
 	}
 }
