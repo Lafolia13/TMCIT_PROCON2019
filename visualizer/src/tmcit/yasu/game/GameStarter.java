@@ -8,10 +8,12 @@ import tmcit.yasu.data.GameManageData;
 import tmcit.yasu.player.Player;
 import tmcit.yasu.ui.AgentSelectPanel;
 import tmcit.yasu.ui.MainFrame;
+import tmcit.yasu.ui.SettingPanel;
 import tmcit.yasu.util.FileManager;
 
 public class GameStarter implements Runnable{
 	private MainFrame mainFrame;
+	private SettingPanel settingPanel;
 	private FileManager fileManager;
 	private AgentSelectPanel myAgentSelectPanel, rivalAgentSelectPanel;
 	private ArrayList<GameData> gameDataList;
@@ -19,8 +21,10 @@ public class GameStarter implements Runnable{
 
 
 	public GameStarter(MainFrame mainFrame0, AgentSelectPanel myAgentSelectPanel0, AgentSelectPanel rivalAgentSelectPanel0
-			, ArrayList<GameData> gameDataList0, GameManageData gameManageData0, FileManager fileManager0) {
+			, ArrayList<GameData> gameDataList0, GameManageData gameManageData0, FileManager fileManager0
+			, SettingPanel settingPanel0) {
 		mainFrame = mainFrame0;
+		settingPanel = settingPanel0;
 		myAgentSelectPanel = myAgentSelectPanel0;
 		rivalAgentSelectPanel = rivalAgentSelectPanel0;
 		gameDataList = gameDataList0;
@@ -45,7 +49,7 @@ public class GameStarter implements Runnable{
 			Player myPlayer = myAgentSelectPanel.getPlayer();
 			Player rivalPlayer = rivalAgentSelectPanel.getPlayer();
 
-			RunGameThread runGameThread = new RunGameThread(mainFrame, myPlayer, rivalPlayer, nowGameData, gameManageData, fileManager);
+			RunGameThread runGameThread = new RunGameThread(mainFrame, myPlayer, rivalPlayer, nowGameData, gameManageData, fileManager, settingPanel);
 			ExecutorService exec = Executors.newSingleThreadExecutor();
 			exec.submit(runGameThread);
 		}

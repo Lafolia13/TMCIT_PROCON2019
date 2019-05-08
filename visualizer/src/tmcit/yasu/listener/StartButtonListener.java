@@ -42,7 +42,7 @@ public class StartButtonListener implements ActionListener{
 		ArrayList<GameData> gameDataList = mapSelectPanel.getGameDataList();
 		GameManageData gameManageData = new GameManageData(settingPanel.getMaxGame());
 
-		GameStarter gameStarter = new GameStarter(mainFrame, myAgentSelectPanel, rivalAgentSelectPanel, gameDataList, gameManageData, fileManager);
+		GameStarter gameStarter = new GameStarter(mainFrame, myAgentSelectPanel, rivalAgentSelectPanel, gameDataList, gameManageData, fileManager, settingPanel);
 		ExecutorService exec = Executors.newSingleThreadExecutor();
 		exec.submit(gameStarter);
 	}

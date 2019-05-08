@@ -9,6 +9,7 @@ import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 
@@ -24,10 +25,11 @@ public class SettingPanel extends JPanel implements ActionListener{
 	private StarterPanel starterPanel;
 	private FileManager fileManager;
 
-	private JLabel nameLabel, maxGameLabel;
+	private JLabel nameLabel, maxGameLabel, sleepTimeLabel;
 	private JButton agentSettingButton;
-	private SpinnerNumberModel maxGameSpinnerModel;
-	private JSpinner maxGameSpinner;
+	private SpinnerNumberModel maxGameSpinnerModel, sleepTimeSpinnerModel;
+	private JSpinner maxGameSpinner, sleepTimeSpinner;
+	private JRadioButton showActionRadioButton;
 	
 	// ログ
 	private JButton loadLogButton;
@@ -53,6 +55,17 @@ public class SettingPanel extends JPanel implements ActionListener{
 		maxGameSpinnerModel = new SpinnerNumberModel(1, 1, 10, 1);
 		maxGameSpinner = new JSpinner(maxGameSpinnerModel);
 		
+		// 時間
+		sleepTimeLabel = new JLabel("ターン間の時間[ms]:");
+		sleepTimeLabel.setFont(Constant.SMALL_FONT);
+		sleepTimeSpinnerModel = new SpinnerNumberModel(100, 0, 100000, 100);
+		sleepTimeSpinner = new JSpinner(sleepTimeSpinnerModel);
+		
+		// 行動の描画
+		showActionRadioButton = new JRadioButton("行動の描画");
+		showActionRadioButton.setFont(Constant.SMALL_FONT);
+		showActionRadioButton.setSelected(true);
+		
 		// ログ
 		loadLogButton = new JButton("ログの読み込み");
 
@@ -68,13 +81,19 @@ public class SettingPanel extends JPanel implements ActionListener{
 		agentSettingButton.setBounds(10, 40, 160, 30);
 		maxGameLabel.setBounds(10, 80, 150, 20);
 		maxGameSpinner.setBounds(180, 80, 100, 20);
-		loadLogButton.setBounds(10, 110, 150, 30);
+		sleepTimeLabel.setBounds(10, 110, 170, 20);
+		sleepTimeSpinner.setBounds(180, 110, 100, 20);
+		showActionRadioButton.setBounds(10, 140, 200, 20);
+		loadLogButton.setBounds(10, 170, 150, 30);
 
 		add(nameLabel);
 		add(agentSettingButton);
 		add(maxGameLabel);
 		add(maxGameSpinner);
 		add(loadLogButton);
+		add(sleepTimeLabel);
+		add(sleepTimeSpinner);
+		add(showActionRadioButton);
 	}
 	
 	private void showLogGames(File[] logFiles) {
@@ -88,6 +107,14 @@ public class SettingPanel extends JPanel implements ActionListener{
 	// getter
 	public int getMaxGame() {
 		return (int) maxGameSpinner.getValue();
+	}
+	
+	public int getSleepTime() {
+		return (int) sleepTimeSpinner.getValue();
+	}
+	
+	public boolean isSelectedShowActionRadioButton() {
+		return showActionRadioButton.isSelected();
 	}
 
 	@Override

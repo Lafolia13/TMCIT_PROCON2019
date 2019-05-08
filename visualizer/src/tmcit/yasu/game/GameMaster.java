@@ -28,14 +28,21 @@ public class GameMaster implements Runnable{
 
 	// util
 	private LogManager logManager;
+	
+	// setting
+	private int sleepTime;
+	private boolean showActionFlag;
 
 	public GameMaster(GameData gameData0, Player myPlayer0, Player rivalPlayer0
-			, GameMainPanel gamePanel0, GameManageData gameManageData0, FileManager fileManager) {
+			, GameMainPanel gamePanel0, GameManageData gameManageData0, FileManager fileManager,
+			int sleepTime0, boolean showActionFlag0) {
 		gameData = gameData0;
 		myPlayer = myPlayer0;
 		rivalPlayer = rivalPlayer0;
 		gamePanel = gamePanel0;
 		gameManageData = gameManageData0;
+		sleepTime = sleepTime0;
+		showActionFlag = showActionFlag0;
 
 		init(fileManager);
 	}
@@ -152,10 +159,11 @@ public class GameMaster implements Runnable{
 			
 			// write log and paint
 			logManager.logTurnAction(myPlayerActions, rivalPlayerActions);
-			paintTurnData(myPlayerActions, rivalPlayerActions);
+			
+			if(showActionFlag) paintTurnData(myPlayerActions, rivalPlayerActions);
       
 			try {
-				Thread.sleep(1000);
+				Thread.sleep(sleepTime);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
