@@ -205,6 +205,10 @@ public class FileManager {
 	public File getMapDirectory() {
 		return mapDirectory;
 	}
+	
+	public File getLogDirectory() {
+		return logDirectory;
+	}
 
 	public File getProcon30Directory() {
 		return procon30Directory;
