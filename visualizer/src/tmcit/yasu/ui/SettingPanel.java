@@ -20,11 +20,13 @@ import tmcit.yasu.listener.SettingChangeListener;
 import tmcit.yasu.ui.game.GameLogPanel;
 import tmcit.yasu.util.Constant;
 import tmcit.yasu.util.FileManager;
+import tmcit.yasu.util.SettingManager;
 
 public class SettingPanel extends JPanel implements ActionListener{
 	private MainFrame mainFrame;
 	private StarterPanel starterPanel;
 	private FileManager fileManager;
+	private SettingManager settingManager;
 
 	private JLabel nameLabel, maxGameLabel, sleepTimeLabel;
 	private JButton agentSettingButton;
@@ -47,6 +49,8 @@ public class SettingPanel extends JPanel implements ActionListener{
 	}
 
 	private void init() {
+		settingManager = new SettingManager(fileManager, this);
+		
 		setBorder(Constant.DEFAULT_LINE_BORDER);
 
 		nameLabel = new JLabel("ê›íË");
@@ -77,7 +81,7 @@ public class SettingPanel extends JPanel implements ActionListener{
 		agentSettingButton.addActionListener(this);
 		loadLogButton.addActionListener(this);
 		// change listener
-		settingChangeListener = new SettingChangeListener(this);
+		settingChangeListener = new SettingChangeListener(settingManager);
 		maxGameSpinner.addChangeListener(settingChangeListener);
 		sleepTimeSpinner.addChangeListener(settingChangeListener);
 		showActionRadioButton.addChangeListener(settingChangeListener);
