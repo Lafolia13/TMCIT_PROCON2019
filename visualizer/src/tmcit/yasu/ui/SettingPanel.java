@@ -84,7 +84,8 @@ public class SettingPanel extends JPanel implements ActionListener{
 	private void showLogGames(File[] logFiles) {
 		for(File nowLog : logFiles) {
 			System.out.println(nowLog.getName());
-			readPaintGameDataFromLog(nowLog);
+			ArrayList<PaintGameData> paintGameDataList = readPaintGameDataFromLog(nowLog);
+			mainFrame.addTabbedPanel("ÉçÉO", new GameLogPanel(paintGameDataList));
 		}
 	}
 
