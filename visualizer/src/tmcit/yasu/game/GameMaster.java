@@ -134,6 +134,12 @@ public class GameMaster implements Runnable{
 	}
 
 	private void endGameMaster() {
+		if(myPlayer instanceof ExecPlayer) {
+			((ExecPlayer)myPlayer).endProcess();
+		}
+		if(rivalPlayer instanceof ExecPlayer) {
+			((ExecPlayer)rivalPlayer).endProcess();
+		}
 		gameManageData.minusRunningGame();
 	}
 
