@@ -176,14 +176,39 @@ public class TurnData {
 	// 移動先に他の停留や除去をするエージェントがいるかチェック
 	private boolean checkOtherAgent(ArrayList<ActionData> allActionDataList, int checkIndex) {
 		ActionData checkActionData = allActionDataList.get(checkIndex);
-		for(int i = 0;i < allActionDataList.size();i++) {
-			if(i == checkIndex) continue;
+		int playerSize = myPlayers.size();
 
-			ActionData nowData = allActionDataList.get(i);
-			if(checkActionData.target.x == nowData.target.x && checkActionData.target.y == nowData.target.y) {
-				return true;
+		if(checkActionData.playerNum == Constant.MY_TERRITORY) {
+			for(int i = 0;i < playerSize;i++) {
+				Point nowRivalP = rivalPlayers.get(i);
+				ActionData nowRivalActionData = allActionDataList.get(playerSize+i);
+				if(checkActionData.target.x == nowRivalP.x && checkActionData.target.y == nowRivalP.y) {
+					if(nowRivalActionData.command == 'e' || nowRivalActionData.command == 'n') {
+						// 移動先が仲間じゃなく、除去か停留をしている。
+						return true;
+					}
+				}
+			}
+		}else {
+			for(int i = 0;i < playerSize;i++) {
+				Point nowMyP = myPlayers.get(i);
+				ActionData nowMyActionData = allActionDataList.get(i);
+				if(checkActionData.target.x == nowMyP.x && checkActionData.target.y == nowMyP.y) {
+					if(nowMyActionData.command == 'e' || nowMyActionData.command == 'n') {
+						// 移動先が仲間じゃなく、除去か停留をしている。
+						return true;
+					}
+				}
 			}
 		}
+//		for(int i = 0;i < allActionDataList.size();i++) {
+//			if(i == checkIndex) continue;
+//
+//			ActionData nowData = allActionDataList.get(i);
+//			if(checkActionData.target.x == nowData.target.x && checkActionData.target.y == nowData.target.y) {
+//				return true;
+//			}
+//		}
 		return false;
 	}
 
@@ -209,6 +234,7 @@ public class TurnData {
 				}
 			}
 			// 移動する先にエージェントがいて衝突するか判定
+			// 移動先のエージェントが、移動コマンドじゃない場合のみ
 			if(nowActionData.command == 'w') {
 				boolean checkFlag = checkOtherAgent(allActionDataList, i);
 				if(checkFlag) {
@@ -334,4 +360,15 @@ public class TurnData {
 	}
 
 
+	// debug用
+	private void printSelectMap(int[][] howSelect) {
+		System.out.println("----- print select map -----");
+		for(int i = 0;i < mapHeight;i++) {
+			for(int j = 0;j < mapWidth;j++) {
+				System.out.print(String.valueOf(howSelect[j][i]) + " ");
+			}
+			System.out.println();
+		}
+		System.out.println("----------------------------");
+	}
 }

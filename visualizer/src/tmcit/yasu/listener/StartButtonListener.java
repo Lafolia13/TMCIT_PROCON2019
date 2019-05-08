@@ -18,20 +18,23 @@ import tmcit.yasu.ui.MainFrame;
 import tmcit.yasu.ui.MapSelectPanel;
 import tmcit.yasu.ui.SettingPanel;
 import tmcit.yasu.ui.game.GameFrame;
+import tmcit.yasu.util.FileManager;
 
 public class StartButtonListener implements ActionListener{
 	private MainFrame mainFrame;
 	private MapSelectPanel mapSelectPanel;
 	private AgentSelectPanel myAgentSelectPanel, rivalAgentSelectPanel;
 	private SettingPanel settingPanel;
+	private FileManager fileManager;
 
 	public StartButtonListener(MainFrame mainFrame0, MapSelectPanel mapSelectPanel0
-			, AgentSelectPanel myAgentSelectPanel0, AgentSelectPanel rivalAgentSelectPanel0, SettingPanel settingPanel0) {
+			, AgentSelectPanel myAgentSelectPanel0, AgentSelectPanel rivalAgentSelectPanel0, SettingPanel settingPanel0, FileManager fileManager0) {
 		mainFrame = mainFrame0;
 		mapSelectPanel = mapSelectPanel0;
 		myAgentSelectPanel = myAgentSelectPanel0;
 		rivalAgentSelectPanel = rivalAgentSelectPanel0;
 		settingPanel = settingPanel0;
+		fileManager = fileManager0;
 	}
 
 	@Override
@@ -39,7 +42,7 @@ public class StartButtonListener implements ActionListener{
 		ArrayList<GameData> gameDataList = mapSelectPanel.getGameDataList();
 		GameManageData gameManageData = new GameManageData(settingPanel.getMaxGame());
 
-		GameStarter gameStarter = new GameStarter(mainFrame, myAgentSelectPanel, rivalAgentSelectPanel, gameDataList, gameManageData);
+		GameStarter gameStarter = new GameStarter(mainFrame, myAgentSelectPanel, rivalAgentSelectPanel, gameDataList, gameManageData, fileManager);
 		ExecutorService exec = Executors.newSingleThreadExecutor();
 		exec.submit(gameStarter);
 	}

@@ -11,6 +11,8 @@ import tmcit.yasu.ui.game.GameFrame;
 import tmcit.yasu.ui.game.GameMainPanel;
 import tmcit.yasu.ui.game.GamePaintPanel;
 import tmcit.yasu.util.Constant;
+import tmcit.yasu.util.FileManager;
+import tmcit.yasu.util.LogManager;
 
 public class GameMaster implements Runnable{
 	private GameManageData gameManageData;
@@ -24,18 +26,24 @@ public class GameMaster implements Runnable{
 	// now game data
 	private TurnData nowTurnData;
 
-	public GameMaster(GameData gameData0, Player myPlayer0, Player rivalPlayer0, GameMainPanel gamePanel0, GameManageData gameManageData0) {
+	// util
+	private LogManager logManager;
+
+	public GameMaster(GameData gameData0, Player myPlayer0, Player rivalPlayer0
+			, GameMainPanel gamePanel0, GameManageData gameManageData0, FileManager fileManager) {
 		gameData = gameData0;
 		myPlayer = myPlayer0;
 		rivalPlayer = rivalPlayer0;
 		gamePanel = gamePanel0;
 		gameManageData = gameManageData0;
 
-		init();
+		init(fileManager);
 	}
 
-	private void init() {
+	private void init(FileManager fileManager) {
 		nowTurnData = new TurnData(gameData);
+		logManager = new LogManager(fileManager);
+		logManager.logGameData(gameData);
 	}
 
 	private void firstInput() {
@@ -131,17 +139,21 @@ public class GameMaster implements Runnable{
 
 		while(true) {
 			turnInput();
+			// それぞれの行動を取得
 			System.out.println("[SYSTEM]:End input data.");
 			ArrayList<String> myPlayerActions = getPlayerActions(myPlayer);
 			System.out.println("[SYSTEM]:End my player action.");
 			ArrayList<String> rivalPlayerActions = getPlayerActions(rivalPlayer);
 			System.out.println("[SYSTEM]:End rival player action.");
 
+			// 行動を反映
 			TurnData nextTurnData = nowTurnData.nextTurn(myPlayerActions, rivalPlayerActions);
 			System.out.println("[SYSTEM]:End calc turn.");
-
-			//
-			paintTurnData(myPlayerActions, rivalPlayerActions);
+			
+			// ログに記録して描画に反映
+			logManager.logTurnAction(myPlayerActions, rivalPlayerActions);
+      paintTurnData(myPlayerActions, rivalPlayerActions);
+      
 			try {
 				Thread.sleep(1000);
 			} catch (InterruptedException e) {
@@ -150,7 +162,7 @@ public class GameMaster implements Runnable{
 			nowTurnData = nextTurnData;
 			paintTurnData(new ArrayList<>(), new ArrayList<>());
 
-			// �I������
+			// 終了処理
 			System.out.println("[SYSTEM]:End Turn[" + nowTurnData.getNowTurn() + "]");
 			if(nowTurnData.getNowTurn() > gameData.getMaxTurn()) {
 				break;
