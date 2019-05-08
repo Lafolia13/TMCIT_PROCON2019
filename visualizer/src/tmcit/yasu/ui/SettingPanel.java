@@ -81,7 +81,7 @@ public class SettingPanel extends JPanel implements ActionListener{
 		for(File nowLog : logFiles) {
 			System.out.println(nowLog.getName());
 			GameLogMaster logMaster = new GameLogMaster(nowLog);
-			mainFrame.addTabbedPanel("ÉçÉO", new GameLogPanel(logMaster.getTurnDataList(), logMaster.getGameData()));
+			mainFrame.addTabbedPanel("ÉçÉO", new GameLogPanel(mainFrame, logMaster.getTurnDataList(), logMaster.getGameData()));
 		}
 	}
 
