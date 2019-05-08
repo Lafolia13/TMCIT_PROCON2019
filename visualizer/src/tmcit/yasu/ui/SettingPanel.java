@@ -3,6 +3,7 @@ package tmcit.yasu.ui;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.util.ArrayList;
 
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -11,6 +12,9 @@ import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 
+import tmcit.yasu.data.PaintGameData;
+import tmcit.yasu.game.GameLogMaster;
+import tmcit.yasu.ui.game.GameLogPanel;
 import tmcit.yasu.util.Constant;
 import tmcit.yasu.util.FileManager;
 
@@ -72,9 +76,15 @@ public class SettingPanel extends JPanel implements ActionListener{
 		add(loadLogButton);
 	}
 	
+	private ArrayList<PaintGameData> readPaintGameDataFromLog(File logFile){
+		GameLogMaster logMaster = new GameLogMaster(logFile);
+		return logMaster.getPaintGameDataList();
+	}
+	
 	private void showLogGames(File[] logFiles) {
 		for(File nowLog : logFiles) {
 			System.out.println(nowLog.getName());
+			readPaintGameDataFromLog(nowLog);
 		}
 	}
 
