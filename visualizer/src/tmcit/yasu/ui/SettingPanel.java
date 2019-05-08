@@ -16,6 +16,7 @@ import javax.swing.SpinnerNumberModel;
 import tmcit.yasu.data.PaintGameData;
 import tmcit.yasu.game.GameLogMaster;
 import tmcit.yasu.game.TurnData;
+import tmcit.yasu.listener.SettingChangeListener;
 import tmcit.yasu.ui.game.GameLogPanel;
 import tmcit.yasu.util.Constant;
 import tmcit.yasu.util.FileManager;
@@ -33,6 +34,9 @@ public class SettingPanel extends JPanel implements ActionListener{
 	
 	// ÉçÉO
 	private JButton loadLogButton;
+	
+	// listener
+	private SettingChangeListener settingChangeListener;
 
 	public SettingPanel(MainFrame mainFrame0, StarterPanel starterPanel0, FileManager fileManager0) {
 		mainFrame = mainFrame0;
@@ -69,9 +73,14 @@ public class SettingPanel extends JPanel implements ActionListener{
 		// ÉçÉO
 		loadLogButton = new JButton("ÉçÉOÇÃì«Ç›çûÇ›");
 
-		// listener
+		// action listener
 		agentSettingButton.addActionListener(this);
 		loadLogButton.addActionListener(this);
+		// change listener
+		settingChangeListener = new SettingChangeListener(this);
+		maxGameSpinner.addChangeListener(settingChangeListener);
+		sleepTimeSpinner.addChangeListener(settingChangeListener);
+		showActionRadioButton.addChangeListener(settingChangeListener);
 	}
 
 	private void initLayout() {
