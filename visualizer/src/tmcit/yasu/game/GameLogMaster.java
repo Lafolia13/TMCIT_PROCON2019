@@ -21,7 +21,8 @@ public class GameLogMaster {
 	private ArrayList<String> myPlayerCmds, rivalPlayerCmds;
 	
 	// logData
-	private ArrayList<PaintGameData> logPaintDataList;
+	private ArrayList<TurnData> logTurnDataList;
+	private GameData logGameData;
 	
 	public GameLogMaster(File logFile0) {
 		logFile = logFile0;
@@ -39,7 +40,7 @@ public class GameLogMaster {
 		rivalPlayers = new ArrayList<>();
 		myPlayerCmds = new ArrayList<>();
 		rivalPlayerCmds = new ArrayList<>();
-		logPaintDataList = new ArrayList<>();
+		logTurnDataList = new ArrayList<>();
 	}
 	
 	private void readFile() throws IOException {
@@ -79,6 +80,8 @@ public class GameLogMaster {
 				}
 			}
 		}
+		
+		logGameData = new GameData(maxTurn, width, height, scoreMap, myPlayers, rivalPlayers);
 	}
 	
 	private TurnData makeFirstTurnData() {
@@ -88,7 +91,7 @@ public class GameLogMaster {
 	
 	private void makeLogTurnData() {
 		TurnData nowTurnData = makeFirstTurnData();
-		logPaintDataList.add(new PaintGameData(width, height, scoreMap, nowTurnData.getTerritoryMap(), nowTurnData.getMyPlayers(), nowTurnData.getRivalPlayers()));
+		logTurnDataList.add(nowTurnData);
 		
 		for(int nowTurn = 0;nowTurn < maxTurn;nowTurn++) {
 			ArrayList<String> nowMyCmds = new ArrayList<>();
@@ -100,13 +103,17 @@ public class GameLogMaster {
 			}
 			
 			TurnData nextTurnData = nowTurnData.nextTurn(nowMyCmds, nowRivalCmds);
+			logTurnDataList.add(nextTurnData);
 			nowTurnData = nextTurnData;
-			logPaintDataList.add(new PaintGameData(width, height, scoreMap, nowTurnData.getTerritoryMap(), nowTurnData.getMyPlayers(), nowTurnData.getRivalPlayers()));
 		}
 	}
 	
 	// getter
-	public ArrayList<PaintGameData> getPaintGameDataList(){
-		return logPaintDataList;
+	public ArrayList<TurnData> getTurnDataList(){
+		return logTurnDataList;
+	}
+	
+	public GameData getGameData() {
+		return logGameData;
 	}
 }

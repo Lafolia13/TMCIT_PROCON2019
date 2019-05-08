@@ -14,6 +14,7 @@ import javax.swing.SpinnerNumberModel;
 
 import tmcit.yasu.data.PaintGameData;
 import tmcit.yasu.game.GameLogMaster;
+import tmcit.yasu.game.TurnData;
 import tmcit.yasu.ui.game.GameLogPanel;
 import tmcit.yasu.util.Constant;
 import tmcit.yasu.util.FileManager;
@@ -76,16 +77,11 @@ public class SettingPanel extends JPanel implements ActionListener{
 		add(loadLogButton);
 	}
 	
-	private ArrayList<PaintGameData> readPaintGameDataFromLog(File logFile){
-		GameLogMaster logMaster = new GameLogMaster(logFile);
-		return logMaster.getPaintGameDataList();
-	}
-	
 	private void showLogGames(File[] logFiles) {
 		for(File nowLog : logFiles) {
 			System.out.println(nowLog.getName());
-			ArrayList<PaintGameData> paintGameDataList = readPaintGameDataFromLog(nowLog);
-			mainFrame.addTabbedPanel("ÉçÉO", new GameLogPanel(paintGameDataList));
+			GameLogMaster logMaster = new GameLogMaster(nowLog);
+			mainFrame.addTabbedPanel("ÉçÉO", new GameLogPanel(logMaster.getTurnDataList(), logMaster.getGameData()));
 		}
 	}
 
