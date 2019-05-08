@@ -139,20 +139,20 @@ public class GameMaster implements Runnable{
 
 		while(true) {
 			turnInput();
-			// それぞれの行動を取得
+			// get players actions
 			System.out.println("[SYSTEM]:End input data.");
 			ArrayList<String> myPlayerActions = getPlayerActions(myPlayer);
 			System.out.println("[SYSTEM]:End my player action.");
 			ArrayList<String> rivalPlayerActions = getPlayerActions(rivalPlayer);
 			System.out.println("[SYSTEM]:End rival player action.");
 
-			// 行動を反映
+			// reflect actions
 			TurnData nextTurnData = nowTurnData.nextTurn(myPlayerActions, rivalPlayerActions);
 			System.out.println("[SYSTEM]:End calc turn.");
 			
-			// ログに記録して描画に反映
+			// write log and paint
 			logManager.logTurnAction(myPlayerActions, rivalPlayerActions);
-      paintTurnData(myPlayerActions, rivalPlayerActions);
+			paintTurnData(myPlayerActions, rivalPlayerActions);
       
 			try {
 				Thread.sleep(1000);
@@ -162,7 +162,7 @@ public class GameMaster implements Runnable{
 			nowTurnData = nextTurnData;
 			paintTurnData(new ArrayList<>(), new ArrayList<>());
 
-			// 終了処理
+			// exit
 			System.out.println("[SYSTEM]:End Turn[" + nowTurnData.getNowTurn() + "]");
 			if(nowTurnData.getNowTurn() > gameData.getMaxTurn()) {
 				break;
