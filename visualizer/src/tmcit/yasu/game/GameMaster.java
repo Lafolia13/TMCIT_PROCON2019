@@ -28,14 +28,21 @@ public class GameMaster implements Runnable{
 
 	// util
 	private LogManager logManager;
+	
+	// setting
+	private int sleepTime;
+	private boolean showActionFlag;
 
 	public GameMaster(GameData gameData0, Player myPlayer0, Player rivalPlayer0
-			, GameMainPanel gamePanel0, GameManageData gameManageData0, FileManager fileManager) {
+			, GameMainPanel gamePanel0, GameManageData gameManageData0, FileManager fileManager,
+			int sleepTime0, boolean showActionFlag0) {
 		gameData = gameData0;
 		myPlayer = myPlayer0;
 		rivalPlayer = rivalPlayer0;
 		gamePanel = gamePanel0;
 		gameManageData = gameManageData0;
+		sleepTime = sleepTime0;
+		showActionFlag = showActionFlag0;
 
 		init(fileManager);
 	}
@@ -139,30 +146,31 @@ public class GameMaster implements Runnable{
 
 		while(true) {
 			turnInput();
-			// それぞれの行動を取得
+			// get players actions
 			System.out.println("[SYSTEM]:End input data.");
 			ArrayList<String> myPlayerActions = getPlayerActions(myPlayer);
 			System.out.println("[SYSTEM]:End my player action.");
 			ArrayList<String> rivalPlayerActions = getPlayerActions(rivalPlayer);
 			System.out.println("[SYSTEM]:End rival player action.");
 
-			// 行動を反映
+			// reflect actions
 			TurnData nextTurnData = nowTurnData.nextTurn(myPlayerActions, rivalPlayerActions);
 			System.out.println("[SYSTEM]:End calc turn.");
 			
-			// ログに記録して描画に反映
+			// write log and paint
 			logManager.logTurnAction(myPlayerActions, rivalPlayerActions);
-      paintTurnData(myPlayerActions, rivalPlayerActions);
+			
+			if(showActionFlag) paintTurnData(myPlayerActions, rivalPlayerActions);
       
 			try {
-				Thread.sleep(1000);
+				Thread.sleep(sleepTime);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
 			nowTurnData = nextTurnData;
 			paintTurnData(new ArrayList<>(), new ArrayList<>());
 
-			// 終了処理
+			// exit
 			System.out.println("[SYSTEM]:End Turn[" + nowTurnData.getNowTurn() + "]");
 			if(nowTurnData.getNowTurn() > gameData.getMaxTurn()) {
 				break;

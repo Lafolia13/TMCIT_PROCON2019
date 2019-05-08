@@ -213,6 +213,11 @@ public class FileManager {
 	public File getProcon30Directory() {
 		return procon30Directory;
 	}
+	
+	public File getSettingFile() {
+		File settingFile = settingDirectory.getAbsoluteFile();
+		return new File(settingFile.getAbsoluteFile() + "\\setting.txt");
+	}
 
 	public File getLogFile() {
 		File logFile = logDirectory.getAbsoluteFile();
