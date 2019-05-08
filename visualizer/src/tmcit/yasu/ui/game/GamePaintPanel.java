@@ -184,6 +184,27 @@ public class GamePaintPanel extends JPanel{
 		
 		g2.setColor(Color.BLACK);
 	}
+	
+	private void paintActions(Graphics2D g2, ArrayList<String> playerCmds, boolean isMyPlayer) {
+		for(int i = 0;i < playerCmds.size();i++) {
+			String nowCmd = playerCmds.get(i);
+			int way = nowCmd.charAt(1) - '0';
+			
+			Point fromP, toP;
+			if(isMyPlayer) {
+				fromP = paintGameData.getMyPlayers().get(i);
+			}else {
+				fromP = paintGameData.getRivalPlayers().get(i);
+			}
+			toP = new Point(fromP.x + Constant.DIR_X[way], fromP.y + Constant.DIR_Y[way]);
+			
+			if(nowCmd.charAt(0) == 'w') {
+				paintArrow(g2, fromP, toP, true);
+			}else if(nowCmd.charAt(0) == 'e') {
+				paintArrow(g2, fromP, toP, false);
+			}
+		}
+	}
 
 	@Override
 	protected void paintComponent(Graphics g) {
@@ -196,6 +217,7 @@ public class GamePaintPanel extends JPanel{
 		paintScore(g2);
 		paintPlayers(g2);
 		
-//		paintArrow(g2, new Point(0, 0), new Point(1, 1), false);
+		paintActions(g2, paintGameData.getMyPlayerCmds(), true);
+		paintActions(g2, paintGameData.getRivalPlayerCmds(), false);
 	}
 }

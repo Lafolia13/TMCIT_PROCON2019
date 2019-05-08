@@ -114,8 +114,8 @@ public class GameMaster implements Runnable{
 		return ret;
 	}
 
-	private void paintTurnData() {
-		gamePanel.reflectGameData(gameData, nowTurnData);
+	private void paintTurnData(ArrayList<String> myPlayerCmds, ArrayList<String> rivalPlayerCmds) {
+		gamePanel.reflectGameData(gameData, nowTurnData, myPlayerCmds, rivalPlayerCmds);
 	}
 
 	private void endGameMaster() {
@@ -125,7 +125,7 @@ public class GameMaster implements Runnable{
 	@Override
 	public void run() {
 		System.out.println("[SYSTEM]:Start GameMaster.");
-		paintTurnData();
+		paintTurnData(new ArrayList<>(), new ArrayList<>());
 		firstInput();
 		System.out.println("[SYSTEM]:End first input.");
 
@@ -138,16 +138,17 @@ public class GameMaster implements Runnable{
 			System.out.println("[SYSTEM]:End rival player action.");
 
 			TurnData nextTurnData = nowTurnData.nextTurn(myPlayerActions, rivalPlayerActions);
-			nowTurnData = nextTurnData;
 			System.out.println("[SYSTEM]:End calc turn.");
 
 			//
-			paintTurnData();
+			paintTurnData(myPlayerActions, rivalPlayerActions);
 			try {
-				Thread.sleep(100);
+				Thread.sleep(1000);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
+			nowTurnData = nextTurnData;
+			paintTurnData(new ArrayList<>(), new ArrayList<>());
 
 			// èIóπèàóù
 			System.out.println("[SYSTEM]:End Turn[" + nowTurnData.getNowTurn() + "]");
