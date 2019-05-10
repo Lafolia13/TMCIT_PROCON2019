@@ -1,46 +1,56 @@
 # visualizer
 
-# exe�̓��o��
+# 人間が操作するとき
 
-## exe�ɓ���
-### ������
+| コマンド | キーボード |
+| :--- | :--- |
+| 停留 | n |
+| 移動 | w |
+| 除去 | e |
+
+方向を矢印キーで指定しながらコマンドのキーボードを打つ。
+
+# exeの入出力
+
+## exeに入力
+### 初期化
 maxTurn
 
 w
 
 h
 
-�G�[�W�F���g��(N)
+エージェント数(N)
 
-h�sw��̃}�b�v�̃X�R�A
+h行w列のマップのスコア
 
-### �^�[���̎n�܂薈
+### ターンの始まり毎
 nowTurn
 
-h�sw��̗̈���(0:none, 1:rival, 2:my)
+h行w列の領域情報(0:none, 1:rival, 2:my)
 
-MY_X_i MY_Y_i // N�s�̎����̃G�[�W�F���g�̈ʒu���(�����(0, 0))
+MY_X_i MY_Y_i // N行の自分のエージェントの位置情報(左上を(0, 0))
 
-RIVAL_X_i RIVAL_Y_i // N�s�̑���̃G�[�W�F���g�̈ʒu���
+RIVAL_X_i RIVAL_Y_i // N行の相手のエージェントの位置情報
 
-## exe�̏o��
-N�s�ŃG�[�W�F���g�̍s�����o��
+## exeの出力
+N行でエージェントの行動を出力
 
-0~8�ŕ������w��
+0~8で方向を指定
 
-�ړ���w, �^�C��������e, �������Ȃ���n
+移動がw, タイル除去がe, 何もしないはn
 
-# map�̃f�[�^
+# mapのデータ
 maxTurn
 
 w
 
 h
 
-h�sw��̗̈�|�C���g
+h行w列の領域ポイント
 
-�G�[�W�F���g��(N)
+エージェント数(N)
 
-�����̃G�[�W�F���g�̈ʒu(N�s��x, y)
+自分のエージェントの位置(N行でx, y)
 
-����̃G�[�W�F���g�̈ʒu(N�s��x, y)
+相手のエージェントの位置(N行でx, y)
