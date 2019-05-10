@@ -64,6 +64,7 @@ public class HumanPlayerKeyListener implements KeyListener{
 			lastTypeArrow = Constant.KEY_RIGHT_DOWN;
 		}else {
 			lastTypeArrow = Constant.KEY_NONE;
+			lastTypeAction = '-';
 		}
 	}
 	
