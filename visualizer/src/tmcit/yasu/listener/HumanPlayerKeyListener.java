@@ -37,6 +37,9 @@ public class HumanPlayerKeyListener implements KeyListener{
 		if(lastTypeArrow != Constant.KEY_NONE && lastTypeAction != '-') {
 			return String.valueOf(lastTypeAction) + String.valueOf(lastTypeArrow);
 		}
+		if(lastTypeAction == 'n' && lastTypeArrow == Constant.KEY_NONE) {
+			return "n4";
+		}
 		return "";
 	}
 	
@@ -75,6 +78,8 @@ public class HumanPlayerKeyListener implements KeyListener{
 			lastTypeAction = 'w';
 		}else if(typeChar == 'e') {
 			lastTypeAction = 'e';
+		}else if(typeChar == 'n') {
+			lastTypeAction = 'n';
 		}else {
 			lastTypeAction = '-';
 		}

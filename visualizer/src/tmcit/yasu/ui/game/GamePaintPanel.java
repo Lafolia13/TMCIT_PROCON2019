@@ -222,6 +222,7 @@ public class GamePaintPanel extends JPanel{
 			}
 			toP = new Point(fromP.x + Constant.DIR_X[way], fromP.y + Constant.DIR_Y[way]);
 			
+			if(nowCmd.charAt(0) == 'n') continue;
 			paintArrow(g2, fromP, toP, nowCmd.charAt(0));
 		}
 	}
