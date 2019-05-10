@@ -5,6 +5,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import tmcit.yasu.data.GameManageData;
+import tmcit.yasu.listener.HumanPlayerKeyListener;
 import tmcit.yasu.player.Player;
 import tmcit.yasu.ui.AgentSelectPanel;
 import tmcit.yasu.ui.MainFrame;
@@ -46,10 +47,11 @@ public class GameStarter implements Runnable{
 
 			gameManageData.plusRunningGame();
 
-			Player myPlayer = myAgentSelectPanel.getPlayer();
-			Player rivalPlayer = rivalAgentSelectPanel.getPlayer();
+			HumanPlayerKeyListener humanPlayerKeyListener = new HumanPlayerKeyListener();
+			Player myPlayer = myAgentSelectPanel.getPlayer(humanPlayerKeyListener);
+			Player rivalPlayer = rivalAgentSelectPanel.getPlayer(humanPlayerKeyListener);
 
-			RunGameThread runGameThread = new RunGameThread(mainFrame, myPlayer, rivalPlayer, nowGameData, gameManageData, fileManager, settingPanel);
+			RunGameThread runGameThread = new RunGameThread(mainFrame, myPlayer, rivalPlayer, nowGameData, gameManageData, fileManager, settingPanel, humanPlayerKeyListener);
 			ExecutorService exec = Executors.newSingleThreadExecutor();
 			exec.submit(runGameThread);
 		}
