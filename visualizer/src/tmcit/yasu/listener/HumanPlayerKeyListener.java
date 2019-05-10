@@ -40,6 +40,13 @@ public class HumanPlayerKeyListener implements KeyListener{
 		return "";
 	}
 	
+	public int getLastTypeWay() {
+		if(lastTypeArrow != Constant.KEY_NONE) {
+			return lastTypeArrow;
+		}
+		return -1;
+	}
+	
 	// key
 	private void checkLastTypeArrow() {
 		if(up & !down & left & !right) {

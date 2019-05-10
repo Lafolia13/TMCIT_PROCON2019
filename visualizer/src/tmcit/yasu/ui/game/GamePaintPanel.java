@@ -16,6 +16,8 @@ import tmcit.yasu.util.Constant;
 public class GamePaintPanel extends JPanel{
 	private PaintGameData paintGameData;
 	private boolean isPreviewMode;
+	private Point noneArrowPoint;
+	private int noneArrowWay;
 
 	public GamePaintPanel(PaintGameData paintGameData0, boolean isPreviewMode0) {
 		paintGameData = paintGameData0;
@@ -33,6 +35,19 @@ public class GamePaintPanel extends JPanel{
 
 	public void reflectGameData(PaintGameData newPaintGameData) {
 		paintGameData = newPaintGameData;
+		repaint();
+	}
+	
+	public void paintNoneArrow(boolean isMyPlayer, int playerIndex, int way) {
+		ArrayList<Point> playerPoints;
+		if(isMyPlayer) {
+			playerPoints = paintGameData.getMyPlayers();
+		}else {
+			playerPoints = paintGameData.getRivalPlayers();
+		}
+		Point nowPoint = playerPoints.get(playerIndex);
+		noneArrowPoint = nowPoint;
+		noneArrowWay = way;
 		repaint();
 	}
 
@@ -129,7 +144,7 @@ public class GamePaintPanel extends JPanel{
 	}
 	
 	// startからendへの矢印の描画(Pointはマスの座標)
-	private void paintArrow(Graphics2D g2, Point start, Point end, boolean isWalk) {
+	private void paintArrow(Graphics2D g2, Point start, Point end, char action) {
 		
 		int drawInterval = calcDrawInterval();
 		int plusInterval = (int)(0.5 * drawInterval);
@@ -171,10 +186,12 @@ public class GamePaintPanel extends JPanel{
 		int[] arrowY = {(int)lly1, (int)rry1, (int)rry2, (int)ry, ey, (int)ly, (int)lly2};
 		
 		// 中身
-		if(isWalk) {
+		if(action == 'w') {
 			g2.setColor(Constant.WALK_COLOR);
-		}else {
+		}else if(action == 'e'){
 			g2.setColor(Constant.ERASE_COLOR);
+		}else if(action == 'n') {
+			g2.setColor(Color.WHITE);
 		}
 		g2.fillPolygon(arrowX, arrowY, 7);
 		// 枠
@@ -198,11 +215,7 @@ public class GamePaintPanel extends JPanel{
 			}
 			toP = new Point(fromP.x + Constant.DIR_X[way], fromP.y + Constant.DIR_Y[way]);
 			
-			if(nowCmd.charAt(0) == 'w') {
-				paintArrow(g2, fromP, toP, true);
-			}else if(nowCmd.charAt(0) == 'e') {
-				paintArrow(g2, fromP, toP, false);
-			}
+			paintArrow(g2, fromP, toP, nowCmd.charAt(0));
 		}
 	}
 	
@@ -216,6 +229,12 @@ public class GamePaintPanel extends JPanel{
 		
 		g2.setColor(Constant.HIGH_LIGHT_COLOR);
 		g2.drawRect(px, py, drawInterval, drawInterval);
+	}
+	
+	private void paintNoneArrow(Graphics2D g2) {
+		if(noneArrowPoint == null) return;
+		Point toPoint = new Point(noneArrowPoint.x + Constant.DIR_X[noneArrowWay], noneArrowPoint.y + Constant.DIR_Y[noneArrowWay]);
+		paintArrow(g2, noneArrowPoint, toPoint, 'n');
 	}
 
 	@Override
@@ -233,5 +252,6 @@ public class GamePaintPanel extends JPanel{
 		paintActions(g2, paintGameData.getRivalPlayerCmds(), false);
 		
 		paintHighlightPlayer(g2, paintGameData.getHighlightPoint());
+		paintNoneArrow(g2);
 	}
 }

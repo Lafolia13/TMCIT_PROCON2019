@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import tmcit.yasu.data.GameManageData;
 import tmcit.yasu.data.PaintGameData;
 import tmcit.yasu.listener.HumanPlayerKeyListener;
+import tmcit.yasu.player.HumanPlayer;
 import tmcit.yasu.player.Player;
 import tmcit.yasu.ui.MainFrame;
 import tmcit.yasu.ui.SettingPanel;
@@ -62,6 +63,14 @@ public class RunGameThread extends Thread{
 		GameMainPanel gameMainPanel = new GameMainPanel(mainFrame, getInitPaintGameData(), myPlayer, rivalPlayer, humanPlayerKeyListener);
 
 		mainFrame.addTabbedPanel("ÉQÅ[ÉÄ", gameMainPanel);
+		
+		// HumanPlayerÇÃèÍçá
+		if(myPlayer instanceof HumanPlayer) {
+			((HumanPlayer)myPlayer).setGameMainPanelAndInfo(gameMainPanel, gameData.getHowPlayer(), true);
+		}
+		if(rivalPlayer instanceof HumanPlayer) {
+			((HumanPlayer)rivalPlayer).setGameMainPanelAndInfo(gameMainPanel, gameData.getHowPlayer(), false);
+		}
 
 		GameMaster gameMaster = new GameMaster(gameData, myPlayer, rivalPlayer, gameMainPanel, gameManageData, fileManager
 				, settingPanel.getSleepTime(), settingPanel.isSelectedShowActionRadioButton());

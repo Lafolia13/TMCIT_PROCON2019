@@ -1,13 +1,28 @@
 package tmcit.yasu.player;
 
 import tmcit.yasu.listener.HumanPlayerKeyListener;
+import tmcit.yasu.ui.game.GameMainPanel;
 import tmcit.yasu.util.Constant;
 
 public class HumanPlayer implements Player{
 	private HumanPlayerKeyListener humanPlayerKeyListener;
+	private GameMainPanel gameMainPanel;
+	private boolean isMyPlayer;
+	private int nowPlayerIndex, maxPlayer;
 	
 	public HumanPlayer(HumanPlayerKeyListener humanPlayerKeyListener0) {
 		humanPlayerKeyListener = humanPlayerKeyListener0;
+	}
+	
+	public void setGameMainPanelAndInfo(GameMainPanel gameMainPanel0, int maxPlayer0, boolean isMyPlayer0) {
+		gameMainPanel = gameMainPanel0;
+		maxPlayer = maxPlayer0;
+		isMyPlayer = isMyPlayer0;
+		nowPlayerIndex = 0;
+	}
+	
+	private void paintArrow(int way) {
+		gameMainPanel.paintNoneArrow(isMyPlayer, nowPlayerIndex, way);
 	}
 
 	@Override
@@ -19,6 +34,11 @@ public class HumanPlayer implements Player{
 			if(!action.isEmpty()) {
 				break;
 			}
+			// –îˆó•`‰æ(Œˆ‚ß‚Ä‚È‚¢)
+			int way = humanPlayerKeyListener.getLastTypeWay();
+			if(way != -1) {
+				paintArrow(way);
+			}
 			
 			try {
 				Thread.sleep(Constant.KEY_GET_SLEEP_TIME);
@@ -26,6 +46,8 @@ public class HumanPlayer implements Player{
 				e.printStackTrace();
 			}
 		}
+		nowPlayerIndex++;
+		nowPlayerIndex = nowPlayerIndex % maxPlayer;
 		return action;
 	}
 

@@ -97,6 +97,10 @@ public class GameMainPanel extends JPanel{
 		gameInfoPanel.reflectGameData(nowTurnData.getNowTurn(), gameData.getMaxTurn(), nowScore.myTerritoryScore + nowScore.myTileScore, nowScore.rivalTerritoryScore + nowScore.rivalTileScore);
 		gamePaintPanel.reflectGameData(newPaintGameData);
 	}
+	
+	public void paintNoneArrow(boolean isMyPlayer, int playerIndex, int way) {
+		gamePaintPanel.paintNoneArrow(isMyPlayer, playerIndex, way);
+	}
 
 	// getter
 	public GamePaintPanel getGamePaintPanel() {
