@@ -3,6 +3,7 @@
 #include "../../action/changeaction.h"
 
 #include <vector>
+#include <set>
 #include <cstdint>
 
 namespace search {
