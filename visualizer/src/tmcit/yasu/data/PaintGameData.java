@@ -20,7 +20,7 @@ public class PaintGameData {
 		rivalPlayers = rivalPlayers0;
 		myPlayerCmds = new ArrayList<>();
 		rivalPlayerCmds = new ArrayList<>();
-		highlightPoint = new Point();
+		highlightPoint = new Point(-1, -1);
 	}
 	
 	public PaintGameData(int mapWidth0, int mapHeight0, int[][] mapScore0, int[][] territoryMap0

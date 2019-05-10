@@ -233,9 +233,11 @@ public class GamePaintPanel extends JPanel{
 		int drawInterval = calcDrawInterval();
 		int px = p.x * drawInterval;
 		int py = p.y * drawInterval;
-		
+
+		g2.setStroke(new BasicStroke(5.0f));
 		g2.setColor(Constant.HIGH_LIGHT_COLOR);
 		g2.drawRect(px, py, drawInterval, drawInterval);
+		g2.setStroke(new BasicStroke(1.0f));
 	}
 	
 	private void paintNoneArrow(Graphics2D g2) {
