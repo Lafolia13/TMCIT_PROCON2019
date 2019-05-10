@@ -44,6 +44,7 @@ public class Constant {
 	public static int KEY_LEFT_DOWN = 6;
 	public static int KEY_DOWN = 7;
 	public static int KEY_RIGHT_DOWN = 8;
+	public static int KEY_GET_SLEEP_TIME = 100;
 
 
 	// Util

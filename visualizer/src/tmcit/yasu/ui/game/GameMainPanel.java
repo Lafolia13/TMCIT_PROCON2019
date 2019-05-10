@@ -35,11 +35,13 @@ public class GameMainPanel extends JPanel{
 	private FocusMouseListener focusMouseListener;
 	private HumanPlayerKeyListener humanPlayerKeyListener;
 
-	public GameMainPanel(MainFrame mainFrame0, PaintGameData paintGameData0, Player myPlayer0, Player rivalPlayer0) {
+	public GameMainPanel(MainFrame mainFrame0, PaintGameData paintGameData0, Player myPlayer0, Player rivalPlayer0,
+			HumanPlayerKeyListener humanPlayerKeyListener0) {
 		mainFrame = mainFrame0;
 		myPlayer = myPlayer0;
 		rivalPlayer = rivalPlayer0;
 		paintGameData = paintGameData0;
+		humanPlayerKeyListener = humanPlayerKeyListener0;
 		init();
 		initLayout();
 		initExecPlayerStream();
@@ -54,7 +56,6 @@ public class GameMainPanel extends JPanel{
 		exitButton.setFont(Constant.DEFAULT_FONT);
 		
 		// listener
-		humanPlayerKeyListener = new HumanPlayerKeyListener();
 		focusMouseListener = new FocusMouseListener(this);
 
 		exitButton.addActionListener(new GameMainPanelActionListener(mainFrame, this));

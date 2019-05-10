@@ -17,11 +17,13 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 
 import tmcit.yasu.data.PresetTableModel;
+import tmcit.yasu.listener.HumanPlayerKeyListener;
 import tmcit.yasu.listener.PresetButtonListener;
 import tmcit.yasu.listener.PresetComboBoxListener;
 import tmcit.yasu.listener.PresetParamTableModelListener;
 import tmcit.yasu.listener.SolverComboBoxListener;
 import tmcit.yasu.player.ExecPlayer;
+import tmcit.yasu.player.HumanPlayer;
 import tmcit.yasu.player.Player;
 import tmcit.yasu.util.Constant;
 import tmcit.yasu.util.FileManager;
@@ -130,7 +132,7 @@ public class AgentSelectPanel extends JPanel{
 	}
 
 	// getter
-	public Player getPlayer() {
+	public Player getPlayer(HumanPlayerKeyListener humanPlayerKeyListener) {
 		if(programRadio.isSelected()) {
 			int solverIndex = solverComboBox.getSelectedIndex();
 			String solverName = solverComboBox.getItemAt(solverIndex);
@@ -148,6 +150,9 @@ public class AgentSelectPanel extends JPanel{
 
 			ExecPlayer execPlayer = new ExecPlayer(cmd);
 			return execPlayer;
+		}else if(humanRadio.isSelected()) {
+			HumanPlayer humanPlayer = new HumanPlayer(humanPlayerKeyListener);
+			return humanPlayer;
 		}
 		return null;
 	}

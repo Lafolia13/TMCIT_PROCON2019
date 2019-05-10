@@ -20,7 +20,16 @@ public class HumanPlayerKeyListener implements KeyListener{
 		right = false;
 		lastTypeArrow = Constant.KEY_NONE;
 	}
-
+	
+	// getter
+	public String getLastTypeAction() {
+		if(lastTypeArrow != Constant.KEY_NONE) {
+			return "w" + String.valueOf(lastTypeArrow);
+		}
+		return "";
+	}
+	
+	// key
 	private void checkLastTypeArrow() {
 		if(up & !down & left & !right) {
 			lastTypeArrow = Constant.KEY_LEFT_UP;
