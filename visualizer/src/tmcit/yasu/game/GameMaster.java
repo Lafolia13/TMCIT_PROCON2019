@@ -26,6 +26,7 @@ public class GameMaster implements Runnable{
 
 	// now game data
 	private TurnData nowTurnData;
+	private ArrayList<String> myPlayerActions, rivalPlayerActions;
 
 	// util
 	private LogManager logManager;
@@ -49,6 +50,8 @@ public class GameMaster implements Runnable{
 	}
 
 	private void init(FileManager fileManager) {
+		myPlayerActions = new ArrayList<>();
+		rivalPlayerActions = new ArrayList<>();
 		hilightPoint = new Point(-1, -1);
 		nowTurnData = new TurnData(gameData);
 		logManager = new LogManager(fileManager);
@@ -121,15 +124,23 @@ public class GameMaster implements Runnable{
 			rivalPlayer.input(myPosition);
 		}
 	}
+	
+	private void resetPlayerActions() {
+		myPlayerActions = new ArrayList<>();
+		rivalPlayerActions = new ArrayList<>();
+	}
 
-	private ArrayList<String> getPlayerActions(Player player){
-		ArrayList<String> ret = new ArrayList<String>();
+	private void getPlayerActions(Player player, boolean isMyPlayer){
 		for(int i = 0;i < gameData.getHowPlayer();i++) {
 			hilightPoint = new Point(0, 0);
 			String action = player.getAction();
-			ret.add(action);
+			if(isMyPlayer) {
+				myPlayerActions.add(action);
+			}else {
+				rivalPlayerActions.add(action);
+			}
+			paintTurnData(myPlayerActions, rivalPlayerActions, hilightPoint);
 		}
-		return ret;
 	}
 
 	private void paintTurnData(ArrayList<String> myPlayerCmds, ArrayList<String> rivalPlayerCmds, Point hilightPoint) {
@@ -156,10 +167,11 @@ public class GameMaster implements Runnable{
 		while(true) {
 			turnInput();
 			// get players actions
+			resetPlayerActions();
 			System.out.println("[SYSTEM]:End input data.");
-			ArrayList<String> myPlayerActions = getPlayerActions(myPlayer);
+			getPlayerActions(myPlayer, true);
 			System.out.println("[SYSTEM]:End my player action.");
-			ArrayList<String> rivalPlayerActions = getPlayerActions(rivalPlayer);
+			getPlayerActions(rivalPlayer, false);
 			System.out.println("[SYSTEM]:End rival player action.");
 
 			// reflect actions
