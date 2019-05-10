@@ -22,6 +22,7 @@ public class GameMaster implements Runnable{
 
 	private GameData gameData;
 	private Player myPlayer, rivalPlayer;
+	private Point hilightPoint;
 
 	// now game data
 	private TurnData nowTurnData;
@@ -48,6 +49,7 @@ public class GameMaster implements Runnable{
 	}
 
 	private void init(FileManager fileManager) {
+		hilightPoint = new Point(-1, -1);
 		nowTurnData = new TurnData(gameData);
 		logManager = new LogManager(fileManager);
 		logManager.logGameData(gameData);
@@ -123,14 +125,15 @@ public class GameMaster implements Runnable{
 	private ArrayList<String> getPlayerActions(Player player){
 		ArrayList<String> ret = new ArrayList<String>();
 		for(int i = 0;i < gameData.getHowPlayer();i++) {
+			hilightPoint = new Point(0, 0);
 			String action = player.getAction();
 			ret.add(action);
 		}
 		return ret;
 	}
 
-	private void paintTurnData(ArrayList<String> myPlayerCmds, ArrayList<String> rivalPlayerCmds) {
-		gamePanel.reflectGameData(gameData, nowTurnData, myPlayerCmds, rivalPlayerCmds);
+	private void paintTurnData(ArrayList<String> myPlayerCmds, ArrayList<String> rivalPlayerCmds, Point hilightPoint) {
+		gamePanel.reflectGameData(gameData, nowTurnData, myPlayerCmds, rivalPlayerCmds, hilightPoint);
 	}
 
 	private void endGameMaster() {
@@ -146,7 +149,7 @@ public class GameMaster implements Runnable{
 	@Override
 	public void run() {
 		System.out.println("[SYSTEM]:Start GameMaster.");
-		paintTurnData(new ArrayList<>(), new ArrayList<>());
+		paintTurnData(new ArrayList<>(), new ArrayList<>(), hilightPoint);
 		firstInput();
 		System.out.println("[SYSTEM]:End first input.");
 
@@ -166,7 +169,7 @@ public class GameMaster implements Runnable{
 			// write log and paint
 			logManager.logTurnAction(myPlayerActions, rivalPlayerActions);
 			
-			if(showActionFlag) paintTurnData(myPlayerActions, rivalPlayerActions);
+			if(showActionFlag) paintTurnData(myPlayerActions, rivalPlayerActions, hilightPoint);
       
 			try {
 				Thread.sleep(sleepTime);
@@ -174,7 +177,7 @@ public class GameMaster implements Runnable{
 				e.printStackTrace();
 			}
 			nowTurnData = nextTurnData;
-			paintTurnData(new ArrayList<>(), new ArrayList<>());
+			paintTurnData(new ArrayList<>(), new ArrayList<>(), hilightPoint);
 
 			// exit
 			System.out.println("[SYSTEM]:End Turn[" + nowTurnData.getNowTurn() + "]");

@@ -1,5 +1,6 @@
 package tmcit.yasu.ui.game;
 
+import java.awt.Point;
 import java.util.ArrayList;
 
 import javax.swing.JButton;
@@ -88,9 +89,9 @@ public class GameMainPanel extends JPanel{
 		}
 	}
 
-	public void reflectGameData(GameData gameData, TurnData nowTurnData, ArrayList<String> myPlayerCmds, ArrayList<String> rivalPlayerCmds) {
+	public void reflectGameData(GameData gameData, TurnData nowTurnData, ArrayList<String> myPlayerCmds, ArrayList<String> rivalPlayerCmds, Point hilightPoint) {
 		PaintGameData newPaintGameData = new PaintGameData(gameData.getMapWidth(), gameData.getMapHeight(), gameData.getMapScore(), nowTurnData.getTerritoryMap()
-				, nowTurnData.getMyPlayers(), nowTurnData.getRivalPlayers(), myPlayerCmds, rivalPlayerCmds);
+				, nowTurnData.getMyPlayers(), nowTurnData.getRivalPlayers(), myPlayerCmds, rivalPlayerCmds, hilightPoint);
 		ScoreData nowScore = nowTurnData.calcScore();
 
 		gameInfoPanel.reflectGameData(nowTurnData.getNowTurn(), gameData.getMaxTurn(), nowScore.myTerritoryScore + nowScore.myTileScore, nowScore.rivalTerritoryScore + nowScore.rivalTileScore);

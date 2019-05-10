@@ -13,6 +13,7 @@ public class HumanPlayer implements Player{
 	@Override
 	public String getAction() {
 		String action;
+		humanPlayerKeyListener.resetType();
 		while(true) {
 			action = humanPlayerKeyListener.getLastTypeAction();
 			if(!action.isEmpty()) {

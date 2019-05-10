@@ -205,6 +205,15 @@ public class GamePaintPanel extends JPanel{
 			}
 		}
 	}
+	
+	private void paintHighlightPlayer(Graphics2D g2, Point p) {
+		int drawInterval = calcDrawInterval();
+		int px = p.x * drawInterval;
+		int py = p.y * drawInterval;
+		
+		g2.setColor(Constant.HIGH_LIGHT_COLOR);
+		g2.drawRect(px, py, drawInterval, drawInterval);
+	}
 
 	@Override
 	protected void paintComponent(Graphics g) {
@@ -219,5 +228,7 @@ public class GamePaintPanel extends JPanel{
 		
 		paintActions(g2, paintGameData.getMyPlayerCmds(), true);
 		paintActions(g2, paintGameData.getRivalPlayerCmds(), false);
+		
+		paintHighlightPlayer(g2, paintGameData.getHighlightPoint());
 	}
 }

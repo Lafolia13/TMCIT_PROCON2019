@@ -8,7 +8,8 @@ import tmcit.yasu.util.Constant;
 public class HumanPlayerKeyListener implements KeyListener{
 	private boolean up, down, left, right;
 	private int lastTypeArrow;
-	
+	private char lastTypeAction;
+
 	public HumanPlayerKeyListener() {
 		init();
 	}
@@ -19,12 +20,22 @@ public class HumanPlayerKeyListener implements KeyListener{
 		left = false;
 		right = false;
 		lastTypeArrow = Constant.KEY_NONE;
+		lastTypeAction = '-';
+	}
+	
+	public void resetType() {
+		lastTypeAction = '-';
+		lastTypeArrow = Constant.KEY_NONE;
+		up = false;
+		down = false;
+		left = false;
+		right = false;
 	}
 	
 	// getter
 	public String getLastTypeAction() {
-		if(lastTypeArrow != Constant.KEY_NONE) {
-			return "w" + String.valueOf(lastTypeArrow);
+		if(lastTypeArrow != Constant.KEY_NONE && lastTypeAction != '-') {
+			return String.valueOf(lastTypeAction) + String.valueOf(lastTypeArrow);
 		}
 		return "";
 	}
@@ -54,6 +65,14 @@ public class HumanPlayerKeyListener implements KeyListener{
 	
 	@Override
 	public void keyTyped(KeyEvent e) {
+		char typeChar = e.getKeyChar();
+		if(typeChar == 'w') {
+			lastTypeAction = 'w';
+		}else if(typeChar == 'e') {
+			lastTypeAction = 'e';
+		}else {
+			lastTypeAction = '-';
+		}
 	}
 
 	@Override
