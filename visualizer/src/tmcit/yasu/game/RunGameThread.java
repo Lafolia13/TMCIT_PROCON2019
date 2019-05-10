@@ -5,6 +5,8 @@ import java.util.ArrayList;
 
 import tmcit.yasu.data.GameManageData;
 import tmcit.yasu.data.PaintGameData;
+import tmcit.yasu.listener.HumanPlayerKeyListener;
+import tmcit.yasu.player.HumanPlayer;
 import tmcit.yasu.player.Player;
 import tmcit.yasu.ui.MainFrame;
 import tmcit.yasu.ui.SettingPanel;
@@ -21,10 +23,11 @@ public class RunGameThread extends Thread{
 	private GameData gameData;
 	private GameManageData gameManageData;
 	private FileManager fileManager;
+	private HumanPlayerKeyListener humanPlayerKeyListener;
 
 	public RunGameThread(MainFrame mainFrame0, Player myPlayer0, Player rivalPlayer0
 			, GameData gameData0, GameManageData gameManageData0, FileManager fileManager0
-			, SettingPanel settingPanel0) {
+			, SettingPanel settingPanel0, HumanPlayerKeyListener humanPlayerKeyListener0) {
 		mainFrame = mainFrame0;
 		settingPanel = settingPanel0;
 		myPlayer = myPlayer0;
@@ -32,6 +35,7 @@ public class RunGameThread extends Thread{
 		gameData = gameData0;
 		gameManageData = gameManageData0;
 		fileManager = fileManager0;
+		humanPlayerKeyListener = humanPlayerKeyListener0;
 	}
 
 	private PaintGameData getInitPaintGameData() {
@@ -56,9 +60,17 @@ public class RunGameThread extends Thread{
 
 	@Override
 	public void run() {
-		GameMainPanel gameMainPanel = new GameMainPanel(mainFrame, getInitPaintGameData(), myPlayer, rivalPlayer);
+		GameMainPanel gameMainPanel = new GameMainPanel(mainFrame, getInitPaintGameData(), myPlayer, rivalPlayer, humanPlayerKeyListener);
 
 		mainFrame.addTabbedPanel("ÉQÅ[ÉÄ", gameMainPanel);
+		
+		// HumanPlayerÇÃèÍçá
+		if(myPlayer instanceof HumanPlayer) {
+			((HumanPlayer)myPlayer).setGameMainPanelAndInfo(gameMainPanel, gameData.getHowPlayer(), true);
+		}
+		if(rivalPlayer instanceof HumanPlayer) {
+			((HumanPlayer)rivalPlayer).setGameMainPanelAndInfo(gameMainPanel, gameData.getHowPlayer(), false);
+		}
 
 		GameMaster gameMaster = new GameMaster(gameData, myPlayer, rivalPlayer, gameMainPanel, gameManageData, fileManager
 				, settingPanel.getSleepTime(), settingPanel.isSelectedShowActionRadioButton());

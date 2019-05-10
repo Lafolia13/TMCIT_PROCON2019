@@ -30,9 +30,24 @@ public class Constant {
 	// arrow color
 	public static Color WALK_COLOR = new Color(0, 255, 0);
 	public static Color ERASE_COLOR = new Color(148, 0, 211);
+	
+	// highlight
+	public static Color HIGH_LIGHT_COLOR = Color.YELLOW;
 
 	// Game
 	public static int SLEEP_TIME = 50;
+	
+	// Human Key
+	public static int KEY_LEFT_UP = 0;
+	public static int KEY_UP = 1;
+	public static int KEY_RIGHT_UP = 2;
+	public static int KEY_LEFT = 3;
+	public static int KEY_NONE = 4;
+	public static int KEY_RIGHT = 5;
+	public static int KEY_LEFT_DOWN = 6;
+	public static int KEY_DOWN = 7;
+	public static int KEY_RIGHT_DOWN = 8;
+	public static int KEY_GET_SLEEP_TIME = 100;
 
 
 	// Util

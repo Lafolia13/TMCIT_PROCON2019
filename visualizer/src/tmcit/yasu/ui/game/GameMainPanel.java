@@ -1,5 +1,6 @@
 package tmcit.yasu.ui.game;
 
+import java.awt.Point;
 import java.util.ArrayList;
 
 import javax.swing.JButton;
@@ -9,7 +10,9 @@ import tmcit.yasu.data.PaintGameData;
 import tmcit.yasu.data.ScoreData;
 import tmcit.yasu.game.GameData;
 import tmcit.yasu.game.TurnData;
+import tmcit.yasu.listener.FocusMouseListener;
 import tmcit.yasu.listener.GameMainPanelActionListener;
+import tmcit.yasu.listener.HumanPlayerKeyListener;
 import tmcit.yasu.player.ExecPlayer;
 import tmcit.yasu.player.Player;
 import tmcit.yasu.ui.MainFrame;
@@ -28,12 +31,18 @@ public class GameMainPanel extends JPanel{
 
 	// Player
 	private Player myPlayer, rivalPlayer;
+	
+	// Listener
+	private FocusMouseListener focusMouseListener;
+	private HumanPlayerKeyListener humanPlayerKeyListener;
 
-	public GameMainPanel(MainFrame mainFrame0, PaintGameData paintGameData0, Player myPlayer0, Player rivalPlayer0) {
+	public GameMainPanel(MainFrame mainFrame0, PaintGameData paintGameData0, Player myPlayer0, Player rivalPlayer0,
+			HumanPlayerKeyListener humanPlayerKeyListener0) {
 		mainFrame = mainFrame0;
 		myPlayer = myPlayer0;
 		rivalPlayer = rivalPlayer0;
 		paintGameData = paintGameData0;
+		humanPlayerKeyListener = humanPlayerKeyListener0;
 		init();
 		initLayout();
 		initExecPlayerStream();
@@ -47,7 +56,12 @@ public class GameMainPanel extends JPanel{
 		exitButton = new JButton("•Â‚¶‚é");
 		exitButton.setFont(Constant.DEFAULT_FONT);
 		
+		// listener
+		focusMouseListener = new FocusMouseListener(this);
+
 		exitButton.addActionListener(new GameMainPanelActionListener(mainFrame, this));
+		addKeyListener(humanPlayerKeyListener);
+		addMouseListener(focusMouseListener);
 	}
 
 	private void initLayout() {
@@ -75,13 +89,17 @@ public class GameMainPanel extends JPanel{
 		}
 	}
 
-	public void reflectGameData(GameData gameData, TurnData nowTurnData, ArrayList<String> myPlayerCmds, ArrayList<String> rivalPlayerCmds) {
+	public void reflectGameData(GameData gameData, TurnData nowTurnData, ArrayList<String> myPlayerCmds, ArrayList<String> rivalPlayerCmds, Point hilightPoint) {
 		PaintGameData newPaintGameData = new PaintGameData(gameData.getMapWidth(), gameData.getMapHeight(), gameData.getMapScore(), nowTurnData.getTerritoryMap()
-				, nowTurnData.getMyPlayers(), nowTurnData.getRivalPlayers(), myPlayerCmds, rivalPlayerCmds);
+				, nowTurnData.getMyPlayers(), nowTurnData.getRivalPlayers(), myPlayerCmds, rivalPlayerCmds, hilightPoint);
 		ScoreData nowScore = nowTurnData.calcScore();
 
 		gameInfoPanel.reflectGameData(nowTurnData.getNowTurn(), gameData.getMaxTurn(), nowScore.myTerritoryScore + nowScore.myTileScore, nowScore.rivalTerritoryScore + nowScore.rivalTileScore);
 		gamePaintPanel.reflectGameData(newPaintGameData);
+	}
+	
+	public void paintNoneArrow(boolean isMyPlayer, int playerIndex, int way) {
+		gamePaintPanel.paintNoneArrow(isMyPlayer, playerIndex, way);
 	}
 
 	// getter
