@@ -207,6 +207,9 @@ public class GamePaintPanel extends JPanel{
 	}
 	
 	private void paintHighlightPlayer(Graphics2D g2, Point p) {
+		if(p.x == -1) {
+			return;
+		}
 		int drawInterval = calcDrawInterval();
 		int px = p.x * drawInterval;
 		int py = p.y * drawInterval;

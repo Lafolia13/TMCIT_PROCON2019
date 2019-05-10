@@ -22,7 +22,7 @@ public class GameMaster implements Runnable{
 
 	private GameData gameData;
 	private Player myPlayer, rivalPlayer;
-	private Point hilightPoint;
+	private Point highlightPoint;
 
 	// now game data
 	private TurnData nowTurnData;
@@ -52,7 +52,7 @@ public class GameMaster implements Runnable{
 	private void init(FileManager fileManager) {
 		myPlayerActions = new ArrayList<>();
 		rivalPlayerActions = new ArrayList<>();
-		hilightPoint = new Point(-1, -1);
+		highlightPoint = new Point(-1, -1);
 		nowTurnData = new TurnData(gameData);
 		logManager = new LogManager(fileManager);
 		logManager.logGameData(gameData);
@@ -132,14 +132,22 @@ public class GameMaster implements Runnable{
 
 	private void getPlayerActions(Player player, boolean isMyPlayer){
 		for(int i = 0;i < gameData.getHowPlayer();i++) {
-			hilightPoint = new Point(0, 0);
+			ArrayList<Point> playersPoint;
+			if(isMyPlayer) {
+				playersPoint = nowTurnData.getMyPlayers();
+			}else {
+				playersPoint = nowTurnData.getRivalPlayers();
+			}
+			highlightPoint = playersPoint.get(i);
+			paintTurnData(myPlayerActions, rivalPlayerActions, highlightPoint);
 			String action = player.getAction();
 			if(isMyPlayer) {
 				myPlayerActions.add(action);
 			}else {
 				rivalPlayerActions.add(action);
 			}
-			paintTurnData(myPlayerActions, rivalPlayerActions, hilightPoint);
+			highlightPoint = new Point(-1, -1);
+			paintTurnData(myPlayerActions, rivalPlayerActions, highlightPoint);
 		}
 	}
 
@@ -160,7 +168,7 @@ public class GameMaster implements Runnable{
 	@Override
 	public void run() {
 		System.out.println("[SYSTEM]:Start GameMaster.");
-		paintTurnData(new ArrayList<>(), new ArrayList<>(), hilightPoint);
+		paintTurnData(new ArrayList<>(), new ArrayList<>(), highlightPoint);
 		firstInput();
 		System.out.println("[SYSTEM]:End first input.");
 
@@ -181,7 +189,7 @@ public class GameMaster implements Runnable{
 			// write log and paint
 			logManager.logTurnAction(myPlayerActions, rivalPlayerActions);
 			
-			if(showActionFlag) paintTurnData(myPlayerActions, rivalPlayerActions, hilightPoint);
+			if(showActionFlag) paintTurnData(myPlayerActions, rivalPlayerActions, highlightPoint);
       
 			try {
 				Thread.sleep(sleepTime);
@@ -189,7 +197,7 @@ public class GameMaster implements Runnable{
 				e.printStackTrace();
 			}
 			nowTurnData = nextTurnData;
-			paintTurnData(new ArrayList<>(), new ArrayList<>(), hilightPoint);
+			paintTurnData(new ArrayList<>(), new ArrayList<>(), highlightPoint);
 
 			// exit
 			System.out.println("[SYSTEM]:End Turn[" + nowTurnData.getNowTurn() + "]");
