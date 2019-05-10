@@ -32,13 +32,12 @@ public class HumanPlayer implements Player{
 		while(true) {
 			action = humanPlayerKeyListener.getLastTypeAction();
 			if(!action.isEmpty()) {
+				paintArrow(4);
 				break;
 			}
 			// –îˆó•`‰æ(Œˆ‚ß‚Ä‚È‚¢)
 			int way = humanPlayerKeyListener.getLastTypeWay();
-			if(way != -1) {
-				paintArrow(way);
-			}
+			paintArrow(way);
 			
 			try {
 				Thread.sleep(Constant.KEY_GET_SLEEP_TIME);

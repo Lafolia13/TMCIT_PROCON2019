@@ -22,6 +22,7 @@ public class GamePaintPanel extends JPanel{
 	public GamePaintPanel(PaintGameData paintGameData0, boolean isPreviewMode0) {
 		paintGameData = paintGameData0;
 		isPreviewMode = isPreviewMode0;
+		noneArrowPoint = new Point(-1, -1);
 	}
 
 	private int calcDrawInterval() {
@@ -39,6 +40,12 @@ public class GamePaintPanel extends JPanel{
 	}
 	
 	public void paintNoneArrow(boolean isMyPlayer, int playerIndex, int way) {
+		if(way == 4) {
+			noneArrowPoint = new Point(-1, -1);
+			repaint();
+			return;
+		}
+		
 		ArrayList<Point> playerPoints;
 		if(isMyPlayer) {
 			playerPoints = paintGameData.getMyPlayers();
@@ -232,7 +239,7 @@ public class GamePaintPanel extends JPanel{
 	}
 	
 	private void paintNoneArrow(Graphics2D g2) {
-		if(noneArrowPoint == null) return;
+		if(noneArrowPoint.x == -1) return;
 		Point toPoint = new Point(noneArrowPoint.x + Constant.DIR_X[noneArrowWay], noneArrowPoint.y + Constant.DIR_Y[noneArrowWay]);
 		paintArrow(g2, noneArrowPoint, toPoint, 'n');
 	}
