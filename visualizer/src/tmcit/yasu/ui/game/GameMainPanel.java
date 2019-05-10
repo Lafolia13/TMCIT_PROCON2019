@@ -9,7 +9,9 @@ import tmcit.yasu.data.PaintGameData;
 import tmcit.yasu.data.ScoreData;
 import tmcit.yasu.game.GameData;
 import tmcit.yasu.game.TurnData;
+import tmcit.yasu.listener.FocusMouseListener;
 import tmcit.yasu.listener.GameMainPanelActionListener;
+import tmcit.yasu.listener.HumanPlayerKeyListener;
 import tmcit.yasu.player.ExecPlayer;
 import tmcit.yasu.player.Player;
 import tmcit.yasu.ui.MainFrame;
@@ -28,6 +30,10 @@ public class GameMainPanel extends JPanel{
 
 	// Player
 	private Player myPlayer, rivalPlayer;
+	
+	// Listener
+	private FocusMouseListener focusMouseListener;
+	private HumanPlayerKeyListener humanPlayerKeyListener;
 
 	public GameMainPanel(MainFrame mainFrame0, PaintGameData paintGameData0, Player myPlayer0, Player rivalPlayer0) {
 		mainFrame = mainFrame0;
@@ -47,7 +53,13 @@ public class GameMainPanel extends JPanel{
 		exitButton = new JButton("•Â‚¶‚é");
 		exitButton.setFont(Constant.DEFAULT_FONT);
 		
+		// listener
+		humanPlayerKeyListener = new HumanPlayerKeyListener();
+		focusMouseListener = new FocusMouseListener(this);
+
 		exitButton.addActionListener(new GameMainPanelActionListener(mainFrame, this));
+		addKeyListener(humanPlayerKeyListener);
+		addMouseListener(focusMouseListener);
 	}
 
 	private void initLayout() {
