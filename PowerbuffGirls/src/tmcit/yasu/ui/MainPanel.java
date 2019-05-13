@@ -3,17 +3,20 @@ package tmcit.yasu.ui;
 import javax.swing.JPanel;
 
 public class MainPanel extends JPanel{
+	private MainFrame mainFrame;
+	
 	private SolverSelectPanel solverSelectPanel;
 	private SettingPanel settingPanel;
 	
-	public MainPanel() {
+	public MainPanel(MainFrame mainFrame0) {
+		mainFrame = mainFrame0;
 		init();
 		initLayout();
 	}
 	
 	private void init() {
 		solverSelectPanel = new SolverSelectPanel();
-		settingPanel = new SettingPanel();
+		settingPanel = new SettingPanel(mainFrame);
 	}
 	
 	private void initLayout() {

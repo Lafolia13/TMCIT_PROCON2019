@@ -1,5 +1,7 @@
 package tmcit.yasu.ui;
 
+import java.awt.Component;
+
 import javax.swing.JFrame;
 import javax.swing.JTabbedPane;
 
@@ -20,11 +22,15 @@ public class MainFrame extends JFrame{
 	
 	private void init() {
 		tabbedPanel = new JTabbedPane();
-		mainPanel = new MainPanel();
+		mainPanel = new MainPanel(this);
 		tabbedPanel.add("スタート画面", mainPanel);
 	}
 	
 	private void initLayout() {
 		add(tabbedPanel);
+	}
+	
+	public void addPanel(String title, Component comp) {
+		tabbedPanel.add(title, comp);
 	}
 }
