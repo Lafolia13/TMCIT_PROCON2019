@@ -1,9 +1,11 @@
 package tmcit.yasu.main;
 
+import tmcit.yasu.ui.MainFrame;
+
 public class Main {
 
 	public static void main(String[] args) {
-		System.out.println("Hello World!");
+		MainFrame mainFrame = new MainFrame();
 	}
 
 }
