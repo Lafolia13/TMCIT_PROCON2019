@@ -1,6 +1,7 @@
 package tmcit.yasu.util;
 
 import java.io.File;
+import java.io.IOException;
 
 import javax.swing.LookAndFeel;
 import javax.swing.UIManager;
@@ -71,5 +72,21 @@ public class FileManager {
 		}
 		boolean res = file.delete();
 		System.out.println(res);
+	}
+	
+	// SolverSettingPanel用
+	// ソルバーの設定を保存しておくファイル
+	public void createNewSolver(String solverName) {
+		int ret = solverName.lastIndexOf(".txt");
+		String fileName = solverDirectory.getAbsoluteFile() + "\\" + solverName;
+		if(ret == -1) {
+			fileName += ".txt";
+		}
+		File newSolver = new File(fileName);
+		try {
+			newSolver.createNewFile();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 }

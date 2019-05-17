@@ -15,10 +15,10 @@ import javax.swing.table.JTableHeader;
 
 import tmcit.yasu.ui.listener.AddSolverPanelListener;
 import tmcit.yasu.util.Constant;
+import tmcit.yasu.util.FileManager;
 
 public class SolverSettingPanel extends JPanel{
 	private MainFrame mainFrame;
-	
 
 	// ƒ\ƒ‹ƒo[ˆê——
 	private JLabel solverListLabel;
@@ -147,6 +147,8 @@ public class SolverSettingPanel extends JPanel{
 	
 	public void addSolver(String solverName) {
 		solverListModel.addElement(solverName);
+		FileManager fileManager = mainFrame.getFileManager();
+		fileManager.createNewSolver(solverName);
 	}
 	
 	public void deleteSolver() {
