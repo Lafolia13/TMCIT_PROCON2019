@@ -1,5 +1,7 @@
 package tmcit.yasu.ui;
 
+import java.util.ArrayList;
+
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -24,6 +26,9 @@ public class AddSolverPanel extends JPanel{
 	private JTable paramTable;
 	private DefaultTableModel paramTableModel;
 	private JScrollPane sp;
+	
+	// パラメータ関係
+	private JButton addParamButton, deleteParamButton;
 	
 	// exe
 	private JLabel exeLabel;
@@ -56,6 +61,10 @@ public class AddSolverPanel extends JPanel{
 		paramTableHeader.setReorderingAllowed(false);
 		sp = new JScrollPane(paramTable);
 		
+		// パラメータ関係
+		addParamButton = new JButton("追加");
+		deleteParamButton = new JButton("削除");
+		
 		// exe
 		exeLabel = new JLabel("exeパス");
 		exeLabel.setFont(Constant.MAIN_FONT);
@@ -68,6 +77,8 @@ public class AddSolverPanel extends JPanel{
 		addSolverPanelListener = new AddSolverPanelListener(mainFrame, this);
 		okButton.addActionListener(addSolverPanelListener);
 		exeButton.addActionListener(addSolverPanelListener);
+		addParamButton.addActionListener(addSolverPanelListener);
+		deleteParamButton.addActionListener(addSolverPanelListener);
 	}
 	
 	private void initLayout() {
@@ -79,10 +90,12 @@ public class AddSolverPanel extends JPanel{
 		// パラメータ
 		paramLabel.setBounds(10, 45, 100, 30);
 		sp.setBounds(10, 80, 500, 300);
+		addParamButton.setBounds(10, 390, 100, 30);
+		deleteParamButton.setBounds(120, 390, 100, 30);
 		// exe
-		exeLabel.setBounds(10, 392, 100, 30);
-		exeField.setBounds(80, 400, 300, 20);
-		exeButton.setBounds(400, 400, 100, 20);
+		exeLabel.setBounds(10, 422, 100, 30);
+		exeField.setBounds(80, 430, 300, 20);
+		exeButton.setBounds(400, 430, 100, 20);
 		
 		okButton.setBounds(10, 490, 100, 30);
 		
@@ -90,6 +103,8 @@ public class AddSolverPanel extends JPanel{
 		add(solverNameField);
 		add(paramLabel);
 		add(sp);
+		add(addParamButton);
+		add(deleteParamButton);
 		add(exeLabel);
 		add(exeField);
 		add(exeButton);
@@ -98,5 +113,18 @@ public class AddSolverPanel extends JPanel{
 	
 	public void setExePath(String path) {
 		exeField.setText(path);
+	}
+	
+	public void addRow() {
+		paramTableModel.addRow(new ArrayList().toArray());
+	}
+	
+	public void deleteRow() {
+		int[] selectedRows = paramTable.getSelectedRows();
+		int rowCount = paramTable.getSelectedRowCount();
+		for(int i = 0;i < rowCount;i++) {
+			int nowRow = selectedRows[i];
+			paramTableModel.removeRow(nowRow - i);
+		}
 	}
 }

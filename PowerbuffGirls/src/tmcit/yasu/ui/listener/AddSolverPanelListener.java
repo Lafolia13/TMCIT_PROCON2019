@@ -34,6 +34,10 @@ public class AddSolverPanelListener implements ActionListener {
 				addSolverPanel.setExePath(file.getAbsolutePath());
 			}
 			fileManager.resetLookAndFeel();
+		}else if(cmd.equals("í«â¡")) {
+			addSolverPanel.addRow();
+		}else if(cmd.equals("çÌèú")) {
+			addSolverPanel.deleteRow();
 		}
 	}
 
