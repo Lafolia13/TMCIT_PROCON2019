@@ -67,6 +67,7 @@ public class AddSolverPanel extends JPanel{
 		// listener
 		addSolverPanelListener = new AddSolverPanelListener(mainFrame, this);
 		okButton.addActionListener(addSolverPanelListener);
+		exeButton.addActionListener(addSolverPanelListener);
 	}
 	
 	private void initLayout() {
@@ -93,5 +94,9 @@ public class AddSolverPanel extends JPanel{
 		add(exeField);
 		add(exeButton);
 		add(okButton);
+	}
+	
+	public void setExePath(String path) {
+		exeField.setText(path);
 	}
 }

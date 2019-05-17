@@ -2,9 +2,13 @@ package tmcit.yasu.ui.listener;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+
+import javax.swing.JFileChooser;
 
 import tmcit.yasu.ui.AddSolverPanel;
 import tmcit.yasu.ui.MainFrame;
+import tmcit.yasu.util.FileManager;
 
 public class AddSolverPanelListener implements ActionListener {
 	private MainFrame mainFrame;
@@ -20,6 +24,16 @@ public class AddSolverPanelListener implements ActionListener {
 		String cmd = e.getActionCommand();
 		if(cmd.equals("äÆóπ")) {
 			mainFrame.removePanel(addSolverPanel);
+		}else if(cmd.equals("éQè∆")) {
+			FileManager fileManager = mainFrame.getFileManager();
+			fileManager.setWindowsLookAndFeel();
+			JFileChooser fileChooser = new JFileChooser();
+			int selected = fileChooser.showOpenDialog(mainFrame);
+			if(selected == JFileChooser.APPROVE_OPTION) {
+				File file = fileChooser.getSelectedFile();
+				addSolverPanel.setExePath(file.getAbsolutePath());
+			}
+			fileManager.resetLookAndFeel();
 		}
 	}
 

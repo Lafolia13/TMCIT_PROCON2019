@@ -5,9 +5,13 @@ import java.awt.Component;
 import javax.swing.JFrame;
 import javax.swing.JTabbedPane;
 
+import tmcit.yasu.util.FileManager;
+
 public class MainFrame extends JFrame{
 	private JTabbedPane tabbedPanel;
 	private MainPanel mainPanel;
+	
+	private FileManager fileManager;
 	
 	public MainFrame() {
 		setTitle("PowerbuffGirls");
@@ -24,6 +28,7 @@ public class MainFrame extends JFrame{
 		tabbedPanel = new JTabbedPane();
 		mainPanel = new MainPanel(this);
 		tabbedPanel.add("スタート画面", mainPanel);
+		fileManager = new FileManager();
 	}
 	
 	private void initLayout() {
@@ -45,5 +50,9 @@ public class MainFrame extends JFrame{
 	
 	public void removePanel(Component comp) {
 		tabbedPanel.remove(comp);
+	}
+	
+	public FileManager getFileManager() {
+		return fileManager;
 	}
 }
