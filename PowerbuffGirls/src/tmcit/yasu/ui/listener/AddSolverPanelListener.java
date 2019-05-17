@@ -14,18 +14,18 @@ import tmcit.yasu.util.FileManager;
 
 public class AddSolverPanelListener implements ActionListener {
 	private MainFrame mainFrame;
-	private SolverSettingPanel addSolverPanel;
+	private SolverSettingPanel solverSettingPanel;
 	
 	public AddSolverPanelListener(MainFrame mainFrame0, SolverSettingPanel addSolverPanel0) {
 		mainFrame = mainFrame0;
-		addSolverPanel = addSolverPanel0;
+		solverSettingPanel = addSolverPanel0;
 	}
 	
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		String cmd = e.getActionCommand();
 		if(cmd.equals("完了")) {
-			mainFrame.removePanel(addSolverPanel);
+			mainFrame.removePanel(solverSettingPanel);
 		}else if(cmd.equals("参照")) {
 			FileManager fileManager = mainFrame.getFileManager();
 			fileManager.setWindowsLookAndFeel();
@@ -33,13 +33,13 @@ public class AddSolverPanelListener implements ActionListener {
 			int selected = fileChooser.showOpenDialog(mainFrame);
 			if(selected == JFileChooser.APPROVE_OPTION) {
 				File file = fileChooser.getSelectedFile();
-				addSolverPanel.setExePath(file.getAbsolutePath());
+				solverSettingPanel.setExePath(file.getAbsolutePath());
 			}
 			fileManager.resetLookAndFeel();
 		}else if(cmd.equals("パラメータ追加")) {
-			addSolverPanel.addRow();
+			solverSettingPanel.addRow();
 		}else if(cmd.equals("パラメータ削除")) {
-			addSolverPanel.deleteRow();
+			solverSettingPanel.deleteRow();
 		}else if(cmd.equals("追加")) {
 			Rectangle mainFrameRectangle = mainFrame.getBounds();
 			int bx = mainFrameRectangle.x + mainFrameRectangle.width/2 - 125;
@@ -47,8 +47,10 @@ public class AddSolverPanelListener implements ActionListener {
 			SolverAddDialog addDialog = new SolverAddDialog(mainFrame, "ソルバー追加", bx, by);
 			if(addDialog.isApplied()) {
 				String solverName = addDialog.getName();
-				addSolverPanel.addSolver(solverName);
+				solverSettingPanel.addSolver(solverName);
 			}
+		}else if(cmd.equals("削除")) {
+			solverSettingPanel.deleteSolver();
 		}
 	}
 

@@ -90,6 +90,7 @@ public class SolverSettingPanel extends JPanel{
 		addParamButton.addActionListener(addSolverPanelListener);
 		deleteParamButton.addActionListener(addSolverPanelListener);
 		addSolverButton.addActionListener(addSolverPanelListener);
+		deleteSolverButton.addActionListener(addSolverPanelListener);
 	}
 	
 	private void initLayout() {
@@ -104,8 +105,8 @@ public class SolverSettingPanel extends JPanel{
 		// ÉpÉâÉÅÅ[É^
 		paramLabel.setBounds(210, 45, 100, 30);
 		sp.setBounds(210, 80, 500, 300);
-		addParamButton.setBounds(210, 390, 100, 30);
-		deleteParamButton.setBounds(320, 390, 100, 30);
+		addParamButton.setBounds(210, 390, 150, 30);
+		deleteParamButton.setBounds(370, 390, 150, 30);
 		// exe
 		exeLabel.setBounds(210, 12, 100, 30);
 		exeField.setBounds(280, 20, 300, 20);
@@ -146,5 +147,12 @@ public class SolverSettingPanel extends JPanel{
 	
 	public void addSolver(String solverName) {
 		solverListModel.addElement(solverName);
+	}
+	
+	public void deleteSolver() {
+		int[] selectedIndices = solverList.getSelectedIndices();
+		for(int i = 0;i < selectedIndices.length;i++) {
+			solverListModel.remove(selectedIndices[i] - i);
+		}
 	}
 }
