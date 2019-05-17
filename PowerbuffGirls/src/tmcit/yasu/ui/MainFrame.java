@@ -31,6 +31,15 @@ public class MainFrame extends JFrame{
 	}
 	
 	public void addPanel(String title, Component comp) {
+		int count = tabbedPanel.getTabCount();
+		for(int i = 0;i < count;i++) {
+			String nowName = tabbedPanel.getTitleAt(i);
+			if(nowName.equals("ƒ\ƒ‹ƒo[‚Ì’Ç‰Á")) {
+				tabbedPanel.setSelectedIndex(i);
+				return;
+			}
+		}
 		tabbedPanel.add(title, comp);
+		tabbedPanel.setSelectedComponent(comp);
 	}
 }
