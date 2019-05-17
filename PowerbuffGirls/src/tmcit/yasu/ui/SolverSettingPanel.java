@@ -2,8 +2,10 @@ package tmcit.yasu.ui;
 
 import java.util.ArrayList;
 
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
@@ -14,13 +16,17 @@ import javax.swing.table.JTableHeader;
 import tmcit.yasu.ui.listener.AddSolverPanelListener;
 import tmcit.yasu.util.Constant;
 
-public class AddSolverPanel extends JPanel{
+public class SolverSettingPanel extends JPanel{
 	private MainFrame mainFrame;
 	
-	// ソルバー名
-	private JLabel solverNameLabel;
-	private JTextField solverNameField;
+
+	// ソルバー一覧
+	private JLabel solverListLabel;
+	private DefaultListModel<String> solverListModel;
+	private JList<String> solverList;
+	private JButton addSolverButton, deleteSolverButton;
 	
+	// ソルバーの設定関係
 	// パラメータのテーブル関係
 	private JLabel paramLabel;
 	private JTable paramTable;
@@ -40,17 +46,21 @@ public class AddSolverPanel extends JPanel{
 	// listener
 	private AddSolverPanelListener addSolverPanelListener;
 	
-	public AddSolverPanel(MainFrame mainFrame0) {
+	public SolverSettingPanel(MainFrame mainFrame0) {
 		mainFrame = mainFrame0;
 		init();
 		initLayout();
 	}
 	
 	private void init() {
-		// ソルバー名
-		solverNameLabel = new JLabel("ソルバー名");
-		solverNameLabel.setFont(Constant.MAIN_FONT);
-		solverNameField = new JTextField();
+		// ソルバー一覧
+		solverListLabel = new JLabel("ソルバー一覧");
+		solverListLabel.setFont(Constant.MAIN_FONT);
+		solverListModel = new DefaultListModel<String>();
+		solverList = new JList<>(solverListModel);
+		addSolverButton = new JButton("追加");
+		deleteSolverButton = new JButton("削除");
+		
 		
 		// パラメータのテーブル関係
 		paramLabel = new JLabel("パラメータ");
@@ -84,23 +94,28 @@ public class AddSolverPanel extends JPanel{
 	private void initLayout() {
 		setLayout(null);
 		
-		// ソルバー名
-		solverNameLabel.setBounds(10, 10, 100, 30);
-		solverNameField.setBounds(100, 19, 300, 20);
+		// ソルバー一覧
+		solverListLabel.setBounds(10, 10, 100, 20);
+		solverList.setBounds(10, 40, 150, 400);
+		addSolverButton.setBounds(10, 450, 70, 30);
+		deleteSolverButton.setBounds(90, 450, 70, 30);
+		
 		// パラメータ
-		paramLabel.setBounds(10, 45, 100, 30);
-		sp.setBounds(10, 80, 500, 300);
-		addParamButton.setBounds(10, 390, 100, 30);
-		deleteParamButton.setBounds(120, 390, 100, 30);
+		paramLabel.setBounds(210, 45, 100, 30);
+		sp.setBounds(210, 80, 500, 300);
+		addParamButton.setBounds(210, 390, 100, 30);
+		deleteParamButton.setBounds(320, 390, 100, 30);
 		// exe
-		exeLabel.setBounds(10, 422, 100, 30);
-		exeField.setBounds(80, 430, 300, 20);
-		exeButton.setBounds(400, 430, 100, 20);
+		exeLabel.setBounds(210, 12, 100, 30);
+		exeField.setBounds(280, 20, 300, 20);
+		exeButton.setBounds(600, 20, 100, 20);
 		
 		okButton.setBounds(10, 490, 100, 30);
 		
-		add(solverNameLabel);
-		add(solverNameField);
+		add(solverListLabel);
+		add(solverList);
+		add(addSolverButton);
+		add(deleteSolverButton);
 		add(paramLabel);
 		add(sp);
 		add(addParamButton);

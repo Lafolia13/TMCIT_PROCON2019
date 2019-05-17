@@ -26,7 +26,7 @@ public class SettingPanel extends JPanel implements ActionListener{
 		
 		mainLabel = new JLabel("設定");
 		mainLabel.setFont(Constant.MAIN_FONT);
-		addSolverButton = new JButton("ソルバーの追加");
+		addSolverButton = new JButton("ソルバーの管理");
 		
 		// listener
 		addSolverButton.addActionListener(this);
@@ -45,8 +45,8 @@ public class SettingPanel extends JPanel implements ActionListener{
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		String cmd = e.getActionCommand();
-		if(cmd.equals("ソルバーの追加")) {
-			mainFrame.addPanel("ソルバーの追加", new AddSolverPanel(mainFrame));
+		if(cmd.equals("ソルバーの管理")) {
+			mainFrame.addPanel("ソルバーの管理", new SolverSettingPanel(mainFrame));
 		}
 	}
 }

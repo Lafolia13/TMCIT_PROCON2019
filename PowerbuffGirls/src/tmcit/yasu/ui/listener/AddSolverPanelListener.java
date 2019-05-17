@@ -6,15 +6,15 @@ import java.io.File;
 
 import javax.swing.JFileChooser;
 
-import tmcit.yasu.ui.AddSolverPanel;
+import tmcit.yasu.ui.SolverSettingPanel;
 import tmcit.yasu.ui.MainFrame;
 import tmcit.yasu.util.FileManager;
 
 public class AddSolverPanelListener implements ActionListener {
 	private MainFrame mainFrame;
-	private AddSolverPanel addSolverPanel;
+	private SolverSettingPanel addSolverPanel;
 	
-	public AddSolverPanelListener(MainFrame mainFrame0, AddSolverPanel addSolverPanel0) {
+	public AddSolverPanelListener(MainFrame mainFrame0, SolverSettingPanel addSolverPanel0) {
 		mainFrame = mainFrame0;
 		addSolverPanel = addSolverPanel0;
 	}
