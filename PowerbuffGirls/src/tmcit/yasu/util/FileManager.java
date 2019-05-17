@@ -2,6 +2,7 @@ package tmcit.yasu.util;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 
 import javax.swing.LookAndFeel;
 import javax.swing.UIManager;
@@ -88,5 +89,15 @@ public class FileManager {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+	// ƒ\ƒ‹ƒo[‚Ìˆê——‚ğæ“¾
+	public String[] getSolverList() {
+		File[] solverFiles = solverDirectory.listFiles();
+		String[] ret = new String[solverFiles.length];
+		for(int i = 0;i < solverFiles.length;i++) {
+			String nowSolverName = solverFiles[i].getName();
+			ret[i] = nowSolverName.substring(0, nowSolverName.lastIndexOf(".txt"));
+		}
+		return ret;
 	}
 }

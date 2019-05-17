@@ -53,10 +53,15 @@ public class SolverSettingPanel extends JPanel{
 	}
 	
 	private void init() {
+		FileManager fileManager = mainFrame.getFileManager();
+
 		// ソルバー一覧
 		solverListLabel = new JLabel("ソルバー一覧");
 		solverListLabel.setFont(Constant.MAIN_FONT);
 		solverListModel = new DefaultListModel<String>();
+		for(String nowName : fileManager.getSolverList()) {
+			solverListModel.addElement(nowName);
+		}
 		solverList = new JList<>(solverListModel);
 		addSolverButton = new JButton("追加");
 		deleteSolverButton = new JButton("削除");
