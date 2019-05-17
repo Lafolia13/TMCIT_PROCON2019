@@ -42,4 +42,8 @@ public class MainFrame extends JFrame{
 		tabbedPanel.add(title, comp);
 		tabbedPanel.setSelectedComponent(comp);
 	}
+	
+	public void removePanel(Component comp) {
+		tabbedPanel.remove(comp);
+	}
 }

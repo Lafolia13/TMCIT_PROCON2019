@@ -9,9 +9,12 @@ import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 
+import tmcit.yasu.ui.listener.AddSolverPanelListener;
 import tmcit.yasu.util.Constant;
 
 public class AddSolverPanel extends JPanel{
+	private MainFrame mainFrame;
+	
 	// ソルバー名
 	private JLabel solverNameLabel;
 	private JTextField solverNameField;
@@ -27,7 +30,13 @@ public class AddSolverPanel extends JPanel{
 	private JTextField exeField;
 	private JButton exeButton;
 	
-	public AddSolverPanel() {
+	private JButton okButton;
+	
+	// listener
+	private AddSolverPanelListener addSolverPanelListener;
+	
+	public AddSolverPanel(MainFrame mainFrame0) {
+		mainFrame = mainFrame0;
 		init();
 		initLayout();
 	}
@@ -52,6 +61,12 @@ public class AddSolverPanel extends JPanel{
 		exeLabel.setFont(Constant.MAIN_FONT);
 		exeField = new JTextField();
 		exeButton = new JButton("参照");
+		
+		okButton = new JButton("完了");
+		
+		// listener
+		addSolverPanelListener = new AddSolverPanelListener(mainFrame, this);
+		okButton.addActionListener(addSolverPanelListener);
 	}
 	
 	private void initLayout() {
@@ -68,6 +83,8 @@ public class AddSolverPanel extends JPanel{
 		exeField.setBounds(80, 400, 300, 20);
 		exeButton.setBounds(400, 400, 100, 20);
 		
+		okButton.setBounds(10, 490, 100, 30);
+		
 		add(solverNameLabel);
 		add(solverNameField);
 		add(paramLabel);
@@ -75,5 +92,6 @@ public class AddSolverPanel extends JPanel{
 		add(exeLabel);
 		add(exeField);
 		add(exeButton);
+		add(okButton);
 	}
 }

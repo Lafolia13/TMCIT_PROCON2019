@@ -46,7 +46,7 @@ public class SettingPanel extends JPanel implements ActionListener{
 	public void actionPerformed(ActionEvent e) {
 		String cmd = e.getActionCommand();
 		if(cmd.equals("ソルバーの追加")) {
-			mainFrame.addPanel("ソルバーの追加", new AddSolverPanel());
+			mainFrame.addPanel("ソルバーの追加", new AddSolverPanel(mainFrame));
 		}
 	}
 }
