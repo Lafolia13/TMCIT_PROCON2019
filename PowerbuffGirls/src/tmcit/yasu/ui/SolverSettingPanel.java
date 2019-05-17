@@ -72,8 +72,8 @@ public class SolverSettingPanel extends JPanel{
 		sp = new JScrollPane(paramTable);
 		
 		// パラメータ関係
-		addParamButton = new JButton("追加");
-		deleteParamButton = new JButton("削除");
+		addParamButton = new JButton("パラメータ追加");
+		deleteParamButton = new JButton("パラメータ削除");
 		
 		// exe
 		exeLabel = new JLabel("exeパス");
@@ -89,6 +89,7 @@ public class SolverSettingPanel extends JPanel{
 		exeButton.addActionListener(addSolverPanelListener);
 		addParamButton.addActionListener(addSolverPanelListener);
 		deleteParamButton.addActionListener(addSolverPanelListener);
+		addSolverButton.addActionListener(addSolverPanelListener);
 	}
 	
 	private void initLayout() {
@@ -141,5 +142,9 @@ public class SolverSettingPanel extends JPanel{
 			int nowRow = selectedRows[i];
 			paramTableModel.removeRow(nowRow - i);
 		}
+	}
+	
+	public void addSolver(String solverName) {
+		solverListModel.addElement(solverName);
 	}
 }
