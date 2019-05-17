@@ -14,10 +14,10 @@ public class SolverSelectPanel extends JPanel{
 	}
 	
 	private void init() {
-		setBorder(Constant.lineBorder);
+		setBorder(Constant.LINE_BORDER);
 		
 		mainLabel = new JLabel("ƒ\ƒ‹ƒo[‚Ìİ’è");
-		mainLabel.setFont(Constant.mainFont);
+		mainLabel.setFont(Constant.MAIN_FONT);
 	}
 	
 	private void initLayout() {

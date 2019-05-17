@@ -22,10 +22,10 @@ public class SettingPanel extends JPanel implements ActionListener{
 	}
 	
 	private void init() {
-		setBorder(Constant.lineBorder);
+		setBorder(Constant.LINE_BORDER);
 		
 		mainLabel = new JLabel("İ’è");
-		mainLabel.setFont(Constant.mainFont);
+		mainLabel.setFont(Constant.MAIN_FONT);
 		addSolverButton = new JButton("ƒ\ƒ‹ƒo[‚Ì’Ç‰Á");
 		
 		// listener
