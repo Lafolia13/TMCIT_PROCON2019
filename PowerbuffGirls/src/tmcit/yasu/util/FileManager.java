@@ -9,7 +9,7 @@ import javax.swing.UnsupportedLookAndFeelException;
 
 public class FileManager {
 	private LookAndFeel defaultLookAndFeel;
-	private File procon30Directory, powerbuffGirlsDirectory;
+	private File procon30Directory, powerbuffGirlsDirectory, solverDirectory, progressDirectory;
 
 	public FileManager() {
 		init();
@@ -20,8 +20,10 @@ public class FileManager {
 		defaultLookAndFeel = UIManager.getLookAndFeel();
 		String procon30Path = System.getProperty("user.home") + "\\procon30";
 		procon30Directory = new File(procon30Path);
-		String powerbuffGirldPath = procon30Path + "\\powerbuffGirls";
-		powerbuffGirlsDirectory = new File(powerbuffGirldPath);
+		String powerbuffGirlsPath = procon30Path + "\\powerbuffGirls";
+		powerbuffGirlsDirectory = new File(powerbuffGirlsPath);
+		solverDirectory = new File(powerbuffGirlsDirectory.getAbsoluteFile() + "\\solver");
+		progressDirectory = new File(powerbuffGirlsDirectory.getAbsoluteFile() + "\\progress");
 	}
 
 	private void createFolder() {
@@ -30,6 +32,12 @@ public class FileManager {
 		}
 		if(!powerbuffGirlsDirectory.isDirectory()) {
 			powerbuffGirlsDirectory.mkdir();
+		}
+		if(!solverDirectory.isDirectory()) {
+			solverDirectory.mkdir();
+		}
+		if(!progressDirectory.isDirectory()) {
+			progressDirectory.mkdir();
 		}
 	}
 
