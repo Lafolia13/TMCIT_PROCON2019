@@ -17,7 +17,7 @@ public class MainPanel extends JPanel{
 	private void initLayout() {
 		setLayout(null);
 
-		settingPanel.setBounds(10, 10, 400, 400);
+		settingPanel.setBounds(10, 10, 400, 500);
 
 		add(settingPanel);
 	}
