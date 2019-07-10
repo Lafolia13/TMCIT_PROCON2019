@@ -4,14 +4,17 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import tmcit.yasu.util.Constant;
+import tmcit.yasu.util.FileManager;
 
 public class SettingPanel extends JPanel{
+	private FileManager fileManager;
 	private JLabel nameLabel;
 
 	private GameInfoPanel gameInfoPanel;
 	private AgentSelectPanel agentSelectPanel;
 
-	public SettingPanel() {
+	public SettingPanel(FileManager fileManager0) {
+		fileManager = fileManager0;
 		init();
 		initLayout();
 	}
@@ -23,7 +26,7 @@ public class SettingPanel extends JPanel{
 		nameLabel.setFont(Constant.DEFAULT_FONT);
 
 		gameInfoPanel = new GameInfoPanel();
-		agentSelectPanel = new AgentSelectPanel();
+		agentSelectPanel = new AgentSelectPanel(fileManager);
 	}
 
 	private void initLayout() {

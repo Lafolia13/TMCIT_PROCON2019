@@ -10,8 +10,11 @@ import javax.swing.table.JTableHeader;
 
 import tmcit.yasu.data.PresetTableModel;
 import tmcit.yasu.util.Constant;
+import tmcit.yasu.util.FileManager;
 
 public class AgentSelectPanel extends JPanel{
+	private FileManager fileManager;
+	
 	// UI
 	private JLabel nameLabel, presetLabel;
 	private DefaultComboBoxModel<String> solverComboBoxModel, presetComboBoxModel;
@@ -20,9 +23,13 @@ public class AgentSelectPanel extends JPanel{
 	private JTable paramTable;
 	private JScrollPane paramScrollPanel;
 
-	public AgentSelectPanel() {
+	public AgentSelectPanel(FileManager fileManager0) {
+		fileManager = fileManager0;
+		
 		init();
 		initLayout();
+		
+		loadSolverComboBox();
 	}
 
 	private void init() {
@@ -61,5 +68,13 @@ public class AgentSelectPanel extends JPanel{
 		add(presetLabel);
 		add(presetComboBox);
 		add(paramScrollPanel);
+	}
+	
+	public void loadSolverComboBox() {
+		String[] solverList = fileManager.getSolverList();
+		solverComboBoxModel.removeAllElements();
+		for(String nowSolver : solverList) {
+			solverComboBoxModel.addElement(nowSolver);
+		}
 	}
 }
