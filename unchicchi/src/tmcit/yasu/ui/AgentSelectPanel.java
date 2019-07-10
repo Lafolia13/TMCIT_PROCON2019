@@ -9,6 +9,7 @@ import javax.swing.JTable;
 import javax.swing.table.JTableHeader;
 
 import tmcit.yasu.data.PresetTableModel;
+import tmcit.yasu.listener.SolverComboBoxListener;
 import tmcit.yasu.util.Constant;
 import tmcit.yasu.util.FileManager;
 
@@ -22,6 +23,9 @@ public class AgentSelectPanel extends JPanel{
 	private PresetTableModel paramTableModel;
 	private JTable paramTable;
 	private JScrollPane paramScrollPanel;
+	
+	// Listener
+	private SolverComboBoxListener solverComboBoxListener;
 
 	public AgentSelectPanel(FileManager fileManager0) {
 		fileManager = fileManager0;
@@ -50,6 +54,12 @@ public class AgentSelectPanel extends JPanel{
 		paramScrollPanel = new JScrollPane(paramTable);
 		JTableHeader paramTableHeader = paramTable.getTableHeader();
 		paramTableHeader.setReorderingAllowed(false);
+		
+		// listener関係
+		solverComboBoxListener = new SolverComboBoxListener(this, solverComboBox);
+		
+		// listenerの紐づけ
+		solverComboBox.addActionListener(solverComboBoxListener);
 	}
 
 	private void initLayout() {
@@ -70,11 +80,21 @@ public class AgentSelectPanel extends JPanel{
 		add(paramScrollPanel);
 	}
 	
+	// ソルバーを読み込み
 	public void loadSolverComboBox() {
 		String[] solverList = fileManager.getSolverList();
 		solverComboBoxModel.removeAllElements();
 		for(String nowSolver : solverList) {
 			solverComboBoxModel.addElement(nowSolver);
+		}
+	}
+	
+	// ソルバーのプリセットを読み込み
+	public void refreshPresetComboBox(String solverName) {
+		String[] presetList = fileManager.getSolverPresetList(solverName);
+		presetComboBoxModel.removeAllElements();
+		for(String nowPreset : presetList) {
+			presetComboBoxModel.addElement(nowPreset);
 		}
 	}
 }
