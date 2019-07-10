@@ -1,5 +1,7 @@
 package tmcit.yasu.ui;
 
+import java.util.ArrayList;
+
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -9,6 +11,7 @@ import javax.swing.JTable;
 import javax.swing.table.JTableHeader;
 
 import tmcit.yasu.data.PresetTableModel;
+import tmcit.yasu.listener.PresetComboBoxListener;
 import tmcit.yasu.listener.SolverComboBoxListener;
 import tmcit.yasu.util.Constant;
 import tmcit.yasu.util.FileManager;
@@ -26,6 +29,7 @@ public class AgentSelectPanel extends JPanel{
 	
 	// Listener
 	private SolverComboBoxListener solverComboBoxListener;
+	private PresetComboBoxListener presetComboBoxListener;
 
 	public AgentSelectPanel(FileManager fileManager0) {
 		fileManager = fileManager0;
@@ -57,9 +61,11 @@ public class AgentSelectPanel extends JPanel{
 		
 		// listenerŠÖŒW
 		solverComboBoxListener = new SolverComboBoxListener(this, solverComboBox);
+		presetComboBoxListener = new PresetComboBoxListener(this, solverComboBox, presetComboBox);
 		
 		// listener‚Ì•R‚Ã‚¯
 		solverComboBox.addActionListener(solverComboBoxListener);
+		presetComboBox.addActionListener(presetComboBoxListener);
 	}
 
 	private void initLayout() {
@@ -95,6 +101,23 @@ public class AgentSelectPanel extends JPanel{
 		presetComboBoxModel.removeAllElements();
 		for(String nowPreset : presetList) {
 			presetComboBoxModel.addElement(nowPreset);
+		}
+	}
+	
+	public void refreshParamTable(String solverName, String presetName) {
+		if(presetName != null && presetName.equals("default.txt")) {
+			paramTableModel.setDefaultFlag(true);
+		}else {
+			paramTableModel.setDefaultFlag(false);
+		}
+
+		// set preset
+		ArrayList<String[]> paramList = fileManager.getSelectedSolverParameter(solverName, presetName);
+		while(paramTable.getRowCount() > 0) {
+			paramTableModel.removeRow(0);
+		}
+		for(String[] nowParam : paramList) {
+			paramTableModel.addRow(nowParam);
 		}
 	}
 }
