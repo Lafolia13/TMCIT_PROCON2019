@@ -97,4 +97,25 @@ public class FileManager {
 
 		return ret;
 	}
+	
+	// exe‚ÌƒpƒX‚ðŽæ“¾
+	public String getSelectedSolverExePath(String solverName) {
+		File readFile = new File(solverDirectory.getAbsolutePath() + "\\" + solverName + "\\default.txt");
+
+		String ret = "";
+		if(readFile.exists()) {
+			try {
+				BufferedReader br = new BufferedReader(new FileReader(readFile));
+				ret = br.readLine();
+				br.close();
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+
+		return ret;
+	}
+
 }

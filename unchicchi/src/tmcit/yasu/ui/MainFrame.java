@@ -16,7 +16,7 @@ public class MainFrame extends JFrame{
 
 	private void init() {
 		this.setTitle("–{”Ô—pUnchicchi");
-		this.setSize(500, 600);
+		this.setSize(500, 650);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setVisible(true);
 		tabbedPane = new JTabbedPane();

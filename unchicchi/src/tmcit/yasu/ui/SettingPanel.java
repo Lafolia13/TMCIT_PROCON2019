@@ -1,5 +1,6 @@
 package tmcit.yasu.ui;
 
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
@@ -12,6 +13,7 @@ public class SettingPanel extends JPanel{
 
 	private GameInfoPanel gameInfoPanel;
 	private AgentSelectPanel agentSelectPanel;
+	
 
 	public SettingPanel(FileManager fileManager0) {
 		fileManager = fileManager0;
@@ -27,6 +29,7 @@ public class SettingPanel extends JPanel{
 
 		gameInfoPanel = new GameInfoPanel();
 		agentSelectPanel = new AgentSelectPanel(fileManager);
+		
 	}
 
 	private void initLayout() {
@@ -39,6 +42,11 @@ public class SettingPanel extends JPanel{
 		add(gameInfoPanel);
 		add(nameLabel);
 		add(agentSelectPanel);
+	}
+	
+	// getter
+	public AgentSelectPanel getAgentSelectPanel() {
+		return agentSelectPanel;
 	}
 }
 

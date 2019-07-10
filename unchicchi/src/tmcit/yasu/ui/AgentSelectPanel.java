@@ -120,4 +120,27 @@ public class AgentSelectPanel extends JPanel{
 			paramTableModel.addRow(nowParam);
 		}
 	}
+	
+	// Solver‚ðŽæ“¾
+	public void getPlayer() {
+		int solverIndex = solverComboBox.getSelectedIndex();
+		String solverName = solverComboBox.getItemAt(solverIndex);
+
+		int presetIndex = presetComboBox.getSelectedIndex();
+		String presetName = presetComboBox.getItemAt(presetIndex);
+
+		String exePath = fileManager.getSelectedSolverExePath(solverName);
+		ArrayList<String[]> parameters = fileManager.getSelectedSolverParameter(solverName, presetName);
+
+		String cmd = exePath;
+		for(String[] nowParameter : parameters) {
+			cmd += " " + nowParameter[0] + "=" + nowParameter[2];
+		}
+		
+		System.out.println("[CMD] " + cmd);
+
+//		ExecPlayer execPlayer = new ExecPlayer(cmd);
+//		return execPlayer;
+
+	}
 }
