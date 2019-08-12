@@ -16,14 +16,26 @@ bool GameData::Input() {
 	return true;
 }
 
-bool GameData::IntoField(const Position &pos) {
-	return (0 <= pos.h && pos.h < height && 0 <= pos.w && pos.w < width);
+int_fast32_t GameData::GetTilePoint(const Position &pos) const {
+	return field_data[pos.h][pos.w];
+}
+
+void TurnData::reset() {
+	now_turn = {};
+	agent_num = {};
+	tile_point = {};
+	area_point = {};
+	agents_position = {};
+	tile_data = {};
+	// is_area = {};
+	bitset<400> agent_exist = {};
 }
 
 bool TurnData::Input(const GameData &game_data) {
+	reset();
+
 	cin >> now_turn;
-	if (this->now_turn > game_data.max_turn)
-		return false;
+	if (now_turn > game_data.max_turn) return false;
 
 	for (int_fast32_t &&h = 0; h < game_data.height; ++h) {
 		for (int_fast32_t &&w = 0; w < game_data.width; ++w) {
@@ -31,12 +43,18 @@ bool TurnData::Input(const GameData &game_data) {
 		}
 	}
 
-	for (int8_t &&team_id = 0; team_id < 2; ++team_id) {
-		for (int8_t agent_id = 0; agent_id < game_data.agent_num; ++agent_id) {
+	agent_num = game_data.agent_num;
+	for (int_fast32_t &&team_id = 0; team_id < 2; ++team_id) {
+		for (int_fast32_t &&agent_id = 0; agent_id < agent_num; ++agent_id) {
 			cin >> agents_position[team_id][agent_id].w
 				>> agents_position[team_id][agent_id].h;
+
+			agent_exist.set(GetBitsetNumber(agents_position[team_id][agent_id]));
 		}
 	}
+
+	CalculationAllTilePoint(game_data);
+	CalculationAllAreaPoint(game_data);
 
 	return true;
 }
@@ -49,6 +67,10 @@ int_fast32_t& TurnData::GetTileState(const Position &pos) {
 	return GetTileState(pos.h, pos.w);
 }
 
-Position& TurnData::GetPosition(const int_fast32_t &team_id, const int_fast32_t &agent_id) {
-	return agents_position[team_id][agent_id];
+int_fast32_t GetBitsetNumber(const int_fast32_t &h, const int_fast32_t &w) {
+	return h*20 + w;
+}
+
+int_fast32_t GetBitsetNumber(const Position &pos) {
+	return GetBitsetNumber(pos.h, pos.w);
 }

@@ -3,6 +3,8 @@
 
 #include <cstdint>
 #include <array>
+#include <vector>
+#include <bitset>
 
 using namespace std;
 
@@ -22,6 +24,16 @@ struct Position {
 	bool operator==(const Position &another) const {
 		return h == another.h && w == another.w;
 	}
+	bool operator>(const Position &right) const {
+		return h == h ?
+			w > w :
+			h > h;
+	}
+	bool operator<(const Position &right) const {
+		return h == h ?
+			w < w :
+			h < h;
+	}
 };
 
 struct GameData {
@@ -29,40 +41,76 @@ struct GameData {
 	int_fast32_t height = {};
 	int_fast32_t width = {};
 	int_fast32_t agent_num = {};
-	array<array<int_fast32_t, 20>, 20> field_data = {};
+	array<array<int_fast32_t, 20>, 20> field_data = {};					// 配点情報
 
-	constexpr GameData() noexcept {};
+	constexpr GameData() {};
 
+	// base_system
 	bool Input();
-	bool IntoField(const Position&);
+	int_fast32_t GetTilePoint(const Position&) const;
+
+	// calculation
+	bool IntoField(const Position&) const;
+	bool IsFieldEdge(const Position&) const;
+};
+
+struct Move {
+	int_fast32_t team_id = {};
+	int_fast32_t agent_id = {};
+	int_fast32_t direction = {};										// kNextToNine
+	int_fast32_t action = {};
+	Position target_position = {};
+
+	constexpr Move() {};
+	constexpr Move(const int_fast32_t &team_id, const int_fast32_t &agent_id,
+				   const int_fast32_t &direction, const int_fast32_t &action) :
+		team_id(team_id),
+		agent_id(agent_id),
+		direction(direction),
+		action(action)
+	{};
 };
 
 struct TurnData {
 	int_fast32_t now_turn = {};
 	int_fast32_t agent_num = {};
-	int_fast32_t tile_point = {};
-	int_fast32_t area_point = {};
+	array<int_fast32_t, 2> tile_point = {};
+	array<int_fast32_t, 2> area_point = {};
 	array<array<Position, 8>, 2> agents_position = {};
-	array<array<int_fast32_t, 20>, 20> tile_data = {};
-	array<array<int_fast32_t, 20>, 20> is_area = {};					// あるマスが領域であるか
+	array<array<int_fast32_t, 20>, 20> tile_data = {};					// TileColors参照
+	// array<array<int_fast32_t, 20>, 20> is_area = {};					// あるマスが領域であるか
+	bitset<400> agent_exist = {};
 
 	constexpr TurnData() {};
 
+	// base_system
+	void reset();
 	bool Input(const GameData&);
 	int_fast32_t& GetTileState(const int_fast32_t &h, const int_fast32_t &w);
 	int_fast32_t& GetTileState(const Position&);
+
+	// change_action
 	Position& GetPosition(const int_fast32_t&, const int_fast32_t&);
-	void CalculationTilePoint(const GameData&, const TurnData&, const int_fast32_t&);
-	void CalculationAllTilePoint(const GameData&, const int_fast32_t&);
+	void Transition(const GameData&, const vector<Move>&);
+
+	// calculation
+	void CalculationAllTilePoint(const GameData&);
 	void CalculationAreaPoint(const GameData&, const int_fast32_t&);
-	void CalculationAllAreaPoint(const GameData&, const int_fast32_t&);
-	void Transition(const int_fast32_t&);
+	void CalculationAllAreaPoint(const GameData&);
 };
+
+int_fast32_t GetBitsetNumber(const int_fast32_t&, const int_fast32_t&);
+int_fast32_t GetBitsetNumber(const Position&);
 
 enum TileColors {
 	kAlly = 0,
 	kRival = 1,
 	kBrank = 2
+};
+
+enum AgentAction {
+	kWalk = 0,
+	kErase = 1
 };
 
 // 四近傍
