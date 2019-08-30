@@ -120,3 +120,11 @@ void TurnData::Transition(const GameData &game_data,
 
 	return;
 }
+
+vector<vector<Move>> GetAgentsAllMoves(const GameData &game_data,
+									   const TurnData &turn_data) {
+	vector<vector<Move>> ret(turn_data.agent_num);
+	for (int_fast32_t &&agent_id = 0; agent_id < turn_data.agent_num; ++agent_id) {
+
+	}
+}
