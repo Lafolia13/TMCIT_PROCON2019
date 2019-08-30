@@ -42,9 +42,11 @@ public class Network {
 			Response response = client.newCall(request).execute();
 			String json = response.body().string();
 			if(response.code() == 401) {
+				response.close();
 				throw new InvalidTokenException("トークンが正しくありません");
 			}else {
 				ArrayList<MatchesData> data = new ObjectMapper().readValue(json, new TypeReference<ArrayList<MatchesData>>() {});
+				response.close();
 				return data;
 			}
 		} catch (IOException e) {
@@ -64,16 +66,20 @@ public class Network {
 			String json = response.body().string();
 			
 			if(response.code() == 401) {
+				response.close();
 				throw new InvalidTokenException("トークンが正しくありません");
 			} else if(response.code() == 400) {
 				Exception401 exception401 = new ObjectMapper().readValue(json, Exception401.class);
 				if(exception401.status.equals("TooEarly")) {
+					response.close();
 					throw new TooEarlyException(exception401.startAtUnixTime, "試合開始前です");
 				}else {
+					response.close();
 					throw new InvalidMatchesException(exception401.startAtUnixTime, "参加していない試合です");
 				}
 			}else {
 				Field field = new ObjectMapper().readValue(json, Field.class);
+				response.close();
 				return field;
 			}
 		} catch (IOException e) {
@@ -82,7 +88,7 @@ public class Network {
 		return null;
 	}
 	
-	// POT /matches/{id}/action
+	// POST /matches/{id}/action
 	public Actions postAction(int id, Actions actions) throws InvalidTokenException, InvalidMatchesException, TooEarlyException, UnacceptableTimeExeption {
 		try {
 			String json = new ObjectMapper().writeValueAsString(actions);
@@ -94,21 +100,26 @@ public class Network {
 			Response response = client.newCall(request).execute();
 			
 			if(response.code() == 401) {
+				response.close();
 				throw new InvalidTokenException("トークンが正しくありません。");
 			}else if(response.code() == 400) {
 				String resJson = response.body().string();
 				Exception401 exception401 = new ObjectMapper().readValue(resJson, Exception401.class);
 				if(exception401.status.equals("InvalidMatches")) {
+					response.close();
 					throw new InvalidMatchesException(exception401.startAtUnixTime, "参加していない試合です。");
 				}else if(exception401.status.equals("TooEarly")) {
+					response.close();
 					throw new TooEarlyException(exception401.startAtUnixTime, "試合開始前です。");
 				}else {
+					response.close();
 					throw new UnacceptableTimeExeption(exception401.startAtUnixTime, "行動を受け付けていません。");
 				}
 			}
 			
 			Actions res = new ObjectMapper().readValue(response.body().string(), Actions.class);
 			
+			response.close();
 			return res;
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
@@ -116,5 +127,20 @@ public class Network {
 			e.printStackTrace();
 		}
 		return null;
+	}
+	
+	// GET /ping
+	public boolean ping() {
+		Request request = new Request.Builder().url(url + "/ping").header("Authorization", token).build();
+		try {
+			Response response = client.newCall(request).execute();
+			if(response.code() == 200) {
+				response.close();
+				return true;
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return false;
 	}
 }
