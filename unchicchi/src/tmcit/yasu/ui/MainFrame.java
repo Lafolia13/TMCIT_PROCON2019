@@ -28,6 +28,8 @@ public class MainFrame extends JFrame{
 
 	private void initLayout() {
 		tabbedPane.addTab("スタート画面", new MainPanel(this, fileManager));
+		
+		tabbedPane.addTab("接続設定", new ConnectPanel());
 
 		this.add(tabbedPane);
 	}
