@@ -94,8 +94,10 @@ void TurnData::Transition(const GameData &game_data,
 	for (int_fast32_t &&i = 0; i < moves_num; ++i) {
 		if (agents_move[i].action == kWalk) {
 			walk_agents[walk_num++] = agents_move[i];
-		} else {
+		} else if (agents_move[i].action == kErase) {
 			erase_agents[erase_num++] = agents_move[i];
+		} else {
+			continue;
 		}
 		Position &agent_position = GetPosition(agents_move[i].team_id,
 											   agents_move[i].agent_id);
@@ -122,9 +124,34 @@ void TurnData::Transition(const GameData &game_data,
 }
 
 vector<vector<Move>> GetAgentsAllMoves(const GameData &game_data,
-									   const TurnData &turn_data) {
+									   TurnData &turn_data,
+									   const int_fast32_t &team_id,
+									   const bool use_none,
+									   const bool erase_my_tile) {
 	vector<vector<Move>> ret(turn_data.agent_num);
+	static Position next_pos;
 	for (int_fast32_t &&agent_id = 0; agent_id < turn_data.agent_num; ++agent_id) {
+		const Position &agent_pos = turn_data.GetPosition(team_id, agent_id);
+		for (int_fast32_t &&next_to = 0; next_to < 9; ++next_to) {
+			next_pos = agent_pos + kNextToNine[next_to];
+			if (game_data.IntoField(next_pos) == false) continue;
+			const int_fast32_t &tile_color = turn_data.GetTileState(next_pos);
+			const int_fast32_t &tile_point = game_data.GetTilePoint(next_pos);
 
+			if (next_to == 4) {
+				if (use_none)
+					ret[agent_id].push_back(Move(team_id, agent_id, 4, kNone));
+			} else if (tile_color == kBrank) {
+				ret[agent_id].push_back(Move(team_id, agent_id, next_to, kWalk));
+			} else if (tile_color == team_id) {
+				ret[agent_id].push_back(Move(team_id, agent_id, next_to, kWalk));
+				if (erase_my_tile && tile_point < 0)
+					ret[agent_id].push_back(Move(team_id, agent_id, next_to, kErase));
+			} else {
+				ret[agent_id].push_back(Move(team_id, agent_id, next_to, kErase));
+			}
+		}
 	}
+
+	return ret;
 }

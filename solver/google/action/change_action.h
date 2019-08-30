@@ -12,4 +12,8 @@ void ChangeErase(const GameData&, const int_fast32_t&,
 void CheckConflict(TurnData*, array<Move, 16>&, int_fast32_t&,
 				   array<array<int_fast32_t, 20>, 20>&);
 
+vector<vector<Move>> GetAgentsAllMoves(const GameData&, TurnData&,
+									   const int_fast32_t&, const bool&,
+									   const bool&);
+
 #endif
