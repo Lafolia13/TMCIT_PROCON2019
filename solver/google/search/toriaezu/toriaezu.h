@@ -8,15 +8,16 @@
 struct Node {
 	TurnData turn_data = {};
 	double evaluation = {};
-	int_fast32_t key;
-	array<Move, 8> fast_move;
+	int_fast32_t key = {};
+	array<Move, 8> fast_move = {};
 
 	Node() {};
-	Node (const TurnData &turn_data, const double evaluation, int_fast32_t key) :
+	Node (const TurnData &turn_data, const double evaluation) :
 		turn_data(turn_data),
-		evaluation(evaluation),
-		key(key)
+		evaluation(evaluation)
 	{};
+
+	void GetKey();
 };
 
 #endif
