@@ -29,7 +29,7 @@ public class GameInfoPanel extends JPanel{
 	}
 
 	private void init() {
-		setBorder(Constant.DEFAULT_LINE_BORDER);
+		setBorder(Constant.NONE_SELECTED_LINE_BORDER);
 
 		idLabel = new JLabel("ID:" + String.valueOf(matchesData.id));
 		idLabel.setFont(Constant.SMALL_FONT);
@@ -65,5 +65,13 @@ public class GameInfoPanel extends JPanel{
 		add(rivalNameLabel);
 		add(turnLabel);
 		add(startTimeLabel);
+	}
+
+	public void setSelected(boolean selected) {
+		if(selected) {
+			setBorder(Constant.SELECTED_LINE_BORDER);
+		}else {
+			setBorder(Constant.NONE_SELECTED_LINE_BORDER);
+		}
 	}
 }
