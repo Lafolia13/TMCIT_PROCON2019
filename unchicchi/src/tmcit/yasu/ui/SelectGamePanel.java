@@ -21,6 +21,7 @@ public class SelectGamePanel extends JPanel{
 		connectSetting = connectSetting0;
 
 		getMatchesData();
+		init();
 	}
 
 	private void getMatchesData() {
@@ -45,5 +46,13 @@ public class SelectGamePanel extends JPanel{
 				startTime.add(e.startUnixTime);
 			}
 		}
+	}
+
+	private void init() {
+		GameInfoPanel gameInfoPanel = new GameInfoPanel(matchesData.get(0), startTime.get(0));
+
+		setLayout(null);
+		gameInfoPanel.setBounds(10, 10, 400, 300);
+		add(gameInfoPanel);
 	}
 }
