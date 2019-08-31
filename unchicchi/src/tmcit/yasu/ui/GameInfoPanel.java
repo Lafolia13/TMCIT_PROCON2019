@@ -1,5 +1,6 @@
 package tmcit.yasu.ui;
 
+import java.awt.Color;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -43,6 +44,13 @@ public class GameInfoPanel extends JPanel{
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy”NMMŒdd“úHHmm•ªss•b");
 		startTimeLabel = new JLabel("ŠJn:" + sdf.format(startDate));
 		startTimeLabel.setFont(Constant.SMALL_FONT);
+
+		long nowUnixTime = System.currentTimeMillis() / 1000L;
+		if(startUnixTime < nowUnixTime) {
+			startTimeLabel.setForeground(Color.red);
+		}else {
+			startTimeLabel.setForeground(Color.blue);
+		}
 	}
 
 	private void initLayout() {

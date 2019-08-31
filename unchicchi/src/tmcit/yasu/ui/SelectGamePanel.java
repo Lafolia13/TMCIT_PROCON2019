@@ -62,9 +62,7 @@ public class SelectGamePanel extends JPanel{
 		getMatchesData();
 		for(int i = 0;i < matchesData.size();i++) {
 			GameInfoPanel nowInfoPanel = new GameInfoPanel(matchesData.get(i), startTime.get(i));
-			GameInfoPanel nowInfoPanel2 = new GameInfoPanel(matchesData.get(i), startTime.get(i));
 			gameListPanel.addGameInfoPanel(nowInfoPanel);
-			gameListPanel.addGameInfoPanel(nowInfoPanel2);
 		}
 	}
 
