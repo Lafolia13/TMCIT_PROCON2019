@@ -2,7 +2,11 @@ package tmcit.yasu.ui;
 
 import java.util.ArrayList;
 
+import javax.swing.DefaultListModel;
+import javax.swing.JButton;
+import javax.swing.JList;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 
 import tmcit.yasu.data.ConnectSetting;
 import tmcit.yasu.data.Field;
@@ -16,12 +20,14 @@ public class SelectGamePanel extends JPanel{
 	private ConnectSetting connectSetting;
 	private ArrayList<MatchesData> matchesData;
 	private ArrayList<Integer> startTime;
+	private GameListPanel gameListPanel;
 
 	public SelectGamePanel(ConnectSetting connectSetting0) {
 		connectSetting = connectSetting0;
 
 		getMatchesData();
 		init();
+		initLayout();
 	}
 
 	private void getMatchesData() {
@@ -49,10 +55,21 @@ public class SelectGamePanel extends JPanel{
 	}
 
 	private void init() {
-		GameInfoPanel gameInfoPanel = new GameInfoPanel(matchesData.get(0), startTime.get(0));
+		gameListPanel = new GameListPanel();
 
+		for(int i = 0;i < matchesData.size();i++) {
+			GameInfoPanel nowInfoPanel = new GameInfoPanel(matchesData.get(i), startTime.get(i));
+			GameInfoPanel nowInfoPanel2 = new GameInfoPanel(matchesData.get(i), startTime.get(i));
+			gameListPanel.addGameInfoPanel(nowInfoPanel);
+			gameListPanel.addGameInfoPanel(nowInfoPanel2);
+		}
+	}
+
+	private void initLayout() {
 		setLayout(null);
-		gameInfoPanel.setBounds(10, 10, 400, 300);
-		add(gameInfoPanel);
+
+		gameListPanel.setBounds(10, 10, 400, 400);
+
+		add(gameListPanel);
 	}
 }

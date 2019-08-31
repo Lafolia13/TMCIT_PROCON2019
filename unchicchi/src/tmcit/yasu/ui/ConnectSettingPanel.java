@@ -35,10 +35,10 @@ public class ConnectSettingPanel extends JPanel{
 		intervalLabel = new JLabel("ê⁄ë±ä‘äu[ms]:");
 		intervalLabel.setFont(Constant.SMALL_FONT);
 
-		tokenField = new JTextField();
-		urlField = new JTextField();
+		tokenField = new JTextField("procon30_example_token");
+		urlField = new JTextField("http://127.0.0.1");
 
-		portSpinnerModel = new SpinnerNumberModel(80, 0, 65535, 1);
+		portSpinnerModel = new SpinnerNumberModel(50654, 0, 65535, 1);
 		portSpinner = new JSpinner(portSpinnerModel);
 
 		intervalSpinnerModel = new SpinnerNumberModel(1000, 10, 10000, 10);

@@ -22,13 +22,14 @@ public class GameInfoPanel extends JPanel{
 	public GameInfoPanel(MatchesData matchesData0, int startUnixTime0) {
 		matchesData = matchesData0;
 		startUnixTime = startUnixTime0;
-		System.out.println(startUnixTime0);
 
 		init();
 		initLayout();
 	}
 
 	private void init() {
+		setBorder(Constant.DEFAULT_LINE_BORDER);
+
 		idLabel = new JLabel("ID:" + String.valueOf(matchesData.id));
 		idLabel.setFont(Constant.SMALL_FONT);
 
