@@ -14,18 +14,21 @@ import tmcit.yasu.data.MatchesData;
 import tmcit.yasu.exception.InvalidMatchesException;
 import tmcit.yasu.exception.InvalidTokenException;
 import tmcit.yasu.exception.TooEarlyException;
+import tmcit.yasu.listener.SelectGameListener;
 import tmcit.yasu.util.Network;
 
 public class SelectGamePanel extends JPanel{
 	private ConnectSetting connectSetting;
+	private JButton refreshButton;
 	private ArrayList<MatchesData> matchesData;
 	private ArrayList<Integer> startTime;
 	private GameListPanel gameListPanel;
 
+	private SelectGameListener listener;
+
 	public SelectGamePanel(ConnectSetting connectSetting0) {
 		connectSetting = connectSetting0;
 
-		getMatchesData();
 		init();
 		initLayout();
 	}
@@ -54,9 +57,9 @@ public class SelectGamePanel extends JPanel{
 		}
 	}
 
-	private void init() {
-		gameListPanel = new GameListPanel();
-
+	public void refreshGameList() {
+		gameListPanel.removeAll();
+		getMatchesData();
 		for(int i = 0;i < matchesData.size();i++) {
 			GameInfoPanel nowInfoPanel = new GameInfoPanel(matchesData.get(i), startTime.get(i));
 			GameInfoPanel nowInfoPanel2 = new GameInfoPanel(matchesData.get(i), startTime.get(i));
@@ -65,11 +68,24 @@ public class SelectGamePanel extends JPanel{
 		}
 	}
 
+	private void init() {
+		refreshButton = new JButton("XV");
+
+		gameListPanel = new GameListPanel();
+
+		refreshGameList();
+
+		listener = new SelectGameListener(this);
+		refreshButton.addActionListener(listener);
+	}
+
 	private void initLayout() {
 		setLayout(null);
 
-		gameListPanel.setBounds(10, 10, 400, 400);
+		refreshButton.setBounds(10, 10, 100, 30);
+		gameListPanel.setBounds(10, 50, 400, 400);
 
+		add(refreshButton);
 		add(gameListPanel);
 	}
 }

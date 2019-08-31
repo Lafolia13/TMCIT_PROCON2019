@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.util.ArrayList;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
@@ -15,6 +16,7 @@ public class GameListPanel extends JScrollPane{
 	private GridBagLayout gbl;
 	private GridBagConstraints gbc;
 	private int nowY;
+	private ArrayList<GameInfoPanel> listItem;
 
 	public GameListPanel() {
 		init();
@@ -23,6 +25,7 @@ public class GameListPanel extends JScrollPane{
 
 	private void init() {
 		listPanel = new JPanel();
+		listItem = new ArrayList<GameInfoPanel>();
 
 		// layout
 		nowY = 0;
@@ -42,10 +45,20 @@ public class GameListPanel extends JScrollPane{
 		listPanel.setLayout(gbl);
 	}
 
+	public void removeAll() {
+		while(!listItem.isEmpty()) {
+			GameInfoPanel nowPanel = listItem.get(0);
+			listItem.remove(0);
+			listPanel.remove(nowPanel);
+		}
+		nowY = 0;
+	}
+
 	public void addGameInfoPanel(GameInfoPanel gameInfoPanel) {
 		gbc.gridy = nowY;
 		gbl.setConstraints(gameInfoPanel, gbc);
 		listPanel.add(gameInfoPanel);
+		listItem.add(gameInfoPanel);
 		nowY++;
 	}
 }
