@@ -27,13 +27,13 @@ import tmcit.yasu.exception.UnacceptableTimeExeption;
 public class Network {
 	private String url = null, token = null;
 	private OkHttpClient client;
-	
-	public Network(String url0, String token0) {
-		url = url0;
+
+	public Network(String url0, int port0, String token0) {
+		url = url0 + ":" + String.valueOf(port0);
 		token = token0;
 		client = new OkHttpClient();
 	}
-	
+
 	// GET /matches
 	public ArrayList<MatchesData> getMatches() throws InvalidTokenException {
 		Request request = new Request.Builder().url(url + "/matches").header("Authorization", token).build();
@@ -52,19 +52,19 @@ public class Network {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
-		
+
+
 		return null;
 	}
-	
+
 	// GET /matches/{id}
 	public Field getMatcheStatus(int id) throws InvalidTokenException, InvalidMatchesException, TooEarlyException {
 		Request request = new Request.Builder().url(url + "/matches/" + String.valueOf(id)).header("Authorization", token).build();
-		
+
 		try {
 			Response response = client.newCall(request).execute();
 			String json = response.body().string();
-			
+
 			if(response.code() == 401) {
 				response.close();
 				throw new InvalidTokenException("トークンが正しくありません");
@@ -87,7 +87,7 @@ public class Network {
 		}
 		return null;
 	}
-	
+
 	// POST /matches/{id}/action
 	public Actions postAction(int id, Actions actions) throws InvalidTokenException, InvalidMatchesException, TooEarlyException, UnacceptableTimeExeption {
 		try {
@@ -96,9 +96,9 @@ public class Network {
 			MediaType MIMEType = MediaType.parse("application/json; charset=utf-8");
 			RequestBody requestBody = RequestBody.create(MIMEType, json);
 			Request request = new Request.Builder().url(url + "/matches/" + String.valueOf(id) +"/action").header("Authorization", token).post(requestBody).build();
-			
+
 			Response response = client.newCall(request).execute();
-			
+
 			if(response.code() == 401) {
 				response.close();
 				throw new InvalidTokenException("トークンが正しくありません。");
@@ -116,9 +116,9 @@ public class Network {
 					throw new UnacceptableTimeExeption(exception401.startAtUnixTime, "行動を受け付けていません。");
 				}
 			}
-			
+
 			Actions res = new ObjectMapper().readValue(response.body().string(), Actions.class);
-			
+
 			response.close();
 			return res;
 		} catch (JsonProcessingException e) {
@@ -128,19 +128,21 @@ public class Network {
 		}
 		return null;
 	}
-	
+
 	// GET /ping
-	public boolean ping() {
+	public boolean ping() throws IOException, InvalidTokenException {
 		Request request = new Request.Builder().url(url + "/ping").header("Authorization", token).build();
-		try {
-			Response response = client.newCall(request).execute();
-			if(response.code() == 200) {
-				response.close();
-				return true;
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
+
+		Response response = client.newCall(request).execute();
+
+		if(response.code() == 200) {
+			response.close();
+			return true;
+		}else if(response.code() == 401) {
+			response.close();
+			throw new InvalidTokenException("トークンが正しくありません。");
 		}
+
 		return false;
 	}
 }
