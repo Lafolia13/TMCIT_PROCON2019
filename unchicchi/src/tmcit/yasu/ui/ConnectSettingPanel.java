@@ -7,6 +7,7 @@ import javax.swing.JTextField;
 import javax.swing.SpinnerModel;
 import javax.swing.SpinnerNumberModel;
 
+import tmcit.yasu.data.ConnectSetting;
 import tmcit.yasu.util.Constant;
 
 public class ConnectSettingPanel extends JPanel{
@@ -70,5 +71,9 @@ public class ConnectSettingPanel extends JPanel{
 		add(tokenField);
 		add(intervalLabel);
 		add(intervalSpinner);
+	}
+
+	public ConnectSetting getSetting() {
+		return new ConnectSetting(urlField.getText(), tokenField.getText(), (int)portSpinner.getValue(), (int)intervalSpinner.getValue());
 	}
 }
