@@ -15,11 +15,19 @@ public class GamePanel extends JPanel {
 	public GamePanel(ConnectSetting connectSetting0, MatchesData matchData0) {
 		connectSetting = connectSetting0;
 		matchData = matchData0;
+		init();
+		initLayout();
 	}
 
 	private void init() {
+		gameStatusPanel = new GameStatusPanel(matchData);
 	}
 
 	private void initLayout() {
+		setLayout(null);
+
+		gameStatusPanel.setBounds(10, 10, 400, 200);
+
+		add(gameStatusPanel);
 	}
 }
