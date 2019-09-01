@@ -15,6 +15,7 @@ import tmcit.yasu.exception.InvalidMatchesException;
 import tmcit.yasu.exception.InvalidTokenException;
 import tmcit.yasu.exception.TooEarlyException;
 import tmcit.yasu.listener.SelectGameListener;
+import tmcit.yasu.util.FileManager;
 import tmcit.yasu.util.Network;
 
 public class SelectGamePanel extends JPanel{
@@ -23,6 +24,7 @@ public class SelectGamePanel extends JPanel{
 	private ArrayList<MatchesData> matchesData;
 	private ArrayList<Integer> startTime;
 	private GameListPanel gameListPanel;
+	private AgentSelectPanel agentSelectPanel;
 
 	private SelectGameListener listener;
 
@@ -70,8 +72,9 @@ public class SelectGamePanel extends JPanel{
 		refreshButton = new JButton("çXêV");
 
 		gameListPanel = new GameListPanel();
-
 		refreshGameList();
+
+		agentSelectPanel = new AgentSelectPanel(new FileManager());
 
 		listener = new SelectGameListener(this);
 		refreshButton.addActionListener(listener);
@@ -82,8 +85,10 @@ public class SelectGamePanel extends JPanel{
 
 		refreshButton.setBounds(10, 10, 100, 30);
 		gameListPanel.setBounds(10, 50, 400, 400);
+		agentSelectPanel.setBounds(420, 10, 300, 400);
 
 		add(refreshButton);
 		add(gameListPanel);
+		add(agentSelectPanel);
 	}
 }
