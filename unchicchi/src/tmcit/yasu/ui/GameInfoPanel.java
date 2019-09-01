@@ -74,4 +74,8 @@ public class GameInfoPanel extends JPanel{
 			setBorder(Constant.NONE_SELECTED_LINE_BORDER);
 		}
 	}
+
+	public int getId() {
+		return matchesData.id;
+	}
 }

@@ -15,14 +15,17 @@ import tmcit.yasu.exception.InvalidMatchesException;
 import tmcit.yasu.exception.InvalidTokenException;
 import tmcit.yasu.exception.TooEarlyException;
 import tmcit.yasu.listener.SelectGameListener;
+import tmcit.yasu.util.Constant;
+import tmcit.yasu.util.FileManager;
 import tmcit.yasu.util.Network;
 
 public class SelectGamePanel extends JPanel{
 	private ConnectSetting connectSetting;
-	private JButton refreshButton;
+	private JButton refreshButton, startButton;
 	private ArrayList<MatchesData> matchesData;
 	private ArrayList<Integer> startTime;
 	private GameListPanel gameListPanel;
+	private AgentSelectPanel agentSelectPanel;
 
 	private SelectGameListener listener;
 
@@ -70,11 +73,16 @@ public class SelectGamePanel extends JPanel{
 		refreshButton = new JButton("更新");
 
 		gameListPanel = new GameListPanel();
-
 		refreshGameList();
+
+		agentSelectPanel = new AgentSelectPanel(new FileManager());
+
+		startButton = new JButton("開始");
+		startButton.setFont(Constant.DEFAULT_FONT);
 
 		listener = new SelectGameListener(this);
 		refreshButton.addActionListener(listener);
+		startButton.addActionListener(listener);
 	}
 
 	private void initLayout() {
@@ -82,8 +90,16 @@ public class SelectGamePanel extends JPanel{
 
 		refreshButton.setBounds(10, 10, 100, 30);
 		gameListPanel.setBounds(10, 50, 400, 400);
+		agentSelectPanel.setBounds(420, 10, 300, 400);
+		startButton.setBounds(10, 460, 200, 40);
 
 		add(refreshButton);
 		add(gameListPanel);
+		add(agentSelectPanel);
+		add(startButton);
+	}
+
+	public int getSelectedMatchId() {
+		return gameListPanel.getSelectedMatchId();
 	}
 }
