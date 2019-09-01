@@ -1,9 +1,13 @@
 package tmcit.yasu.ui;
 
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
 import javax.swing.JPanel;
 
 import tmcit.yasu.data.ConnectSetting;
 import tmcit.yasu.data.MatchesData;
+import tmcit.yasu.util.GameNetworkRunnable;
 
 public class GamePanel extends JPanel {
 	private ConnectSetting connectSetting;
@@ -17,6 +21,9 @@ public class GamePanel extends JPanel {
 		matchData = matchData0;
 		init();
 		initLayout();
+
+		ExecutorService exec = Executors.newSingleThreadExecutor();
+		exec.execute(new GameNetworkRunnable(connectSetting, matchData, gameStatusPanel));
 	}
 
 	private void init() {

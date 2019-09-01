@@ -38,7 +38,7 @@ public class ConnectSettingPanel extends JPanel{
 		tokenField = new JTextField("procon30_example_token");
 		urlField = new JTextField("http://127.0.0.1");
 
-		portSpinnerModel = new SpinnerNumberModel(62145, 0, 65535, 1);
+		portSpinnerModel = new SpinnerNumberModel(58286, 0, 65535, 1);
 		portSpinner = new JSpinner(portSpinnerModel);
 
 		intervalSpinnerModel = new SpinnerNumberModel(1000, 10, 10000, 10);

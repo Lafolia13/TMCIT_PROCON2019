@@ -48,4 +48,12 @@ public class GameStatusPanel extends JPanel{
 		add(serverStatus);
 		add(gameStatus);
 	}
+
+	public void changeServerStatus(String str) {
+		serverStatus.setText("サーバ接続状態:" + str);
+	}
+
+	public void changeGameStatus(String str) {
+		gameStatus.setText("ゲーム状態:" + str);
+	}
 }
