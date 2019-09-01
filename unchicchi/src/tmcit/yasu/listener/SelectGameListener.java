@@ -5,14 +5,20 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JOptionPane;
 
+import tmcit.yasu.data.ConnectSetting;
+import tmcit.yasu.ui.GamePanel;
+import tmcit.yasu.ui.MainFrame;
 import tmcit.yasu.ui.SelectGamePanel;
 
 public class SelectGameListener implements ActionListener {
-
+	private MainFrame mainFrame;
 	private SelectGamePanel selectGamePanel;
+	private ConnectSetting connectSetting;
 
-	public SelectGameListener(SelectGamePanel selectGamePanel0) {
+	public SelectGameListener(MainFrame mainFrame0, SelectGamePanel selectGamePanel0, ConnectSetting connectSetting0) {
+		mainFrame = mainFrame0;
 		selectGamePanel = selectGamePanel0;
+		connectSetting = connectSetting0;
 	}
 
 	@Override
@@ -26,6 +32,7 @@ public class SelectGameListener implements ActionListener {
 				JOptionPane.showMessageDialog(selectGamePanel, "対戦するゲームを選択してください。", "エラー", JOptionPane.ERROR_MESSAGE);
 				return;
 			}
+			mainFrame.addTab("ゲーム[id=" + String.valueOf(selectedId) +"]", new GamePanel(connectSetting, selectedId));
 		}
 	}
 
