@@ -40,7 +40,7 @@ public class GameStatusPanel extends JPanel{
 		nameLabel.setBounds(10, 40, 200, 20);
 		turnLabel.setBounds(10, 70, 200, 20);
 		serverStatus.setBounds(10, 100, 200, 20);
-		gameStatus.setBounds(10, 130, 200, 20);
+		gameStatus.setBounds(10, 130, 300, 20);
 
 		add(idLabel);
 		add(nameLabel);

@@ -25,6 +25,7 @@ public class GameNetworkRunnable implements Runnable{
 		Network net = new Network(connectSetting.url, connectSetting.port, connectSetting.token);
 
 		// 最初にゲームが開始しているか確認
+		long startUnixTime = -1;
 		try {
 			net.getMatcheStatus(matchData.id);
 			gameStatusPanel.changeGameStatus("ゲーム中");
@@ -33,7 +34,10 @@ public class GameNetworkRunnable implements Runnable{
 		} catch (InvalidMatchesException e2) {
 			gameStatusPanel.changeGameStatus("参加できません");
 		} catch (TooEarlyException e2) {
-			gameStatusPanel.changeGameStatus("開始前");
+			startUnixTime = e2.startUnixTime;
+			long nowUnixTime = System.currentTimeMillis() / 1000L;
+			long lastTime = startUnixTime - nowUnixTime;
+			gameStatusPanel.changeGameStatus("開始前(残り" + String.valueOf(lastTime) + "秒)");
 		}
 
 		while(true) {
@@ -49,6 +53,12 @@ public class GameNetworkRunnable implements Runnable{
 				gameStatusPanel.changeServerStatus("通信不能");
 			} catch (InvalidTokenException e1) {
 				gameStatusPanel.changeServerStatus("トークンエラー");
+			}
+
+			// ゲームが開始していない場合
+			long nowUnixTime = System.currentTimeMillis() / 1000L;
+			if(startUnixTime - nowUnixTime > 0) {
+				gameStatusPanel.changeGameStatus("開始前(残り" + String.valueOf(startUnixTime - nowUnixTime) + "秒)");
 			}
 
 			// TODO: 設定の値に合わせる
