@@ -11,6 +11,7 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
+import tmcit.yasu.data.MatchesData;
 import tmcit.yasu.listener.GameInfoListener;
 
 public class GameListPanel extends JScrollPane{
@@ -76,8 +77,8 @@ public class GameListPanel extends JScrollPane{
 		nowY++;
 	}
 
-	public int getSelectedMatchId() {
-		if(selectedIndex == -1) return -1;
-		return listItem.get(selectedIndex).getId();
+	public MatchesData getSelectedMatch() {
+		if(selectedIndex == -1) return null;
+		return listItem.get(selectedIndex).getMatchesData();
 	}
 }

@@ -3,13 +3,23 @@ package tmcit.yasu.ui;
 import javax.swing.JPanel;
 
 import tmcit.yasu.data.ConnectSetting;
+import tmcit.yasu.data.MatchesData;
 
 public class GamePanel extends JPanel {
 	private ConnectSetting connectSetting;
-	private int id;
+	private MatchesData matchData;
 
-	public GamePanel(ConnectSetting connectSetting0, int id0) {
+	// UI
+	private GameStatusPanel gameStatusPanel;
+
+	public GamePanel(ConnectSetting connectSetting0, MatchesData matchData0) {
 		connectSetting = connectSetting0;
-		id = id0;
+		matchData = matchData0;
+	}
+
+	private void init() {
+	}
+
+	private void initLayout() {
 	}
 }

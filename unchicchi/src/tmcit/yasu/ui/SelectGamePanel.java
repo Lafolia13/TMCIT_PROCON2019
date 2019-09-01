@@ -102,7 +102,7 @@ public class SelectGamePanel extends JPanel{
 		add(startButton);
 	}
 
-	public int getSelectedMatchId() {
-		return gameListPanel.getSelectedMatchId();
+	public MatchesData getSelectedMatch() {
+		return gameListPanel.getSelectedMatch();
 	}
 }
