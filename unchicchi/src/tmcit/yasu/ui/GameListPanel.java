@@ -75,4 +75,9 @@ public class GameListPanel extends JScrollPane{
 		listItem.add(gameInfoPanel);
 		nowY++;
 	}
+
+	public int getSelectedMatchId() {
+		if(selectedIndex == -1) return -1;
+		return listItem.get(selectedIndex).getId();
+	}
 }
