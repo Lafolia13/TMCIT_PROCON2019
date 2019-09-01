@@ -10,14 +10,20 @@ import javax.swing.JOptionPane;
 
 import tmcit.yasu.data.ConnectSetting;
 import tmcit.yasu.exception.InvalidTokenException;
+import tmcit.yasu.ui.ConnectPanel;
 import tmcit.yasu.ui.ConnectSettingPanel;
+import tmcit.yasu.ui.MainFrame;
+import tmcit.yasu.ui.SelectGamePanel;
 import tmcit.yasu.util.Network;
 
 public class ConnectionListener implements ActionListener{
-
+	private MainFrame mainFrame;
+	private ConnectPanel connectPanel;
 	private ConnectSettingPanel connectSettingPanel;
 
-	public ConnectionListener(ConnectSettingPanel connectSettingPanel0) {
+	public ConnectionListener(MainFrame mainFrame0, ConnectPanel connectPanel0, ConnectSettingPanel connectSettingPanel0) {
+		mainFrame = mainFrame0;
+		connectPanel = connectPanel0;
 		connectSettingPanel = connectSettingPanel0;
 	}
 
@@ -89,6 +95,8 @@ public class ConnectionListener implements ActionListener{
 		if(!checkConnect(setting)) {
 			return;
 		}
+
+		mainFrame.addTab("ÉQÅ[ÉÄàÍóó", new SelectGamePanel(setting));
 	}
 
 }

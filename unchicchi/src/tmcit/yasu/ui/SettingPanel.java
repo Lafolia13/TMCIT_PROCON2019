@@ -11,9 +11,9 @@ public class SettingPanel extends JPanel{
 	private FileManager fileManager;
 	private JLabel nameLabel;
 
-	private GameInfoPanel gameInfoPanel;
+//	private GameInfoPanel gameInfoPanel;
 	private AgentSelectPanel agentSelectPanel;
-	
+
 
 	public SettingPanel(FileManager fileManager0) {
 		fileManager = fileManager0;
@@ -27,23 +27,23 @@ public class SettingPanel extends JPanel{
 		nameLabel = new JLabel("ê›íË");
 		nameLabel.setFont(Constant.DEFAULT_FONT);
 
-		gameInfoPanel = new GameInfoPanel();
+//		gameInfoPanel = new GameInfoPanel();
 		agentSelectPanel = new AgentSelectPanel(fileManager);
-		
+
 	}
 
 	private void initLayout() {
 		setLayout(null);
 
 		nameLabel.setBounds(10, 5, 100, 30);
-		gameInfoPanel.setBounds(10, 40, 300, 120);
+//		gameInfoPanel.setBounds(10, 40, 300, 120);
 		agentSelectPanel.setBounds(10, 170, 300, 300);
 
-		add(gameInfoPanel);
+//		add(gameInfoPanel);
 		add(nameLabel);
 		add(agentSelectPanel);
 	}
-	
+
 	// getter
 	public AgentSelectPanel getAgentSelectPanel() {
 		return agentSelectPanel;
