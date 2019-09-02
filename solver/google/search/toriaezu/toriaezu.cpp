@@ -34,7 +34,6 @@ array<Move, 8> BeamSearch(const GameData &game_data,
 		all_nodes[root.key] = new Node();
 	*all_nodes[root.key] = root;
 	now_que.push(make_pair(0, root.key));
-
 	for (int_fast32_t turn = turn_data.now_turn;
 		 turn <= min(turn_data.now_turn + kBeamDepth,
 		 			 game_data.max_turn);
@@ -43,15 +42,14 @@ array<Move, 8> BeamSearch(const GameData &game_data,
 			const double now_evaluation = now_que.top().first;
 			const int_fast32_t now_key = now_que.top().second;
 			now_que.pop();
-
 			const Node &now_node = *all_nodes[now_key];
 			if (now_node.turn_data.now_turn == turn &&
 				now_node.evaluation > now_evaluation) continue;
 
 			TurnData &now_turn_data = all_nodes[now_key]->turn_data;
 			static vector<vector<Move>> all_moves;
-			static vector<int_fast32_t> move_ids;
-			static vector<Move> check_moves;
+			vector<int_fast32_t> move_ids(turn_data.agent_num);
+			vector<Move> check_moves(turn_data.agent_num);
 
 			all_moves = GetAgentsAllMoves(game_data, now_turn_data, kAlly,
 										  false, true);
@@ -71,7 +69,6 @@ array<Move, 8> BeamSearch(const GameData &game_data,
 								 GetEvaluation(game_data, next_turn_data,
 								 			   kAlly));
 				next_node.GetKey();
-
 				if (all_nodes[next_node.key] != nullptr &&
 					all_nodes[next_node.key]->turn_data.now_turn ==
 							next_turn_data.now_turn) {
@@ -84,7 +81,6 @@ array<Move, 8> BeamSearch(const GameData &game_data,
 				} else {
 					if (all_nodes[next_node.key] == nullptr)
 						all_nodes[next_node.key] = new Node();
-
 					if (next_que.size() < kBeamWidth) {
 						*all_nodes[next_node.key] = next_node;
 						next_que.push(make_pair(next_node.evaluation,
@@ -98,7 +94,7 @@ array<Move, 8> BeamSearch(const GameData &game_data,
 							top_evaluation < next_node.evaluation) {
 							*all_nodes[next_node.key] = next_node;
 							next_que.pop();
-							next_que.push(make_pair(next_node.evaluation, next_node.evaluation));
+							next_que.push(make_pair(next_node.evaluation, next_node.key));
 						}
 					}
 				}
