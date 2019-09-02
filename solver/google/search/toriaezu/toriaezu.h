@@ -1,9 +1,11 @@
 #ifndef TORIAEZU_H
 #define TORIAEZU_H
 
-#include "../../base/base_system.cpp"
-#include "../../action/change_action.cpp"
-#include "../../calculation/calculation.cpp"
+#include "../../base/base_system.h"
+#include "../../action/change_action.h"
+#include "../../calculation/calculation.h"
+
+namespace toriaezu{
 
 struct Node {
 	TurnData turn_data = {};
@@ -19,5 +21,7 @@ struct Node {
 
 	void GetKey();
 };
+
+}
 
 #endif
