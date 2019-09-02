@@ -125,8 +125,8 @@ void TurnData::Transition(const GameData &game_data,
 
 vector<vector<Move>> GetAgentsAllMoves(
 		const GameData &game_data, TurnData &turn_data,
-		const int_fast32_t &team_id, const bool use_none,
-		const bool erase_my_tile) {
+		const int_fast32_t &team_id, const bool &use_none,
+		const bool &erase_my_tile) {
 	vector<vector<Move>> ret_moves(turn_data.agent_num);
 	static Position next_pos;
 	for (int_fast32_t &&agent_id = 0; agent_id < turn_data.agent_num; ++agent_id) {
