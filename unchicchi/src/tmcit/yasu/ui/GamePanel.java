@@ -7,6 +7,7 @@ import javax.swing.JPanel;
 
 import tmcit.yasu.data.ConnectSetting;
 import tmcit.yasu.data.MatchesData;
+import tmcit.yasu.util.Constant;
 import tmcit.yasu.util.GameNetworkRunnable;
 
 public class GamePanel extends JPanel {
@@ -15,6 +16,7 @@ public class GamePanel extends JPanel {
 
 	// UI
 	private GameStatusPanel gameStatusPanel;
+	private GamePaintPanel gamePaintPanel;
 
 	public GamePanel(ConnectSetting connectSetting0, MatchesData matchData0) {
 		connectSetting = connectSetting0;
@@ -23,18 +25,21 @@ public class GamePanel extends JPanel {
 		initLayout();
 
 		ExecutorService exec = Executors.newSingleThreadExecutor();
-		exec.execute(new GameNetworkRunnable(connectSetting, matchData, gameStatusPanel));
+		exec.execute(new GameNetworkRunnable(connectSetting, matchData, gameStatusPanel, gamePaintPanel));
 	}
 
 	private void init() {
 		gameStatusPanel = new GameStatusPanel(matchData);
+		gamePaintPanel = new GamePaintPanel();
 	}
 
 	private void initLayout() {
 		setLayout(null);
 
 		gameStatusPanel.setBounds(10, 10, 400, 200);
+		gamePaintPanel.setBounds(10, 220, Constant.MAP_SIZE + 10, Constant.MAP_SIZE + 10);
 
 		add(gameStatusPanel);
+		add(gamePaintPanel);
 	}
 }

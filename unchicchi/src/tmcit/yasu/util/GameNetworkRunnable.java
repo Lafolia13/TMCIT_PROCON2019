@@ -3,24 +3,28 @@ package tmcit.yasu.util;
 import java.io.IOException;
 
 import tmcit.yasu.data.ConnectSetting;
+import tmcit.yasu.data.Field;
 import tmcit.yasu.data.MatchesData;
 import tmcit.yasu.exception.InvalidMatchesException;
 import tmcit.yasu.exception.InvalidTokenException;
 import tmcit.yasu.exception.TooEarlyException;
+import tmcit.yasu.ui.GamePaintPanel;
 import tmcit.yasu.ui.GameStatusPanel;
 
 public class GameNetworkRunnable implements Runnable{
 	private ConnectSetting connectSetting;
 	private MatchesData matchData;
 	private GameStatusPanel gameStatusPanel;
+	private GamePaintPanel gamePaintPanel;
 	
 	// 次にpingを送信する時間
 	private long nextPingUnixTime, nowUnixTime, gameStartUnixTime;
 
-	public GameNetworkRunnable(ConnectSetting connectSetting0, MatchesData matchData0, GameStatusPanel gameStatusPanel0) {
+	public GameNetworkRunnable(ConnectSetting connectSetting0, MatchesData matchData0, GameStatusPanel gameStatusPanel0, GamePaintPanel gamePaintPanel0) {
 		connectSetting = connectSetting0;
 		matchData = matchData0;
 		gameStatusPanel = gameStatusPanel0;
+		gamePaintPanel = gamePaintPanel0;
 		
 		nextPingUnixTime = 0;
 		gameStartUnixTime = -1;
@@ -29,7 +33,8 @@ public class GameNetworkRunnable implements Runnable{
 	// ゲームの状態を確認
 	private void checkGameStatus(Network net) {
 		try {
-			net.getMatcheStatus(matchData.id);
+			Field nowField = net.getMatcheStatus(matchData.id);
+			gamePaintPanel.drawField(nowField);
 			gameStatusPanel.changeGameStatus("ゲーム中");
 		} catch (InvalidTokenException e2) {
 			gameStatusPanel.changeGameStatus("トークンエラー");
@@ -75,9 +80,11 @@ public class GameNetworkRunnable implements Runnable{
 				nextPingUnixTime = nowUnixTime + connectSetting.interval;
 			}
 
-			// ゲームが開始していない場合、秒数をカウントダウン
 			if(gameStartUnixTime - nowUnixTime > 0) {
+				// ゲームが開始していない場合、秒数をカウントダウン
 				gameStatusPanel.changeGameStatus("開始前(残り" + String.valueOf(gameStartUnixTime - nowUnixTime) + "秒)");
+			}else {
+				// ゲームがスタートしている場合
 			}
 
 			try {

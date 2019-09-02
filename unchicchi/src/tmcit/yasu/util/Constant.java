@@ -14,5 +14,5 @@ public class Constant {
 
 	public static LineBorder NONE_SELECTED_LINE_BORDER = new LineBorder(Color.BLACK, 3);
 	public static LineBorder SELECTED_LINE_BORDER = new LineBorder(Color.RED, 3);
-
+	public static int MAP_SIZE = 400;
 }
