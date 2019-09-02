@@ -110,7 +110,8 @@ enum TileColors {
 
 enum AgentAction {
 	kWalk = 0,
-	kErase = 1
+	kErase = 1,
+	kNone = 2
 };
 
 // 四近傍

@@ -1,24 +1,51 @@
 package tmcit.yasu.ui;
 
+import javax.swing.JButton;
 import javax.swing.JPanel;
 
-public class MainPanel extends JPanel{
-	private SettingPanel settingPanel;
+import tmcit.yasu.listener.GameStartListener;
+import tmcit.yasu.util.FileManager;
 
-	public MainPanel() {
+public class MainPanel extends JPanel{
+	private MainFrame mainFrame;
+	private FileManager fileManager;
+	
+	// UI
+	private SettingPanel settingPanel;
+	
+	private JButton startButton;
+	
+	// Listener
+	private GameStartListener gameStartListener;
+
+	public MainPanel(MainFrame mainFrame0, FileManager fileManager0) {
+		mainFrame = mainFrame0;
+		fileManager = fileManager0;
 		init();
 		initLayout();
 	}
 
 	private void init() {
-		settingPanel = new SettingPanel();
+		settingPanel = new SettingPanel(fileManager);
+		
+		startButton = new JButton("Ç∑ÇΩÅ[Ç∆ÅIÅI");
+		
+		// ListenerÇÃçÏê¨
+		gameStartListener = new GameStartListener(mainFrame, settingPanel.getAgentSelectPanel());
+		
+		// ListenerÇÃïRÇ√ÇØ
+		startButton.addActionListener(gameStartListener);
+		
 	}
 
 	private void initLayout() {
 		setLayout(null);
 
 		settingPanel.setBounds(10, 10, 400, 500);
+		
+		startButton.setBounds(10, 520, 150, 30);
 
 		add(settingPanel);
+		add(startButton);
 	}
 }

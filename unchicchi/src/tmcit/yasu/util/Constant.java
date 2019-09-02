@@ -12,5 +12,7 @@ public class Constant {
 	public static Font SMALL_FONT = new Font("ＭＳ ゴシック", Font.BOLD, 15);
 	public static String[] PRESET_PARAM_COLUMN_NAMES = {"パラメータ名", "説明", "値"};
 
+	public static LineBorder NONE_SELECTED_LINE_BORDER = new LineBorder(Color.BLACK, 3);
+	public static LineBorder SELECTED_LINE_BORDER = new LineBorder(Color.RED, 3);
 
 }
