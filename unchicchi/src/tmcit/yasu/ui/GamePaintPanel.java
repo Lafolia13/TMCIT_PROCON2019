@@ -66,6 +66,23 @@ public class GamePaintPanel extends JPanel {
 		g2.setColor(Color.BLACK);
 	}
 	
+	private void paintScore(Graphics2D g2) {
+		g2.setFont(Constant.MAP_SCORE_FONT);
+
+		int drawInterval = calcDrawInterval();
+
+		for(int nowX = 0;nowX < field.width;nowX++) {
+			for(int nowY = 0;nowY < field.height;nowY++) {
+				int px = nowX*drawInterval;
+				int py = (nowY+1)*drawInterval;
+				
+				int nowScore = field.points.get(nowY).get(nowX);
+				String str = String.valueOf(nowScore);
+				g2.drawString(str, px+Constant.MAP_SCORE_BIAS, py-Constant.MAP_SCORE_BIAS);
+			}
+		}
+	}
+	
 	
 	@Override
 	protected void paintComponent(Graphics g) {
@@ -76,5 +93,6 @@ public class GamePaintPanel extends JPanel {
 		
 		paintTerritory(g2);
 		paintGrid(g2);
+		paintScore(g2);
 	}
 }
