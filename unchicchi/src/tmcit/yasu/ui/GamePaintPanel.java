@@ -3,11 +3,15 @@ package tmcit.yasu.ui;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Point;
+import java.util.ArrayList;
 
 import javax.swing.JPanel;
 
+import tmcit.yasu.data.Agent;
 import tmcit.yasu.data.Field;
 import tmcit.yasu.data.MatchesData;
+import tmcit.yasu.data.Team;
 import tmcit.yasu.util.Constant;
 
 public class GamePaintPanel extends JPanel {
@@ -83,6 +87,41 @@ public class GamePaintPanel extends JPanel {
 		}
 	}
 	
+	private void paintPlayer(Graphics2D g2, int nowPlayerX, int nowPlayerY, Color c, String str) {
+		int drawInterval = calcDrawInterval();
+		int px = nowPlayerX * drawInterval;
+		int py = nowPlayerY * drawInterval;
+
+		int spaceBias = (int)(drawInterval*0.1);
+		int spaceSize = (int)(drawInterval*0.8);
+		int bias = 6;
+
+		g2.setColor(c);
+		g2.setFont(Constant.MAP_SCORE_FONT);
+		g2.fillOval(px+spaceBias, py+spaceBias, spaceSize, spaceSize);
+		g2.setColor(Color.BLACK);
+		g2.drawString(str, px+drawInterval/2-bias, py+drawInterval/2+bias);
+	}
+	
+	private void paintPlayers(Graphics2D g2) {
+		for(int teamIndex = 0;teamIndex < field.teams.size();teamIndex++) {
+			Team nowTeam = field.teams.get(teamIndex);
+			for(int agentIndex = 0;agentIndex < nowTeam.agents.size();agentIndex++) {
+				Agent nowAgent = nowTeam.agents.get(agentIndex);
+				
+				if(nowTeam.teamID == matchData.teamID) {
+					// 自分のチーム
+					String str = String.valueOf(nowAgent.agentID);
+					paintPlayer(g2, nowAgent.x-1, nowAgent.y-1, Constant.MY_COLOR, str);
+				}else {
+					// 相手のチーム
+					String str = String.valueOf(nowAgent.agentID);
+					paintPlayer(g2, nowAgent.x-1, nowAgent.y-1, Constant.RIVAL_COLOR, str);
+				}
+			}
+		}
+	}
+	
 	
 	@Override
 	protected void paintComponent(Graphics g) {
@@ -94,5 +133,6 @@ public class GamePaintPanel extends JPanel {
 		paintTerritory(g2);
 		paintGrid(g2);
 		paintScore(g2);
+		paintPlayers(g2);
 	}
 }
