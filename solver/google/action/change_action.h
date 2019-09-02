@@ -16,4 +16,9 @@ vector<vector<Move>> GetAgentsAllMoves(const GameData&, TurnData&,
 									   const int_fast32_t&, const bool&,
 									   const bool&);
 
+bool NextPermutation(const vector<vector<Move>>&,
+					 const int_fast32_t&,
+					 vector<int_fast32_t>&,
+					 vector<Move>&);
+
 #endif
