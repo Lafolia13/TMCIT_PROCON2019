@@ -30,7 +30,7 @@ public class GamePanel extends JPanel {
 
 	private void init() {
 		gameStatusPanel = new GameStatusPanel(matchData);
-		gamePaintPanel = new GamePaintPanel();
+		gamePaintPanel = new GamePaintPanel(matchData);
 	}
 
 	private void initLayout() {

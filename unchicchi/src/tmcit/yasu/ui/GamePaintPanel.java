@@ -1,17 +1,21 @@
 package tmcit.yasu.ui;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 
 import javax.swing.JPanel;
 
 import tmcit.yasu.data.Field;
+import tmcit.yasu.data.MatchesData;
 import tmcit.yasu.util.Constant;
 
 public class GamePaintPanel extends JPanel {
 	private Field field = null;
+	private MatchesData matchData;
 	
-	public GamePaintPanel() {
+	public GamePaintPanel(MatchesData matchData0) {
+		matchData = matchData0;
 	}
 	
 	public void drawField(Field field0) {
@@ -39,6 +43,29 @@ public class GamePaintPanel extends JPanel {
 		}
 	}
 	
+	private void paintTerritory(Graphics2D g2) {
+		int drawInterval = calcDrawInterval();
+
+		for(int nowX = 0;nowX < field.width;nowX++) {
+			for(int nowY = 0;nowY < field.height;nowY++) {
+				int px = nowX*drawInterval;
+				int py = nowY*drawInterval;
+				int nowTerritory = field.tiled.get(nowY).get(nowX);
+
+				if(nowTerritory == 0) {
+					g2.setColor(Constant.NONE_BACK_COLOR);
+				}else if(nowTerritory == matchData.teamID) {
+					g2.setColor(Constant.MY_BACK_COLOR);
+				}else if(nowTerritory != matchData.teamID) {
+					g2.setColor(Constant.RIVAL_BACK_COLOR);
+				}
+				g2.fillRect(px+1, py+1, drawInterval, drawInterval);
+			}
+		}
+
+		g2.setColor(Color.BLACK);
+	}
+	
 	
 	@Override
 	protected void paintComponent(Graphics g) {
@@ -47,6 +74,7 @@ public class GamePaintPanel extends JPanel {
 		
 		if(field == null) return;
 		
+		paintTerritory(g2);
 		paintGrid(g2);
 	}
 }
