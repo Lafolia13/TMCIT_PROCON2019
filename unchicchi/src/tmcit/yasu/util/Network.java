@@ -29,9 +29,23 @@ public class Network {
 	private OkHttpClient client;
 
 	public Network(String url0, int port0, String token0) {
-		url = url0 + ":" + String.valueOf(port0);
+		url = getURL(url0, port0);
+		System.out.println(url);
 		token = token0;
 		client = new OkHttpClient();
+	}
+	
+	private String getURL(String url, int port) {
+		int searchStartIndex = url.indexOf("//");
+		int slashIndex = url.indexOf('/', searchStartIndex+2);
+		if(slashIndex == -1) {
+			return url + ":" + String.valueOf(port);
+		}else {
+			String firstStr = url.substring(0, slashIndex);
+			String endStr = url.substring(slashIndex);
+			String ret = firstStr + ":" + String.valueOf(port) + endStr;
+			return ret;
+		}
 	}
 
 	// GET /matches
