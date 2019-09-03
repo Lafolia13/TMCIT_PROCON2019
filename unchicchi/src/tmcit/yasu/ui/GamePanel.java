@@ -27,7 +27,7 @@ public class GamePanel extends JPanel {
 		initLayout();
 
 		ExecutorService exec = Executors.newSingleThreadExecutor();
-		exec.execute(new GameNetworkRunnable(connectSetting, matchData, gameStatusPanel, gamePaintPanel));
+		exec.execute(new GameNetworkRunnable(connectSetting, matchData, gameStatusPanel, gamePaintPanel, solverCmd));
 	}
 
 	private void init() {

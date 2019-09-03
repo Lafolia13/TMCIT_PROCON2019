@@ -34,4 +34,8 @@ public class Constant {
 	
 	public static int SLEEP_TIME = 100;
 
+	
+	// 
+	public static int[] DIR_X = {-1, 0, 1, -1, 1, -1, 0, 1};
+	public static int[] DIR_Y = {-1, -1, -1, 0, 0, 1, 1, 1};
 }
