@@ -13,14 +13,16 @@ import tmcit.yasu.util.GameNetworkRunnable;
 public class GamePanel extends JPanel {
 	private ConnectSetting connectSetting;
 	private MatchesData matchData;
+	private String solverCmd;
 
 	// UI
 	private GameStatusPanel gameStatusPanel;
 	private GamePaintPanel gamePaintPanel;
 
-	public GamePanel(ConnectSetting connectSetting0, MatchesData matchData0) {
+	public GamePanel(ConnectSetting connectSetting0, MatchesData matchData0, String solverCmd0) {
 		connectSetting = connectSetting0;
 		matchData = matchData0;
+		solverCmd = solverCmd0;
 		init();
 		initLayout();
 

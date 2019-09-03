@@ -18,7 +18,7 @@ public class GameStartListener implements ActionListener{
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		agentSelectPanel.getPlayer();
+		agentSelectPanel.getSolverCmd();
 		System.out.println("[!!!!!]");
 	}
 

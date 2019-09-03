@@ -33,7 +33,8 @@ public class SelectGameListener implements ActionListener {
 				JOptionPane.showMessageDialog(selectGamePanel, "対戦するゲームを選択してください。", "エラー", JOptionPane.ERROR_MESSAGE);
 				return;
 			}
-			mainFrame.addTab("ゲーム[id=" + String.valueOf(matchData.id) +"]", new GamePanel(connectSetting, matchData));
+			String solverCmd = selectGamePanel.getSolverCmd();
+			mainFrame.addTab("ゲーム[id=" + String.valueOf(matchData.id) +"]", new GamePanel(connectSetting, matchData, solverCmd));
 		}
 	}
 

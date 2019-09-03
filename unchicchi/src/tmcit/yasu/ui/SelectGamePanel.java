@@ -105,4 +105,8 @@ public class SelectGamePanel extends JPanel{
 	public MatchesData getSelectedMatch() {
 		return gameListPanel.getSelectedMatch();
 	}
+	
+	public String getSolverCmd() {
+		return agentSelectPanel.getSolverCmd();
+	}
 }

@@ -31,5 +31,7 @@ public class Constant {
 	
 	public static Font MAP_SCORE_FONT = new Font("Arial", Font.BOLD, 20);
 	public static int MAP_SCORE_BIAS = 5;
+	
+	public static int SLEEP_TIME = 100;
 
 }
