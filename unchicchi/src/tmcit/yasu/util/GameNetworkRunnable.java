@@ -45,9 +45,10 @@ public class GameNetworkRunnable implements Runnable{
 	}
 	
 	// ゲームの状態を確認
-	private void checkGameStatus(Network net) {
+	private Field checkGameStatus(Network net) {
+		Field nowField = null;
 		try {
-			Field nowField = net.getMatcheStatus(matchData.id);
+			nowField = net.getMatcheStatus(matchData.id);
 			gamePaintPanel.drawField(nowField);
 			gameStatusPanel.changeGameStatus("ゲーム中");
 		} catch (InvalidTokenException e2) {
@@ -60,6 +61,8 @@ public class GameNetworkRunnable implements Runnable{
 			long lastTime = gameStartUnixTime - nowUnixTime;
 			gameStatusPanel.changeGameStatus("開始前(残り" + String.valueOf(lastTime) + "秒)");
 		}
+		
+		return nowField;
 	}
 	
 	// pingでサーバとの接続状態を取得
@@ -144,14 +147,18 @@ public class GameNetworkRunnable implements Runnable{
 		Action ret = new Action();
 		ret.agentID = agentId;
 		
+		System.out.println("[SOLVER] " + str);
+		
 		if(str.charAt(0) == 'w') {
 			ret.type = "move";
 			int way = Integer.valueOf("" + str.charAt(1));
+			if(way >= 4) way--;
 			ret.dx = Constant.DIR_X[way];
 			ret.dy = Constant.DIR_Y[way];
 		}else if(str.charAt(0) == 'e') {
 			ret.type = "remove";
 			int way = Integer.valueOf("" + str.charAt(1));
+			if(way >= 4) way--;
 			ret.dx = Constant.DIR_X[way];
 			ret.dy = Constant.DIR_Y[way];
 		}else {
@@ -159,7 +166,6 @@ public class GameNetworkRunnable implements Runnable{
 			ret.dx = 0;
 			ret.dy = 0;
 		}
-		
 		return ret;
 	}
 	
@@ -190,6 +196,9 @@ public class GameNetworkRunnable implements Runnable{
 	@Override
 	public void run() {
 		Network net = new Network(connectSetting.url, connectSetting.port, connectSetting.token);
+		
+		// flag
+		boolean inputInitFlag = false;
 
 		// 最初にゲームが開始しているか確認
 		checkGameStatus(net);
@@ -203,11 +212,18 @@ public class GameNetworkRunnable implements Runnable{
 				nextPingUnixTime = nowUnixTime + connectSetting.interval;
 			}
 
-			if(gameStartUnixTime - nowUnixTime > 0) {
+			if(gameStartUnixTime - nowUnixTime > -1) {
 				// ゲームが開始していない場合、秒数をカウントダウン
 				gameStatusPanel.changeGameStatus("開始前(残り" + String.valueOf(gameStartUnixTime - nowUnixTime) + "秒)");
 			}else {
 				// ゲームがスタートしている場合
+				if(!inputInitFlag) {
+					Field nowField = checkGameStatus(net);
+					inputInit(nowField);
+					inputTurn(nowField);
+					outputSolver(net, nowField);
+					inputInitFlag = true;
+				}
 			}
 
 			try {

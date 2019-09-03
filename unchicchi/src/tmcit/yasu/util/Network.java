@@ -107,9 +107,13 @@ public class Network {
 		try {
 			String json = new ObjectMapper().writeValueAsString(actions);
 
-			MediaType MIMEType = MediaType.parse("application/json; charset=utf-8");
-			RequestBody requestBody = RequestBody.create(MIMEType, json);
-			Request request = new Request.Builder().url(url + "/matches/" + String.valueOf(id) +"/action").header("Authorization", token).post(requestBody).build();
+			RequestBody requestBody = RequestBody.create(null, json);
+			Request request = new Request.Builder()
+					.url(url + "/matches/" + String.valueOf(id) +"/action")
+					.addHeader("Content-Type", "application/json")
+					.addHeader("Authorization", token)
+					.post(requestBody)
+					.build();
 
 			Response response = client.newCall(request).execute();
 
@@ -118,6 +122,7 @@ public class Network {
 				throw new InvalidTokenException("トークンが正しくありません。");
 			}else if(response.code() == 400) {
 				String resJson = response.body().string();
+				System.out.println("[JSON]" + resJson);
 				Exception401 exception401 = new ObjectMapper().readValue(resJson, Exception401.class);
 				if(exception401.status.equals("InvalidMatches")) {
 					response.close();
