@@ -23,7 +23,7 @@ void Node::GetKey() {
 
 array<Move, 8> BeamSearch(const GameData &game_data,
 						  const TurnData &turn_data) {
-	const int_fast32_t kBeamWidth = 2000, kBeamDepth = 3;
+	const int_fast32_t kBeamWidth = 2000, kBeamDepth = 5;
 
 	static vector<Node*> now_all_nodes(1<<(9*3), nullptr), next_all_nodes(1<<(9*3), nullptr);
 	greater_priority_queue<pair<double, int_fast32_t>> now_que, next_que;
@@ -63,6 +63,7 @@ array<Move, 8> BeamSearch(const GameData &game_data,
 				TurnData next_turn_data = now_turn_data;
 				next_turn_data.Transition(game_data, check_moves);
 				++next_turn_data.now_turn;
+				next_turn_data.CalculationAllAreaPoint(game_data);
 				sort(next_turn_data.agents_position[kAlly].begin(),
 					 next_turn_data.agents_position[kAlly].end());
 				next_node = Node(next_turn_data,
@@ -114,10 +115,6 @@ array<Move, 8> BeamSearch(const GameData &game_data,
 
 	array<Move, 8> ret;
 	while (now_que.size()) {
-		auto m = now_all_nodes[now_que.top().second]->first_move;
-		for (int i = 0; i < turn_data.agent_num; ++i)
-			cerr << m[i].action << m[i].direction << " : ";
-		cerr << now_que.top().first << endl;
 		if (now_que.size() == 1)
 			ret = now_all_nodes[now_que.top().second]->first_move;
 		now_que.pop();
