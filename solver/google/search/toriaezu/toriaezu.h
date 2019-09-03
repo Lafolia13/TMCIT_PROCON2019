@@ -11,7 +11,7 @@ struct Node {
 	TurnData turn_data = {};
 	double evaluation = {};
 	int_fast32_t key = {};
-	array<Move, 8> fast_move = {};
+	array<Move, 8> first_move = {};
 
 	Node() {};
 	Node (const TurnData &turn_data, const double evaluation) :
