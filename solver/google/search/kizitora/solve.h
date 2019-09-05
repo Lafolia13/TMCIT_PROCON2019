@@ -55,6 +55,17 @@ namespace search {
 		void EraseRivalAgent(const GameData& game_data,
 			TurnData& turn_data);
 
+		// 各タイルの9近傍の平均値を計算する
+		std::array<std::array<float, 20>, 20> CalcFieldData2AverageData(const GameData& game_data);
+
+		// エージェントの人数が多い場合に、CalcFieldData2AverageDataで得た配列を元に各エージェントの遷移先を1~2ほど枝刈りする
+		// 各タイルの平均値が分かると、その周囲にあるタイルのポイントがどれくらい高いのか、低いのかが分かる。
+		// 平均値の低いところは、高いところよりも評価値が低くなりやすいと考えられるので、枝刈りをする。
+		void ReduceAgentMoves(const GameData& game_data,
+			const TurnData& turn_data,
+			const std::array<std::array<float, 20>, 20> & average_field_data,
+			std::vector<std::vector<Move>>& agent_moves);
+
 		std::array<Move, 8> BeamSearch(const GameData & game_data, const TurnData & turn_data); 
 	}
 }

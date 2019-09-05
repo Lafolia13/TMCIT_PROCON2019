@@ -6,6 +6,7 @@
 #include <iostream>
 #include <array>
 #include <vector>
+#include <list>
 #include <queue>
 
 namespace search {
@@ -133,6 +134,64 @@ namespace search {
 			return true;
 		}
 
+		// 各タイルの9近傍の平均値を計算する
+		std::array<std::array<float, 20>, 20> CalcFieldData2AverageData(const GameData & game_data) {
+			std::array<std::array<float, 20>, 20> average_field_data = { 0 };
+
+			for (int posY = 0; posY < game_data.height; ++posY) {
+				for (int posX = 0; posX < game_data.width; ++posX) {
+					int cnt = 0; // フィールドの隅や辺にあるマスの場合、9近傍すべてを探索できないため、何マス探索できたか数える
+					const Position now_position(posY, posX);
+
+					for (int i = 0; i < kNextToNine.size(); ++i) {
+						const Position& next_to = kNextToNine[i];
+						const Position& target_position = now_position + next_to;
+						if (game_data.IntoField(target_position) == false) continue;
+
+						average_field_data[posY][posX] += game_data.field_data[target_position.h][target_position.w];
+						cnt++;
+					}
+					average_field_data[posY][posX] /= cnt;
+				}
+			}
+			return average_field_data;
+		}
+
+		// エージェントの人数が多い場合に、CalcFieldData2AverageDataで得た配列を元に各エージェントの遷移先を1~2ほど枝刈りする
+		// 各タイルの平均値が分かると、その周囲にあるタイルのポイントがどれくらい高いのか、低いのかが分かる。
+		// 平均値の低いところは、高いところよりも評価値が低くなりやすいと考えられるので、枝刈りをする。
+		void ReduceAgentMoves(const GameData& game_data,
+			const TurnData& turn_data,
+			const std::array<std::array<float, 20>, 20> & average_field_data,
+			std::vector<std::vector<Move>>& agent_moves) {
+
+			// エージェントの人数より遷移数の最大値を決める。最大値の値は、ビーム幅が10^3のときに計算量が10^8ぐらいになるようにしています。
+			int transition_max = 8;
+			if (game_data.agent_num >= 8) transition_max = 6;
+			else if (game_data.agent_num >= 6) transition_max = 7;
+
+			for (int agent_id = 0; agent_id < game_data.agent_num; ++agent_id) {
+				if (transition_max >= agent_moves[agent_id].size()) continue;
+
+				std::vector<std::pair<int, Move>> average_with_move(agent_moves[agent_id].size());
+				for (int i = 0; i < agent_moves[agent_id].size(); ++i) {
+					const Position& target_position = turn_data.GetPosition(agent_moves[agent_id][i].team_id, agent_moves[agent_id][i].agent_id) +
+						kNextToNine[agent_moves[agent_id][i].direction];
+
+					average_with_move[i] = make_pair(average_field_data[target_position.h][target_position.w], agent_moves[agent_id][i]);
+				}
+
+				// average_field_dataの値が昇順になるような評価関数
+				auto cmp = [](std::pair<int, Move> l, std::pair<int, Move> r) { return l.first < r.first; };
+				sort(average_with_move.begin(), average_with_move.end(), cmp);
+
+				// 遷移数の最大値を超えている分だけ削除する。
+				for (int j = 0; j < average_with_move.size() - transition_max; ++j) {
+					agent_moves[agent_id].erase(agent_moves[agent_id].begin());
+				}
+			}
+		}
+
 		std::array<Move, 8> BeamSearch(const GameData& game_data, TurnData& turn_data) {
 			TurnData first_turn_data = turn_data;
 
@@ -160,6 +219,12 @@ namespace search {
 					// Node毎に盤面が異なるので行動群を作ります
 					for (int32_t agent_id = 0; agent_id < game_data.agent_num; ++agent_id) {
 						agents_moves[agent_id] = GetAgentActions(game_data, turn_data, kAlly, agent_id);
+					}
+
+					// エージェントが多い場合、計算量削減のために各エージェントの遷移数を減らす
+					if (game_data.agent_num >= 6) {
+						std::array<std::array<float, 20>, 20> average_field_data = CalcFieldData2AverageData(game_data);
+						ReduceAgentMoves(game_data, turn_data, average_field_data, agents_moves);
 					}
 
 					// fillは埋める動作です。moves_idの初期化。
