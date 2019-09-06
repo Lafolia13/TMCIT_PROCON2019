@@ -19,8 +19,11 @@ struct Node {
 		evaluation(evaluation)
 	{};
 
-	void GetKey();
+	void GetKey(const int_fast32_t&);
 };
+
+array<Move, 8> BeamSearch(const GameData&, const TurnData&,
+						  const int_fast32_t&);
 
 }
 

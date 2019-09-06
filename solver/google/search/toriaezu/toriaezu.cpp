@@ -10,11 +10,11 @@ template<typename T>
 using greater_priority_queue = priority_queue<T, vector<T>, greater<T>>;
 
 // turn_data.agent_num <= 3
-void Node::GetKey() {
+void Node::GetKey(const int_fast32_t &team_id) {
 	key = 0;
 	for (int_fast32_t &&agent_id = 0; agent_id < turn_data.agent_num;
 		 ++agent_id) {
-		const Position &agent_pos = turn_data.agents_position[kAlly][agent_id];
+		const Position &agent_pos = turn_data.agents_position[team_id][agent_id];
 		key = (key << 9) + (agent_pos.h*20 + agent_pos.w + 1);
 	}
 
@@ -22,13 +22,14 @@ void Node::GetKey() {
 }
 
 array<Move, 8> BeamSearch(const GameData &game_data,
-						  const TurnData &turn_data) {
+						  const TurnData &turn_data,
+						  const int_fast32_t &team_id) {
 	const int_fast32_t kBeamWidth = 2000, kBeamDepth = 5;
 
 	static vector<Node*> now_all_nodes(1<<(9*3), nullptr), next_all_nodes(1<<(9*3), nullptr);
 	greater_priority_queue<pair<double, int_fast32_t>> now_que, next_que;
 	Node root(turn_data, 0);
-	root.GetKey();
+	root.GetKey(team_id);
 	if (now_all_nodes[root.key] == nullptr)
 		now_all_nodes[root.key] = new Node();
 	*now_all_nodes[root.key] = root;
@@ -51,7 +52,7 @@ array<Move, 8> BeamSearch(const GameData &game_data,
 			vector<int_fast32_t> move_ids(turn_data.agent_num);
 			vector<Move> check_moves(turn_data.agent_num);
 
-			all_moves = GetAgentsAllMoves(game_data, now_turn_data, kAlly,
+			all_moves = GetAgentsAllMoves(game_data, now_turn_data, team_id,
 										  false, true);
 			move_ids = {};
 			for (int &&i = 0; i < turn_data.agent_num; ++i)
@@ -63,13 +64,16 @@ array<Move, 8> BeamSearch(const GameData &game_data,
 				TurnData next_turn_data = now_turn_data;
 				next_turn_data.Transition(game_data, check_moves);
 				++next_turn_data.now_turn;
-				next_turn_data.CalculationAllAreaPoint(game_data);
-				sort(next_turn_data.agents_position[kAlly].begin(),
-					 next_turn_data.agents_position[kAlly].end());
+				sort(next_turn_data.agents_position[team_id].begin(),
+					 next_turn_data.agents_position[team_id].end());
 				next_node = Node(next_turn_data,
-								 GetEvaluation(game_data, next_turn_data,
-								 			   kAlly));
-				next_node.GetKey();
+								 GetEvaluation(game_data,
+								 			   next_turn_data,
+								 			   now_turn_data,
+								 			   team_id,
+								 			   turn,
+								 			   now_node.evaluation));
+				next_node.GetKey(team_id);
 				if (now_turn_data.now_turn == turn_data.now_turn) {
 					for (int_fast32_t &&i = 0; i < turn_data.agent_num; ++i) {
 						next_node.first_move[i] = check_moves[i];
