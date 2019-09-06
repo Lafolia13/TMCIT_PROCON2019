@@ -64,7 +64,6 @@ array<Move, 8> BeamSearch(const GameData &game_data,
 				TurnData next_turn_data = now_turn_data;
 				next_turn_data.Transition(game_data, check_moves);
 				++next_turn_data.now_turn;
-				next_turn_data.CalculationAllAreaPoint(game_data);
 				sort(next_turn_data.agents_position[team_id].begin(),
 					 next_turn_data.agents_position[team_id].end());
 				next_node = Node(next_turn_data,
