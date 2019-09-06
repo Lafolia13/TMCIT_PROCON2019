@@ -5,6 +5,8 @@
 #include <array>
 #include <vector>
 #include <bitset>
+#include <map>
+#include <string>
 
 using namespace std;
 
@@ -42,8 +44,9 @@ struct GameData {
 	int_fast32_t width = {};
 	int_fast32_t agent_num = {};
 	array<array<int_fast32_t, 20>, 20> field_data = {};					// 配点情報
+	map<string, double> parameters = {};
 
-	constexpr GameData() {};
+	GameData() {};
 
 	// base_system
 	bool Input();
