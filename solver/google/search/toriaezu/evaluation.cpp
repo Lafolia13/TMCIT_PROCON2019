@@ -38,17 +38,22 @@ double GetEvaluation(const GameData &game_data, TurnData &turn_data,
 	return evaluations_sum;
 }
 
-
 double AllyTilePointDifference(const GameData &game_data,
 							   const TurnData &turn_data,
 							   const TurnData &before_turn_data,
 							   const int_fast32_t &team_id) {
 	static string function_name = "AllyTilePointDifference";
-	auto it = game_data.parameters.find(function_name + to_string(team_id));
-	assert(it != game_data.parameters.end());
+	static array<bool, 2> first_check = {true, true};
+	static array<double, 2> bias = {};
+	if (first_check[team_id]) {
+		auto it = game_data.parameters.find(function_name + to_string(team_id));
+		assert(it != game_data.parameters.end());
+		bias[team_id] = it->second;
+		first_check[team_id] = false;
+	}
 
 	double ret = (turn_data.tile_point[team_id] -
-				  before_turn_data.tile_point[team_id]) * it->second;
+				  before_turn_data.tile_point[team_id]) * bias[team_id];
 
 	return ret;
 }
@@ -58,11 +63,17 @@ double RivalTilePointDifference(const GameData &game_data,
 								const TurnData &before_turn_data,
 								const int_fast32_t &team_id) {
 	static string function_name = "RivalTilePointDifference";
-	auto it = game_data.parameters.find(function_name + to_string(team_id));
-	assert(it != game_data.parameters.end());
+	static array<bool, 2> first_check = {true, true};
+	static array<double, 2> bias = {};
+	if (first_check[team_id]) {
+		auto it = game_data.parameters.find(function_name + to_string(team_id));
+		assert(it != game_data.parameters.end());
+		bias[team_id] = it->second;
+		first_check[team_id] = false;
+	}
 
 	double ret = (turn_data.tile_point[team_id^1] -
-				  before_turn_data.tile_point[team_id^1]) * it->second;
+				  before_turn_data.tile_point[team_id^1]) * bias[team_id];
 
 	return -ret;
 }
@@ -72,11 +83,17 @@ double AllyAreaPointDifference(const GameData &game_data,
 							   const TurnData &before_turn_data,
 							   const int_fast32_t &team_id) {
 	static string function_name = "AllyAreaPointDifference";
-	auto it = game_data.parameters.find(function_name + to_string(team_id));
-	assert(it != game_data.parameters.end());
+	static array<bool, 2> first_check = {true, true};
+	static array<double, 2> bias = {};
+	if (first_check[team_id]) {
+		auto it = game_data.parameters.find(function_name + to_string(team_id));
+		assert(it != game_data.parameters.end());
+		bias[team_id] = it->second;
+		first_check[team_id] = false;
+	}
 
 	double ret = (turn_data.area_point[team_id] -
-				  before_turn_data.area_point[team_id]) * it->second;
+				  before_turn_data.area_point[team_id]) * bias[team_id];
 
 	return ret;
 
@@ -87,11 +104,17 @@ double RivalAreaPointDifference(const GameData &game_data,
 								const TurnData &before_turn_data,
 								const int_fast32_t &team_id) {
 	static string function_name = "RivalAreaPointDifference";
-	auto it = game_data.parameters.find(function_name + to_string(team_id));
-	assert(it != game_data.parameters.end());
+	static array<bool, 2> first_check = {true, true};
+	static array<double, 2> bias = {};
+	if (first_check[team_id]) {
+		auto it = game_data.parameters.find(function_name + to_string(team_id));
+		assert(it != game_data.parameters.end());
+		bias[team_id] = it->second;
+		first_check[team_id] = false;
+	}
 
 	double ret = (turn_data.area_point[team_id^1] -
-				  before_turn_data.area_point[team_id^1]) * it->second;
+				  before_turn_data.area_point[team_id^1]) * bias[team_id];
 
 	return -ret;
 
@@ -101,10 +124,16 @@ double BeforeEvaluationBias(const GameData &game_data,
 							const double &before_evaluation,
 							const int_fast32_t &team_id) {
 	static string function_name = "BeforeEvaluationBias";
-	auto it = game_data.parameters.find(function_name + to_string(team_id));
-	assert(it != game_data.parameters.end());
+	static array<bool, 2> first_check = {true, true};
+	static array<double, 2> bias = {};
+	if (first_check[team_id]) {
+		auto it = game_data.parameters.find(function_name + to_string(team_id));
+		assert(it != game_data.parameters.end());
+		bias[team_id] = it->second;
+		first_check[team_id] = false;
+	}
 
-	double ret = before_evaluation * it->second;
+	double ret = before_evaluation * bias[team_id];
 
 	return ret;
 }
@@ -113,10 +142,16 @@ double FirstEvaluation(const GameData &game_data,
 					   const double &evaluation,
 					   const int_fast32_t &team_id) {
 	static string function_name = "FirstEvaluation";
-	auto it = game_data.parameters.find(function_name + to_string(team_id));
-	assert(it != game_data.parameters.end());
+	static array<bool, 2> first_check = {true, true};
+	static array<double, 2> bias = {};
+	if (first_check[team_id]) {
+		auto it = game_data.parameters.find(function_name + to_string(team_id));
+		assert(it != game_data.parameters.end());
+		bias[team_id] = it->second;
+		first_check[team_id] = false;
+	}
 
-	double ret = evaluation * it->second;
+	double ret = evaluation * bias[team_id];
 
 	return ret;
 }
