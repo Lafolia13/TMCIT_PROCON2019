@@ -5,6 +5,8 @@
 #include "../action/change_action.h"
 #include "../calculation/calculation.h"
 
+#include <string>
+
 struct FileData {
 	int_fast32_t max_turn = {};
 	int_fast32_t width = {};
@@ -16,7 +18,7 @@ struct FileData {
 
 	constexpr FileData() {};
 
-	void Input();
+	void Input(const string&);
 	void InputGameData(GameData&);
 	void InputTurnData(const GameData&, TurnData&);
 };
