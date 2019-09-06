@@ -67,8 +67,12 @@ array<Move, 8> BeamSearch(const GameData &game_data,
 				sort(next_turn_data.agents_position[team_id].begin(),
 					 next_turn_data.agents_position[team_id].end());
 				next_node = Node(next_turn_data,
-								 GetEvaluation(game_data, next_turn_data,
-								 			   team_id));
+								 GetEvaluation(game_data,
+								 			   next_turn_data,
+								 			   now_turn_data,
+								 			   team_id,
+								 			   turn,
+								 			   now_node.evaluation));
 				next_node.GetKey(team_id);
 				if (now_turn_data.now_turn == turn_data.now_turn) {
 					for (int_fast32_t &&i = 0; i < turn_data.agent_num; ++i) {
