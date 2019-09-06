@@ -3,6 +3,8 @@
 #include "../calculation/calculation.cpp"
 #include "../for_optuna/for_optuna.cpp"
 
+#include "../search/toriaezu/toriaezu.cpp"
+
 int_fast32_t SelfMatch(string &path /* some parametor<double> */) {
 	FileData file_data;
 	GameData game_data;
