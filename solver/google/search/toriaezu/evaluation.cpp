@@ -38,6 +38,7 @@ double GetEvaluation(const GameData &game_data, TurnData &turn_data,
 	return evaluations_sum;
 }
 
+
 double AllyTilePointDifference(const GameData &game_data,
 							   const TurnData &turn_data,
 							   const TurnData &before_turn_data,
