@@ -1,5 +1,7 @@
 #include "../../search/toriaezu/evaluation.h"
 
+#include <cassert>
+
 namespace toriaezu {
 
 double GetEvaluation(const GameData &game_data, TurnData &turn_data,
@@ -41,10 +43,11 @@ double AllyTilePointDifference(const GameData &game_data,
 							   const TurnData &before_turn_data,
 							   const int_fast32_t &team_id) {
 	static string function_name = "AllyTilePointDifference";
+	auto it = game_data.parameters.find(function_name + to_string(team_id));
+	assert(it != game_data.parameters.end());
 
 	double ret = (turn_data.tile_point[team_id] -
-				  before_turn_data.tile_point[team_id]) *
-				 game_data.parameters[function_name + to_string(team_id)];
+				  before_turn_data.tile_point[team_id]) * it->second;
 
 	return ret;
 }
@@ -54,10 +57,11 @@ double RivalTilePointDifference(const GameData &game_data,
 								const TurnData &before_turn_data,
 								const int_fast32_t &team_id) {
 	static string function_name = "RivalTilePointDifference";
+	auto it = game_data.parameters.find(function_name + to_string(team_id));
+	assert(it != game_data.parameters.end());
 
 	double ret = (turn_data.tile_point[team_id^1] -
-				  before_turn_data.tile_point[team_id^1]) *
-				 game_data.parameters[function_name + to_string(team_id)];
+				  before_turn_data.tile_point[team_id^1]) * it->second;
 
 	return -ret;
 }
@@ -67,10 +71,11 @@ double AllyAreaPointDifference(const GameData &game_data,
 							   const TurnData &before_turn_data,
 							   const int_fast32_t &team_id) {
 	static string function_name = "AllyAreaPointDifference";
+	auto it = game_data.parameters.find(function_name + to_string(team_id));
+	assert(it != game_data.parameters.end());
 
 	double ret = (turn_data.area_point[team_id] -
-				  before_turn_data.area_point[team_id]) *
-				 game_data.parameters[function_name + to_string(team_id)];
+				  before_turn_data.area_point[team_id]) * it->second;
 
 	return ret;
 
@@ -81,10 +86,11 @@ double RivalAreaPointDifference(const GameData &game_data,
 								const TurnData &before_turn_data,
 								const int_fast32_t &team_id) {
 	static string function_name = "RivalAreaPointDifference";
+	auto it = game_data.parameters.find(function_name + to_string(team_id));
+	assert(it != game_data.parameters.end());
 
 	double ret = (turn_data.area_point[team_id^1] -
-				  before_turn_data.area_point[team_id^1]) *
-				 game_data.parameters[function_name + to_string(team_id)];
+				  before_turn_data.area_point[team_id^1]) * it->second;
 
 	return -ret;
 
@@ -94,9 +100,10 @@ double BeforeEvaluationBias(const GameData &game_data,
 							const double &before_evaluation,
 							const int_fast32_t &team_id) {
 	static string function_name = "BeforeEvaluationBias";
+	auto it = game_data.parameters.find(function_name + to_string(team_id));
+	assert(it != game_data.parameters.end());
 
-	double ret = before_evaluation *
-				 game_data.parameters[function_name + to_string(team_id)];
+	double ret = before_evaluation * it->second;
 
 	return ret;
 }
@@ -105,9 +112,10 @@ double FirstEvaluation(const GameData &game_data,
 					   const double &evaluation,
 					   const int_fast32_t &team_id) {
 	static string function_name = "FirstEvaluation";
+	auto it = game_data.parameters.find(function_name + to_string(team_id));
+	assert(it != game_data.parameters.end());
 
-	double ret = evaluation *
-				 game_data.parameters[function_name + to_string(team_id)];
+	double ret = evaluation * it->second;
 
 	return ret;
 }
