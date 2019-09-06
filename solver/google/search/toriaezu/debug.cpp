@@ -80,12 +80,26 @@ int main () {
 	GameData game_data;
 	game_data.Input();
 
+	game_data.parameters["AllyTilePointDifference0"] = 1;
+	game_data.parameters["RivalTilePointDifference0"] = 1;
+	game_data.parameters["AllyAreaPointDifference0"] = 1;
+	game_data.parameters["RivalAreaPointDifference0"] = 1;
+	game_data.parameters["BeforeEvaluationBias0"] = 1;
+	game_data.parameters["FirstEvaluation0"] = 1;
+
+	game_data.parameters["AllyTilePointDifference1"] = 1;
+	game_data.parameters["RivalTilePointDifference1"] = 1;
+	game_data.parameters["AllyAreaPointDifference1"] = 1;
+	game_data.parameters["RivalAreaPointDifference1"] = 1;
+	game_data.parameters["BeforeEvaluationBias1"] = 1;
+	game_data.parameters["FirstEvaluation1"] = 1;
+
 	TurnData turn_data;
 	array<Move, 8> ret_move;
 	while (turn_data.Input(game_data)) {
 		DebugTurnData(game_data, turn_data);
 		cerr << "turn : " << turn_data.now_turn << endl;
-		ret_move = toriaezu::BeamSearch(game_data, turn_data);
+		ret_move = toriaezu::BeamSearch(game_data, turn_data, kAlly);
 
 		OutputAnswer(game_data, ret_move);
 	}
