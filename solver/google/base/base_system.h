@@ -99,6 +99,13 @@ struct TurnData {
 	void CalculationAllAreaPoint(const GameData&);
 };
 
+struct Parameter {
+	int_fast32_t parameter_num = {};
+	vector<double> parameter = {};
+
+	Parameter() {};
+};
+
 int_fast32_t GetBitsetNumber(const int_fast32_t&, const int_fast32_t&);
 int_fast32_t GetBitsetNumber(const Position&);
 
