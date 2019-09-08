@@ -1,18 +1,9 @@
-<<<<<<< HEAD
 #ifndef SPLIT_AGENT_EVALUATION_H
 #define SPLIT_AGENT_EVALUATION_H
 
 #include "../../calculation/calculation.h"
 
 namespace split_agent {
-=======
-#ifndef EVALUATION_H
-#define EVALUATION_H
-
-#include "../../calculation/calculation.h"
-
-namespace toriaezu {
->>>>>>> new branch extends toriaezu solver
 
 const int_fast32_t evaluations_num = 6;
 
