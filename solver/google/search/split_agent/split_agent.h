@@ -5,7 +5,7 @@
 #include "../../action/change_action.h"
 #include "../../calculation/calculation.h"
 
-namespace split_agent{
+namespace split_agent {
 
 struct Node {
 	TurnData turn_data = {};
