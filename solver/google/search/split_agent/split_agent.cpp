@@ -4,7 +4,7 @@
 #include <queue>
 #include <algorithm>
 
-namespace toriaezu {
+namespace split_agent {
 
 template<typename T>
 using greater_priority_queue = priority_queue<T, vector<T>, greater<T>>;
@@ -124,6 +124,13 @@ array<Move, 8> BeamSearch(const GameData &game_data,
 	}
 
 	return ret;
+}
+
+array<Move, 8> SplitSearch(const GameData &game_data, TurnData turn_data) {
+	for (int_fast32_t &&team_id = 0; team_id < 2; ++team_id)
+		sort(turn_data.agents_position[team_id].begin(),
+			 turn_data.agents_position[team_id].end());
+
 }
 
 }
