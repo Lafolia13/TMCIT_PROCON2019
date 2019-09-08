@@ -1,5 +1,5 @@
-#ifndef EVALUATION_H
-#define EVALUATION_H
+#ifndef TORIAEZU_EVALUATION_H
+#define TORIAEZU_EVALUATION_H
 
 #include "../../calculation/calculation.h"
 
