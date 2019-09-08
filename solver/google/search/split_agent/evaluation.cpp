@@ -1,8 +1,8 @@
-#include "../../search/toriaezu/evaluation.h"
+#include "../../search/split_agent/evaluation.h"
 
 #include <cassert>
 
-namespace toriaezu {
+namespace split_agent {
 
 double GetEvaluation(const GameData &game_data, TurnData &turn_data,
 					 const TurnData &before_turn_data,
