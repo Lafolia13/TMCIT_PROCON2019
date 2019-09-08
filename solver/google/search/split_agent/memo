@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 split_search
 	sort(turndata.agent)
 	vector<TurnData> split_turndata (max agent num is 3)
@@ -78,3 +79,50 @@ finaly, return ally move for next turndata highest ally evaluation.
 - merge moves
 	the number of all turndatas is 50000. it is close to 36^3. it is close to 223^2 too.
 	you ha so iu koto
+=======
+beam search
+	foreach depth
+		while p_que_size
+			それぞれのエージェントでの近傍の行動を列挙(敵の行動は無視)(除去はしなくていいかも)
+			有効数も数えとく
+			while Permutation
+				盤面生成
+				評価
+				if next_que_size < width
+					追加
+				else
+					最小とswap
+				pair<evaluation, index> のpriority_queueに追加 (topが最小の評価とindex)
+
+			swap(p_que, next_que)
+
+
+
+Node
+	evaluation
+	root_moves
+	turn_data
+
+	同一判定 : エージェントの座標がすべて等しい でよさそう これだけじゃだめそう
+	同一検出出たときにevaluationでswapするやつがしたい する
+
+array<Node, 1<<30>;
+priotiry_queue<pair<index, evaluation> >;
+pqueは降順
+
+Node now
+if now.turn == array[now.index].turn
+	if now.evaluation > array[now.index].evaluation
+		swap
+else
+	if pque.size >= width
+		while
+			if array[pque.top.index].evaluation > pque.top.evaluation
+				pque.push(index, array[pque.top.index].evaluation)
+				pque.pop
+			else
+				break
+		as usual
+	else
+		as usual
+>>>>>>> new branch extends toriaezu solver

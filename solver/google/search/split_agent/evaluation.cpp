@@ -1,8 +1,16 @@
+<<<<<<< HEAD
 #include "../../search/split_agent/evaluation.h"
 
 #include <cassert>
 
 namespace split_agent {
+=======
+#include "../../search/toriaezu/evaluation.h"
+
+#include <cassert>
+
+namespace toriaezu {
+>>>>>>> new branch extends toriaezu solver
 
 double GetEvaluation(const GameData &game_data, TurnData &turn_data,
 					 const TurnData &before_turn_data,
