@@ -94,7 +94,7 @@ struct TurnData {
 
 	// change_action
 	Position& GetPosition(const int_fast32_t&, const int_fast32_t&);
-	void Transition(const GameData&, const vector<Move>&);
+	void Transition(const GameData&, vector<Move>&);
 
 	// calculation
 	void CalculationAllTilePoint(const GameData&);

@@ -60,7 +60,7 @@ array<Move, 8> BeamSearch(const GameData &game_data,
 
 			static TurnData next_turn_data;
 			static Node next_node;
-			while (NextPermutation(all_moves, 0, move_ids, check_moves)) {
+			do {
 				TurnData next_turn_data = now_turn_data;
 				next_turn_data.Transition(game_data, check_moves);
 				++next_turn_data.now_turn;
@@ -110,9 +110,8 @@ array<Move, 8> BeamSearch(const GameData &game_data,
 						}
 					}
 				}
-			}
+			} while (NextPermutation(all_moves, 0, move_ids, check_moves));
 		}
-
 		swap(now_que, next_que);
 		swap(now_all_nodes, next_all_nodes);
 	}
