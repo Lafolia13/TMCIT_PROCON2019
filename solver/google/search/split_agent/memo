@@ -76,5 +76,5 @@ finaly, return ally move for next turndata highest ally evaluation.
 	solved
 
 - merge moves
-	the number of all turndatas is 50000. it is close to 36^3. it is close to 223 too.
+	the number of all turndatas is 50000. it is close to 36^3. it is close to 223^2 too.
 	you ha so iu koto
