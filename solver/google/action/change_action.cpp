@@ -1,3 +1,4 @@
+
 #include "../base/base_system.h"
 
 Position& TurnData::GetPosition(const int_fast32_t &team_id, const int_fast32_t &agent_id) {
