@@ -1,4 +1,3 @@
-
 #include "../base/base_system.h"
 
 Position& TurnData::GetPosition(const int_fast32_t &team_id, const int_fast32_t &agent_id) {
@@ -85,14 +84,18 @@ void CheckConflict(TurnData *p_turn_data,
 // agents_moveは単体で無効となる動作(空白にerase、敵タイルにwalk、盤面外)は存在しない
 // タイルポイントの差分計算もやる
 void TurnData::Transition(const GameData &game_data,
-						  const vector<Move> &agents_move) {
+						  vector<Move> &agents_move) {
 	static array<Move, 16> walk_agents = {}, erase_agents = {};
 	static array<array<int_fast32_t, 20>, 20> target_count = {};
 	static int_fast32_t walk_num, erase_num, moves_num;
 
 	walk_num = 0, erase_num = 0, moves_num = agents_move.size();
-	static Position target_position;
 	for (int_fast32_t &&i = 0; i < moves_num; ++i) {
+		Position &target_position = agents_move[i].target_position;
+		const Position &agent_position = GetPosition(agents_move[i].team_id,
+													 agents_move[i].agent_id);
+		target_position = agent_position +
+						  kNextToNine[agents_move[i].direction];
 		if (agents_move[i].action == kWalk) {
 			walk_agents[walk_num++] = agents_move[i];
 		} else if (agents_move[i].action == kErase) {
@@ -100,10 +103,6 @@ void TurnData::Transition(const GameData &game_data,
 		} else {
 			continue;
 		}
-		Position &agent_position = GetPosition(agents_move[i].team_id,
-											   agents_move[i].agent_id);
-		target_position = agent_position +
-						  kNextToNine[agents_move[i].direction];
 		target_count[target_position.h][target_position.w]++;
 	}
 
@@ -114,10 +113,7 @@ void TurnData::Transition(const GameData &game_data,
 	ChangeErase(game_data, erase_num, erase_agents, this);
 
 	for (int_fast32_t &&i = 0; i < moves_num; ++i) {
-		Position &agent_position = GetPosition(agents_move[i].team_id,
-											   agents_move[i].agent_id);
-		target_position = agent_position +
-						  kNextToNine[agents_move[i].direction];
+		Position &target_position = agents_move[i].target_position;
 		target_count[target_position.h][target_position.w] = 0;
 	}
 
@@ -168,15 +164,15 @@ bool NextPermutation(const vector<vector<Move>> &all_moves,
 
 	if (change_agent == all_moves.size()) return false;
 
-	int_fast32_t &next_move_id = move_ids[change_agent];
+	int_fast32_t &next_move_id = ++move_ids[change_agent];
 	const vector<Move> &target_moves = all_moves[change_agent];
 
 	if (next_move_id == target_moves.size()) {
 		next_move_id = 0;
-		ret_moves[change_agent] = target_moves[next_move_id++];
+		ret_moves[change_agent] = target_moves[next_move_id];
 		return NextPermutation(all_moves, change_agent + 1, move_ids, ret_moves);
 	} else {
-		ret_moves[change_agent] = target_moves[next_move_id++];
+		ret_moves[change_agent] = target_moves[next_move_id];
 		return true;
 	}
 }
