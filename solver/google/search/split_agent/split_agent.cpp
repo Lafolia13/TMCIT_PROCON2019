@@ -1,4 +1,4 @@
-#include "../../search/split_agent/toriaezu.h"
+#include "../../search/split_agent/split_agent.h"
 #include "../../search/split_agent/evaluation.h"
 
 #include <queue>
@@ -126,10 +126,130 @@ array<Move, 8> BeamSearch(const GameData &game_data,
 	return ret;
 }
 
-array<Move, 8> SplitSearch(const GameData &game_data, TurnData turn_data) {
-	for (int_fast32_t &&team_id = 0; team_id < 2; ++team_id)
-		sort(turn_data.agents_position[team_id].begin(),
-			 turn_data.agents_position[team_id].end());
+array<array<pair<Position, int_fast32_t>, 8>, 2> GetAgentsPositionWidthID(
+		const GameData &game_data, const TurnData &turn_data) {
+	static array<array<pair<Position, int_fast32_t>, 8>, 2> ret = {};
+	for (int_fast32_t &&team_id = 0; team_id < 2; ++team_id) {
+		for (int_fast32_t &&agent_id = 0; agent_id < game_data.agent_num;
+			 ++agent_id) {
+			ret[team_id][agent_id].first =
+				turn_data.agents_position[team_id][agent_id];
+			ret[team_id][agent_id].second = agent_id;
+		}
+		sort(ret[team_id].begin(), ret[team_id].begin() + game_data.agent_num);
+	}
+
+	return ret;
+}
+
+vector<TurnData> GetSplitTurnData(
+		const GameData &game_data, const TurnData &turn_data,
+		const array<array<pair<Position, int_fast32_t>, 8>, 2> &agents_with_id) {
+	const int_fast32_t &split_size = split_table[game_data.agent_num].size();
+	vector<TurnData> ret(split_size, turn_data);
+	int_fast32_t before_count = 0;
+	for (int_fast32_t &&split_id = 0; split_id < split_size; ++split_id) {
+		ret[split_id].agent_num = split_table[game_data.agent_num][split_id];
+		for (int_fast32_t &&team_id = 0; team_id < 2; ++team_id) {
+			for (int_fast32_t &&agent_id = 0;
+				 agent_id < ret[split_id].agent_num; ++agent_id) {
+				const int_fast32_t truth_id = before_count + agent_id;
+				ret[split_id].agents_position[team_id][agent_id] =
+					agents_with_id[team_id][truth_id].first;
+			}
+		}
+		before_count += split_table[game_data.agent_num][split_id];
+	}
+
+	return ret;
+}
+
+array<vector<vector<int_fast32_t>>, 2> GetTruthIndex(
+		const GameData &game_data, const vector<TurnData> &split_turn_data,
+		const array<array<pair<Position, int_fast32_t>, 8>, 2> &agents_with_id) {
+	const int_fast32_t &split_size = split_table[game_data.agent_num].size();
+	array<vector<vector<int_fast32_t>>, 2> ret;
+	for (int_fast32_t &&team_id = 0; team_id < 2; ++team_id) {
+		ret[team_id].resize(split_size);
+		int_fast32_t before_count = 0;
+		for (int_fast32_t &&split_id = 0; split_id < split_size; ++split_id) {
+			for (int_fast32_t &&agent_id = 0;
+				 agent_id < split_table[game_data.agent_num][split_id];
+				 ++agent_id) {
+				const int_fast32_t truth_id = before_count + agent_id;
+				ret[team_id][agent_id][split_id] =
+					agents_with_id[team_id][truth_id].second;
+			}
+			before_count += split_table[game_data.agent_num][split_id];
+		}
+	}
+
+	return ret;
+}
+
+array<vector<vector<array<Move, 8>>>, 2> GetCandidateSplitMoves(
+		const GameData &game_data, const vector<TurnData> &split_turn_data,
+		const int_fast32_t &ally_team) {
+	const int_fast32_t &split_size = split_table[game_data.agent_num].size();
+	array<vector<vector<array<Move, 8>>>, 2> ret;
+
+	for (int_fast32_t &&team_id = 0; team_id < 2; ++team_id) {
+		ret[team_id].resize(split_size);
+		for (int_fast32_t &&split_id = 0; split_id < split_size; ++split_id) {
+			ret[team_id][split_id] = BeamSearch(game_data,
+												split_turn_data[split_id],
+												team_id, team_id == ally_team);
+		}
+	}
+
+	return ret;
+}
+
+void RestoreTruthIndex(const vector<int_fast32_t> &truth_id,
+					   vector<array<Move, 8>> &restore_moves) {
+	for (auto &moves : restore_moves) {
+		for (int_fast32_t &&agent_id = 0; agent_id < truth_id.size();
+			 ++agent_id) {
+			moves[agent_id].agent_id = truth_id[agent_id];
+		}
+	}
+
+	return;
+}
+
+vector<array<Move, 8>> MergeSearch(
+		const GameData &game_data, const TurnData &turn_data,
+		const vector<vector<array<Move, 8>>> &split_moves,
+		const int_fast32_t &team_id) {
+
+	static vector<Node> ret(223);
+
+}
+
+array<Move, 8> SplitSearch(const GameData &game_data,
+						   const TurnData &turn_data,
+						   const int_fast32_t &ally_team) {
+	/*
+		split so that agent is closer.
+		with truth index, we can recognize who is the sorted agent.
+	*/
+	auto agents_with_id = GetAgentsPositionWidthID(game_data, turn_data);
+	auto split_turn_data = GetSplitTurnData(game_data, turn_data,
+											agents_with_id);
+	auto truth_id = GetTruthIndex(game_data, split_turn_data, agents_with_id);
+
+	auto candidate_split_moves = GetCandidateSplitMoves(game_data,
+														split_turn_data,
+														ally_team);
+
+	const int_fast32_t &split_size = split_table[game_data.agent_num].size();
+	for (int_fast32_t &&team_id = 0; team_id < 2; ++team_id) {
+		for (int_fast32_t &&split_id = 0; split_id < split_size; ++split_id) {
+			RestoreTruthIndex(truth_id[team_id][split_id],
+							  candidate_split_moves[team_id][split_id]);
+		}
+	}
+
 
 }
 
