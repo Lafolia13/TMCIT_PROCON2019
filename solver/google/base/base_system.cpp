@@ -28,7 +28,7 @@ void TurnData::reset() {
 	agents_position = {};
 	tile_data = {};
 	// is_area = {};
-	bitset<400> agent_exist = {};
+	agent_exist = {};
 }
 
 bool TurnData::Input(const GameData &game_data) {
