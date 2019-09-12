@@ -165,7 +165,7 @@ bool NextPermutation(const vector<vector<T>> &all_moves,
 	if (change_agent == all_moves.size()) return false;
 
 	int_fast32_t &next_move_id = ++move_ids[change_agent];
-	const vector<Move> &target_moves = all_moves[change_agent];
+	const vector<T> &target_moves = all_moves[change_agent];
 
 	if (next_move_id == target_moves.size()) {
 		next_move_id = 0;
