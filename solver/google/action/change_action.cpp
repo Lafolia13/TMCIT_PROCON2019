@@ -48,8 +48,7 @@ void ChangeErase(const GameData &game_data, const int_fast32_t &erase_num,
 	for (int_fast32_t &&i = 0; i < erase_num; ++i) {
 		const Position &now_position = turn_data.GetPosition(erase_agents[i].team_id,
 															 erase_agents[i].agent_id);
-		const Position &target_position = now_position +
-										  kNextToNine[erase_agents[i].direction];
+		const Position &target_position = erase_agents[i].target_position;
 
 		if (turn_data.agent_exist[GetBitsetNumber(target_position)] == true)
 			continue;

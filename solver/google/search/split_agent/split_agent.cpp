@@ -3,6 +3,7 @@
 
 #include <queue>
 #include <algorithm>
+#include <set>
 
 namespace split_agent {
 
@@ -14,28 +15,54 @@ void Node::GetKey(const int_fast32_t &team_id) {
 	key = 0;
 	for (int_fast32_t &&agent_id = 0; agent_id < turn_data.agent_num;
 		 ++agent_id) {
-		const Position &agent_pos = turn_data.agents_position[team_id][agent_id];
+		const Position &agent_pos =
+			turn_data.agents_position[team_id][agent_id];
 		key = (key << 9) + (agent_pos.h*20 + agent_pos.w + 1);
 	}
 
 	return;
 }
 
-array<Move, 8> BeamSearch(const GameData &game_data,
-						  const TurnData &turn_data,
-						  const int_fast32_t &team_id) {
-	const int_fast32_t kBeamWidth = 2000, kBeamDepth = 5;
+int_fast32_t GetBeamWidth(const GameData &game_data,
+						  const int_fast32_t &beam_depth) {
+	const int_fast32_t can_simulate_ps = 400000;
+	const int_fast32_t one_transition =
+		one_transition_table[game_data.agent_num];
+	const double turn_time = (game_data.turn_time_ms - 2000) / 1000.0;
+	const double rival_width = 2.0/3.0;
 
-	static vector<Node*> now_all_nodes(1<<(9*3), nullptr), next_all_nodes(1<<(9*3), nullptr);
+	return (can_simulate_ps * turn_time) /
+		   ((beam_depth - 1) * one_transition * (1.0 + rival_width));
+}
+
+void EraseRivalAgent(const int_fast32_t &rival_team,
+					 TurnData &turn_data) {
+	for (auto &agent_pos : turn_data.agents_position[rival_team]) {
+		turn_data.agent_exist.reset(GetBitsetNumber(agent_pos));
+	}
+
+	return;
+}
+
+vector<array<Move, 8>> BeamSearch(const GameData &game_data,
+						  const TurnData &turn_data,
+						  const int_fast32_t &team_id,
+						  const int_fast32_t &ally_team) {
+	const int_fast32_t beam_depth = 5;
+	const int_fast32_t beam_width = GetBeamWidth(game_data, beam_depth);
+
+	static vector<Node*> now_all_nodes(1<<(9*3), nullptr);
+	static vector<Node*> next_all_nodes(1<<(9*3), nullptr);
 	greater_priority_queue<pair<double, int_fast32_t>> now_que, next_que;
 	Node root(turn_data, 0);
 	root.GetKey(team_id);
+	EraseRivalAgent(team_id^1, root.turn_data);
 	if (now_all_nodes[root.key] == nullptr)
 		now_all_nodes[root.key] = new Node();
 	*now_all_nodes[root.key] = root;
 	now_que.push(make_pair(0, root.key));
 	for (int_fast32_t turn = turn_data.now_turn;
-		 turn < min(turn_data.now_turn + kBeamDepth,
+		 turn < min(turn_data.now_turn + beam_depth,
 		 			 game_data.max_turn);
 		 ++turn) {
 		while (now_que.size()) {
@@ -52,15 +79,15 @@ array<Move, 8> BeamSearch(const GameData &game_data,
 			vector<int_fast32_t> move_ids(turn_data.agent_num);
 			vector<Move> check_moves(turn_data.agent_num);
 
-			all_moves = GetAgentsAllMoves(game_data, now_turn_data, team_id,
-										  false, true);
+			all_moves = GetAgentsAllMoves(game_data, now_turn_data,
+										  team_id, false, true);
 			move_ids = {};
 			for (int &&i = 0; i < turn_data.agent_num; ++i)
 				check_moves[i] = all_moves[i].front();
 
 			static TurnData next_turn_data;
 			static Node next_node;
-			while (NextPermutation(all_moves, 0, move_ids, check_moves)) {
+			do {
 				TurnData next_turn_data = now_turn_data;
 				next_turn_data.Transition(game_data, check_moves);
 				++next_turn_data.now_turn;
@@ -94,7 +121,7 @@ array<Move, 8> BeamSearch(const GameData &game_data,
 												next_node.key));
 					}
 				} else {
-					if (next_que.size() < kBeamWidth) {
+					if (next_que.size() < beam_width) {
 						check_node = next_node;
 						next_que.push(make_pair(next_node.evaluation,
 												next_node.key));
@@ -110,16 +137,22 @@ array<Move, 8> BeamSearch(const GameData &game_data,
 						}
 					}
 				}
-			}
+			} while (NextPermutation(all_moves, 0, move_ids, check_moves));
 		}
 		swap(now_que, next_que);
 		swap(now_all_nodes, next_all_nodes);
 	}
 
-	array<Move, 8> ret;
+	vector<array<Move, 8>> ret;
+	set<array<Move, 8>> added;
 	while (now_que.size()) {
-		if (now_que.size() == 1)
-			ret = now_all_nodes[now_que.top().second]->first_move;
+		if (now_que.size() <= (game_data.agent_num <= 6 ? 100 : 21)) {
+			if (added.find(now_all_nodes[now_que.top().second]->first_move) ==
+				added.end()) {
+				ret.push_back(now_all_nodes[now_que.top().second]->first_move);
+				added.insert(now_all_nodes[now_que.top().second]->first_move);
+			}
+		}
 		now_que.pop();
 	}
 
@@ -198,7 +231,7 @@ array<vector<vector<array<Move, 8>>>, 2> GetCandidateSplitMoves(
 		for (int_fast32_t &&split_id = 0; split_id < split_size; ++split_id) {
 			ret[team_id][split_id] = BeamSearch(game_data,
 												split_turn_data[split_id],
-												team_id, team_id == ally_team);
+												team_id, ally_team);
 		}
 	}
 
@@ -217,22 +250,121 @@ void RestoreTruthIndex(const vector<int_fast32_t> &truth_id,
 	return;
 }
 
-vector<array<Move, 8>> MergeSearch(
+void MakeTrasitionMoves(const GameData &game_data,
+						const vector<array<Move, 8>> &check_split_moves,
+						vector<Move> &check_all_moves) {
+	const int_fast32_t split_size = split_table[game_data.agent_num].size();
+	int_fast32_t &&before_count = 0;
+	for (int_fast32_t &&split_id = 0; split_id < before_count; ++split_id) {
+		for (int_fast32_t &&agent_id = 0;
+			 agent_id < split_table[game_data.agent_num][split_id];
+			 ++agent_id) {
+			int_fast32_t truth_id = before_count + agent_id;
+			check_all_moves[truth_id] = check_split_moves[split_id][agent_id];
+		}
+	}
+
+	return;
+}
+
+vector<vector<Move>> RivalAllSearch(
 		const GameData &game_data, const TurnData &turn_data,
 		const vector<vector<array<Move, 8>>> &split_moves,
 		const int_fast32_t &team_id) {
+	TurnData now_turn_data = turn_data;
+	EraseRivalAgent(team_id^1, now_turn_data);
+	vector<int_fast32_t> move_ids(split_moves.size(), 0);
+	vector<array<Move, 8>> check_split_moves;
+	vector<Node> all_nodes;
+	for (int_fast32_t &&split_id = 0; split_id < split_moves.size();
+		 ++split_id) {
+		check_split_moves[split_id] = split_moves[split_id][0];
+	}
+	do {
+		static vector<Move> check_all_moves(game_data.agent_num);
+		static TurnData next_turn_data;
+		MakeTrasitionMoves(game_data, check_split_moves, check_all_moves);
+		next_turn_data = now_turn_data;
+		next_turn_data.Transition(game_data, check_all_moves);
+		++next_turn_data.now_turn;
+		Node next_node(next_turn_data, GetEvaluation(game_data,
+													 next_turn_data,
+													 now_turn_data,
+													 team_id,
+													 turn_data.now_turn,
+													 0));
+		for (int_fast32_t &&agent_id = 0; agent_id < game_data.agent_num;
+			 ++agent_id) {
+			next_node.first_move[agent_id] = check_all_moves[agent_id];
+		}
+		all_nodes.push_back(next_node);
+	} while (NextPermutation(split_moves, 0, move_ids, check_split_moves));
 
-	static vector<Node> ret(223);
+	sort(all_nodes.begin(), all_nodes.end(), greater<>());
+	vector<vector<Move>> ret_moves(10);
+	for (int_fast32_t &&i = 0; i < 10; ++i) {
+		ret_moves[i].resize(game_data.agent_num);
+		for (int_fast32_t &&agent_id = 0; agent_id < game_data.agent_num;
+			 ++agent_id) {
+			ret_moves[i][agent_id] = all_nodes[i].first_move[agent_id];
+		}
+	}
 
+	return ret_moves;
+}
+
+array<Move, 8> AllyAllSearch(
+		const GameData &game_data, const TurnData &turn_data,
+		const vector<vector<array<Move, 8>>> &ally_split_moves,
+		const vector<vector<Move>> &rival_all_moves,
+		const int_fast32_t &ally_team) {
+	vector<int_fast32_t> move_ids(ally_split_moves.size(), 0);
+	vector<array<Move, 8>> check_split_moves;
+	vector<Node> all_nodes;
+	for (int_fast32_t &&split_id = 0; split_id < ally_split_moves.size();
+		 ++split_id) {
+		check_split_moves[split_id] = ally_split_moves[split_id][0];
+	}
+	do {
+		static vector<Move> check_ally_moves(game_data.agent_num);
+		static vector<Move> check_all_agent_moves(game_data.agent_num * 2);
+		static TurnData next_turn_data;
+		MakeTrasitionMoves(game_data, check_split_moves, check_ally_moves);
+		double evaluation_sum = {};
+		for (auto check_rival_moves : rival_all_moves) {
+			for (int_fast32_t &&agent_id = 0; agent_id < game_data.agent_num;
+				 ++agent_id) {
+				check_all_agent_moves[agent_id] = check_ally_moves[agent_id];
+				check_all_agent_moves[game_data.agent_num + agent_id] =
+					check_rival_moves[agent_id];
+			}
+
+			next_turn_data = turn_data;
+			++next_turn_data.now_turn;
+			next_turn_data.Transition(game_data, check_all_agent_moves);
+			evaluation_sum += GetEvaluation(game_data,
+												next_turn_data,
+												turn_data,
+												ally_team,
+												turn_data.now_turn,
+												0);
+		}
+		Node next_node(next_turn_data, evaluation_sum);
+		for (int_fast32_t &&agent_id = 0; agent_id < game_data.agent_num;
+			 ++agent_id) {
+			next_node.first_move[agent_id] = check_ally_moves[agent_id];
+		}
+		all_nodes.push_back(next_node);
+	} while (NextPermutation(ally_split_moves, 0, move_ids,
+							 check_split_moves));
+
+	sort(all_nodes.begin(), all_nodes.end(), greater<>());
+	return all_nodes[0].first_move;
 }
 
 array<Move, 8> SplitSearch(const GameData &game_data,
 						   const TurnData &turn_data,
 						   const int_fast32_t &ally_team) {
-	/*
-		split so that agent is closer.
-		with truth index, we can recognize who is the sorted agent.
-	*/
 	auto agents_with_id = GetAgentsPositionWidthID(game_data, turn_data);
 	auto split_turn_data = GetSplitTurnData(game_data, turn_data,
 											agents_with_id);
@@ -250,7 +382,15 @@ array<Move, 8> SplitSearch(const GameData &game_data,
 		}
 	}
 
+	auto &ally_split_moves = candidate_split_moves[ally_team];
+	auto &rival_split_moves = candidate_split_moves[ally_team^1];
 
+	auto rival_all_moves = RivalAllSearch(game_data, turn_data,
+										  rival_split_moves, ally_team^1);
+	auto ally_all_moves = AllyAllSearch(game_data, turn_data, ally_split_moves,
+										rival_all_moves, ally_team);
+
+	return ally_all_moves;
 }
 
 }
