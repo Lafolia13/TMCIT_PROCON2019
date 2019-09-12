@@ -7,6 +7,7 @@
 #include "../search/toriaezu/evaluation.cpp"
 
 int_fast32_t SelfMatch(string path,
+					   int_fast32_t turn_time_ms,
 					   double ally_tile_point_difference_kally,
 					   double rival_tile_point_difference_kally,
 					   double ally_area_point_difference_kally,
@@ -26,6 +27,7 @@ int_fast32_t SelfMatch(string path,
 	file_data.Input(path);
 	file_data.InputGameData(game_data);
 	file_data.InputTurnData(game_data, turn_data);
+	game_data.turn_time_ms = turn_time_ms;
 
 	game_data.parameters["AllyTilePointDifference0"] = ally_tile_point_difference_kally;
 	game_data.parameters["RivalTilePointDifference0"] = rival_tile_point_difference_kally;
@@ -79,7 +81,7 @@ int_fast32_t SelfMatch(string path,
 
 #include <iostream>
 int main() {
-	cout << SelfMatch("../../../../test/sample/map_creater/sample3.txt",
+	cout << SelfMatch("../../../../test/sample/map_creater/sample3.txt", 5000,
 					  1,1,1,1,1,1,
 					  1,1,1,1,1,1) << endl;
 
