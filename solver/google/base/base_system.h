@@ -39,6 +39,7 @@ struct Position {
 };
 
 struct GameData {
+	int_fast32_t turn_time_ms = {};
 	int_fast32_t max_turn = {};
 	int_fast32_t height = {};
 	int_fast32_t width = {};
@@ -72,6 +73,16 @@ struct Move {
 		direction(direction),
 		action(action)
 	{};
+
+	bool operator<(const Move &right) const {
+		return team_id == right.team_id ?
+			   agent_id == right.agent_id ?
+			   direction == right.direction ?
+			   action < right.action :
+			   direction < right.direction :
+			   agent_id < right.agent_id :
+			   team_id < right.team_id;
+	};
 };
 
 struct TurnData {
