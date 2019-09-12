@@ -156,10 +156,11 @@ vector<vector<Move>> GetAgentsAllMoves(
 	return ret_moves;
 }
 
-bool NextPermutation(const vector<vector<Move>> &all_moves,
+template<typename T>
+bool NextPermutation(const vector<vector<T>> &all_moves,
 					 const int_fast32_t &change_agent,
 					 vector<int_fast32_t> &move_ids,
-					 vector<Move> &ret_moves) {
+					 vector<T> &ret_moves) {
 
 	if (change_agent == all_moves.size()) return false;
 
