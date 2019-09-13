@@ -1,4 +1,3 @@
-
 #include "../../search/split_agent/split_agent.h"
 #include "../../search/split_agent/evaluation.h"
 
