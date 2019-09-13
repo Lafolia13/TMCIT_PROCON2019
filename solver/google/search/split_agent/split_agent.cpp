@@ -318,6 +318,7 @@ vector<vector<Move>> RivalAllSearch(
 		 ++split_id) {
 		check_split_moves[split_id] = split_moves[split_id][0];
 	}
+cerr << 1;
 	do {
 		static vector<Move> check_all_moves(game_data.agent_num);
 		static TurnData next_turn_data;
@@ -337,16 +338,17 @@ vector<vector<Move>> RivalAllSearch(
 		}
 		all_nodes.push_back(next_node);
 	} while (NextPermutation(split_moves, 0, move_ids, check_split_moves));
+cerr << 2;
 	sort(all_nodes.begin(), all_nodes.end(), greater<>());
 	vector<vector<Move>> ret_moves(10);
-	for (int_fast32_t &&i = 0; i < 10; ++i) {
+	for (int_fast32_t &&i = 0;
+		 i < min((int_fast32_t)10, (int_fast32_t)all_nodes.size()); ++i) {
 		ret_moves[i].resize(game_data.agent_num);
 		for (int_fast32_t &&agent_id = 0; agent_id < game_data.agent_num;
 			 ++agent_id) {
 			ret_moves[i][agent_id] = all_nodes[i].first_move[agent_id];
 		}
 	}
-
 	if (all_nodes.size() < 10) {
 		while (ret_moves.size() > all_nodes.size())
 			ret_moves.pop_back();
@@ -422,15 +424,15 @@ array<Move, 8> SplitSearch(const GameData &game_data,
 							  candidate_split_moves[team_id][split_id]);
 		}
 	}
-
+cerr << "a";
 	auto &ally_split_moves = candidate_split_moves[ally_team];
 	auto &rival_split_moves = candidate_split_moves[ally_team^1];
-
 	auto rival_all_moves = RivalAllSearch(game_data, turn_data,
 										  rival_split_moves, ally_team^1);
+cerr << "b";
 	auto ally_all_moves = AllyAllSearch(game_data, turn_data, ally_split_moves,
 										rival_all_moves, ally_team);
-
+cerr << "c";
 	sort(ally_all_moves.begin(), ally_all_moves.begin() + game_data.agent_num);
 
 	return ally_all_moves;
