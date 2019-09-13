@@ -83,18 +83,14 @@ void CheckConflict(TurnData *p_turn_data,
 // agents_moveは単体で無効となる動作(空白にerase、敵タイルにwalk、盤面外)は存在しない
 // タイルポイントの差分計算もやる
 void TurnData::Transition(const GameData &game_data,
-						  vector<Move> &agents_move) {
+						  const vector<Move> &agents_move) {
 	static array<Move, 16> walk_agents = {}, erase_agents = {};
 	static array<array<int_fast32_t, 20>, 20> target_count = {};
 	static int_fast32_t walk_num, erase_num, moves_num;
 
 	walk_num = 0, erase_num = 0, moves_num = agents_move.size();
 	for (int_fast32_t &&i = 0; i < moves_num; ++i) {
-		Position &target_position = agents_move[i].target_position;
-		const Position &agent_position = GetPosition(agents_move[i].team_id,
-													 agents_move[i].agent_id);
-		target_position = agent_position +
-						  kNextToNine[agents_move[i].direction];
+		const Position &target_position = agents_move[i].target_position;
 		if (agents_move[i].action == kWalk) {
 			walk_agents[walk_num++] = agents_move[i];
 		} else if (agents_move[i].action == kErase) {
@@ -112,7 +108,7 @@ void TurnData::Transition(const GameData &game_data,
 	ChangeErase(game_data, erase_num, erase_agents, this);
 
 	for (int_fast32_t &&i = 0; i < moves_num; ++i) {
-		Position &target_position = agents_move[i].target_position;
+		const Position &target_position = agents_move[i].target_position;
 		target_count[target_position.h][target_position.w] = 0;
 	}
 
@@ -134,9 +130,12 @@ vector<vector<Move>> GetAgentsAllMoves(
 			const int_fast32_t &tile_point = game_data.GetTilePoint(next_pos);
 
 			if (next_to == 4) {
-				if (use_none)
+				if (use_none) {
 					ret_moves[agent_id].push_back(Move(team_id, agent_id,
 													   next_to, kNone));
+				} else {
+					continue;
+				}
 			} else if (tile_color == kBrank) {
 				ret_moves[agent_id].push_back(Move(team_id, agent_id,
 												   next_to, kWalk));
@@ -150,6 +149,7 @@ vector<vector<Move>> GetAgentsAllMoves(
 				ret_moves[agent_id].push_back(Move(team_id, agent_id,
 												   next_to, kErase));
 			}
+			ret_moves[agent_id].back().target_position = next_pos;
 		}
 	}
 

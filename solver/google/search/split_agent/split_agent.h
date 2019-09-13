@@ -29,7 +29,9 @@ struct Node {
 int_fast32_t GetBeamWidth(const GameData&, const int_fast32_t&, const bool&,
 						  const bool&);
 
-void EraseRivalAgent(const int_fast32_t&, TurnData&);
+void EraseAgent(const int_fast32_t&, TurnData&);
+
+void ReduceDirection(const GameData&, const TurnData&, vector<vector<Move>>&);
 
 vector<array<Move, 8>> BeamSearch(const GameData&, const TurnData&,
 								  const int_fast32_t&, const int_fast32_t&,
