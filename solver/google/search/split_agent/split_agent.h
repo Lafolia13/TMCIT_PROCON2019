@@ -26,12 +26,14 @@ struct Node {
 	};
 };
 
-int_fast32_t GetBeamWidth(const GameData&, const int_fast32_t&);
+int_fast32_t GetBeamWidth(const GameData&, const int_fast32_t&, const bool&,
+						  const bool&);
 
 void EraseRivalAgent(const int_fast32_t&, TurnData&);
 
 vector<array<Move, 8>> BeamSearch(const GameData&, const TurnData&,
-								  const int_fast32_t&, const int_fast32_t&);
+								  const int_fast32_t&, const int_fast32_t&,
+								  const bool&);
 
 array<array<pair<Position, int_fast32_t>, 8>, 2> GetAgentsPositionWidthID(
 		const GameData&, const TurnData&);
@@ -85,7 +87,7 @@ const array<int_fast32_t, 9> one_transition_table = {
 	8*8 + 6*6*6,
 	6*6*6 + 6*6*6,
 	8*8 + 8*8 + 6*6*6,
-	8*8 + 6*6*6 * 6*6*6
+	8*8 + 6*6*6 + 6*6*6
 };
 
 }
