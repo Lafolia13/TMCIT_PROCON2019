@@ -27,14 +27,14 @@ struct Position {
 		return h == another.h && w == another.w;
 	}
 	bool operator>(const Position &right) const {
-		return h == h ?
-			w > w :
-			h > h;
+		return h == right.h ?
+			w > right.w :
+			h > right.h;
 	}
 	bool operator<(const Position &right) const {
-		return h == h ?
-			w < w :
-			h < h;
+		return h == right.h ?
+			w < right.w :
+			h < right.h;
 	}
 };
 
