@@ -11,12 +11,15 @@ struct Node {
 	TurnData turn_data = {};
 	double evaluation = {};
 	int_fast32_t key = {};
+	int_fast32_t start_turn = {};
 	array<Move, 8> first_move = {};
 
 	Node() {};
-	Node (const TurnData &turn_data, const double evaluation) :
+	Node (const TurnData &turn_data, const double &evaluation,
+		  const int_fast32_t &start_turn) :
 		turn_data(turn_data),
-		evaluation(evaluation)
+		evaluation(evaluation),
+		start_turn(start_turn)
 	{};
 
 	void GetKey(const int_fast32_t&);

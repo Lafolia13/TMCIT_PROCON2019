@@ -119,7 +119,7 @@ vector<array<Move, 8>> BeamSearch(const GameData &game_data,
 		next_all_nodes = new Node_ptr[node_size];
 	}
 	greater_priority_queue<pair<double, int_fast32_t>> now_que, next_que;
-	Node root(turn_data, 0);
+	Node root(turn_data, 0, turn_data.now_turn);
 	root.GetKey(team_id);
 	EraseAgent(team_id^1, root.turn_data);
 	if (now_all_nodes[root.key] == nullptr) {
@@ -177,7 +177,8 @@ if (now_turn_data.now_turn == turn_data.now_turn) {
 								 			   now_turn_data,
 								 			   team_id,
 								 			   turn,
-								 			   now_node.evaluation));
+								 			   now_node.evaluation),
+								 turn_data.now_turn);
 				next_node.GetKey(team_id);
 				if (now_turn_data.now_turn == turn_data.now_turn) {
 					for (int_fast32_t &&i = 0; i < turn_data.agent_num; ++i) {
@@ -192,7 +193,7 @@ if (now_turn_data.now_turn == turn_data.now_turn) {
 				}
 				Node &check_node = *next_all_nodes[next_node.key];
 
-				if (now_turn_data.now_turn != turn_data.now_turn &&
+				if (check_node.start_turn == next_node.start_turn &&
 					check_node.turn_data.now_turn ==
 					next_turn_data.now_turn) {
 					if (check_node.evaluation < next_node.evaluation) {
@@ -394,7 +395,8 @@ vector<vector<Move>> RivalAllSearch(
 													 now_turn_data,
 													 team_id,
 													 turn_data.now_turn,
-													 0));
+													 0),
+					   turn_data.now_turn);
 		for (int_fast32_t &&agent_id = 0; agent_id < game_data.agent_num;
 			 ++agent_id) {
 			next_node.first_move[agent_id] = check_all_moves[agent_id];
@@ -455,7 +457,7 @@ array<Move, 8> AllyAllSearch(
 												turn_data.now_turn,
 												0);
 		}
-		Node next_node(next_turn_data, evaluation_sum);
+		Node next_node(next_turn_data, evaluation_sum, turn_data.now_turn);
 		for (int_fast32_t &&agent_id = 0; agent_id < game_data.agent_num;
 			 ++agent_id) {
 			next_node.first_move[agent_id] = check_ally_moves[agent_id];
