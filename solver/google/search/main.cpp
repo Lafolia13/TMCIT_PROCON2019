@@ -53,7 +53,7 @@ void OutputAnswer(const GameData &game_data, const array<Move, 8> &ret) {
 				break;
 			}
 			case kNone : {
-				cout << "n" << direction << endl;
+				cout << "n" << endl;
 				break;
 			}
 		}
