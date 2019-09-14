@@ -11,12 +11,15 @@ struct Node {
 	TurnData turn_data = {};
 	double evaluation = {};
 	int_fast32_t key = {};
+	int_fast32_t start_turn = {};
 	array<Move, 8> first_move = {};
 
 	Node() {};
-	Node (const TurnData &turn_data, const double evaluation) :
+	Node (const TurnData &turn_data, const double &evaluation,
+		  const int_fast32_t &start_turn) :
 		turn_data(turn_data),
-		evaluation(evaluation)
+		evaluation(evaluation),
+		start_turn(start_turn)
 	{};
 
 	void GetKey(const int_fast32_t&);
@@ -29,7 +32,9 @@ struct Node {
 int_fast32_t GetBeamWidth(const GameData&, const int_fast32_t&, const bool&,
 						  const bool&);
 
-void EraseRivalAgent(const int_fast32_t&, TurnData&);
+void EraseAgent(const int_fast32_t&, TurnData&);
+
+void ReduceDirection(const GameData&, const TurnData&, vector<vector<Move>>&);
 
 vector<array<Move, 8>> BeamSearch(const GameData&, const TurnData&,
 								  const int_fast32_t&, const int_fast32_t&,
@@ -82,12 +87,12 @@ const array<int_fast32_t, 9> one_transition_table = {
 	0,
 	8,
 	8*8,
-	6*6*6,
+	7*7*7,
 	8*8 + 8*8,
-	8*8 + 6*6*6,
-	6*6*6 + 6*6*6,
-	8*8 + 8*8 + 6*6*6,
-	8*8 + 6*6*6 + 6*6*6
+	8*8 + 7*7*7,
+	7*7*7 + 7*7*7,
+	8*8 + 8*8 + 7*7*7,
+	8*8 + 7*7*7 + 7*7*7
 };
 
 }
