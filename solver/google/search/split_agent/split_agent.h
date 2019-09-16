@@ -7,19 +7,38 @@
 
 namespace split_agent {
 
+struct NodeID {
+	int_fast32_t start_turn;
+	int_fast32_t now_turn;
+	int_fast32_t search_id;
+
+	NodeID() {};
+	NodeID(const int_fast32_t &start_turn, const int_fast32_t &now_turn,
+			 const int_fast32_t &search_id) :
+		start_turn(start_turn),
+		now_turn(now_turn),
+		search_id(search_id)
+	{};
+
+	bool operator==(const NodeID &another) const {
+		return start_turn == another.start_turn &&
+			   now_turn == another.now_turn &&
+			   search_id == another.search_id;
+	};
+};
+
 struct Node {
 	TurnData turn_data = {};
 	double evaluation = {};
-	int_fast32_t key = {};
-	int_fast32_t start_turn = {};
 	array<Move, 8> first_move = {};
 
+	int_fast32_t key = {};
+	NodeID node_id;
+
 	Node() {};
-	Node (const TurnData &turn_data, const double &evaluation,
-		  const int_fast32_t &start_turn) :
+	Node (const TurnData &turn_data, const double &evaluation) :
 		turn_data(turn_data),
-		evaluation(evaluation),
-		start_turn(start_turn)
+		evaluation(evaluation)
 	{};
 
 	void GetKey(const int_fast32_t&);
@@ -38,7 +57,7 @@ void ReduceDirection(const GameData&, const TurnData&, vector<vector<Move>>&);
 
 vector<array<Move, 8>> BeamSearch(const GameData&, const TurnData&,
 								  const int_fast32_t&, const int_fast32_t&,
-								  const bool&);
+								  const int_fast32_t&, const bool&);
 
 array<array<pair<Position, int_fast32_t>, 8>, 2> GetAgentsPositionWidthID(
 		const GameData&, const TurnData&);
