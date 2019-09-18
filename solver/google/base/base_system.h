@@ -111,6 +111,11 @@ struct TurnData {
 	void CalculationAllTilePoint(const GameData&);
 	void CalculationAreaPoint(const GameData&, const int_fast32_t&);
 	void CalculationAllAreaPoint(const GameData&);
+
+	bool operator==(const TurnData &another) const {
+		return tile_data == another.tile_data &&
+			   agent_exist == another.agent_exist;
+	};
 };
 
 struct Parameter {
