@@ -5,6 +5,8 @@
 #include <algorithm>
 #include <set>
 #include <numeric>
+#include <random>
+#include <ctime>
 
 namespace split_agent {
 
@@ -146,7 +148,7 @@ vector<array<Move, 8>> BeamSearch(const GameData &game_data,
 			}
 
 			move_ids = {};
-			for (int &&i = 0; i < turn_data.agent_num; ++i)
+			for (int_fast32_t &&i = 0; i < turn_data.agent_num; ++i)
 				check_moves[i] = all_moves[i].front();
 
 			static TurnData next_turn_data;
@@ -491,7 +493,8 @@ array<Move, 8> AllyAllSearch(
 		const GameData &game_data, const TurnData &turn_data,
 		const vector<vector<array<Move, 8>>> &ally_split_moves,
 		const vector<vector<Move>> &rival_all_moves,
-		const int_fast32_t &ally_team) {
+		const int_fast32_t &ally_team,
+		const bool &conflicted) {
 	vector<int_fast32_t> move_ids(ally_split_moves.size(), 0);
 	vector<array<Move, 8>> check_split_moves(ally_split_moves.size());
 	vector<Node> all_nodes;
@@ -534,12 +537,26 @@ array<Move, 8> AllyAllSearch(
 							 check_split_moves));
 
 	sort(all_nodes.begin(), all_nodes.end(), greater<>());
-	return all_nodes[0].first_move;
+	const int_fast32_t &ally_point_sum = turn_data.tile_point[ally_team] +
+										 turn_data.area_point[ally_team];
+	const int_fast32_t &rival_point_sum = turn_data.tile_point[ally_team^1] +
+										  turn_data.area_point[ally_team^1];
+
+	if (conflicted && rival_point_sum > ally_point_sum) {
+		const int_fast32_t &&ret_id =
+			rand()%min(10, (int_fast32_t)all_nodes.size());
+		cerr << "random : " << ret_id << endl;
+		return all_nodes[ret_id].first_move;
+	} else {
+		return all_nodes[0].first_move;
+	}
 }
 
 array<Move, 8> SplitSearch(const GameData &game_data,
 						   const TurnData &turn_data,
-						   const int_fast32_t &ally_team) {
+						   const int_fast32_t &ally_team,
+						   const bool &conflicted) {
+	srand((unsigned)time(NULL));
 	auto agents_with_id = GetAgentsPositionWidthID(game_data, turn_data);
 	auto split_turn_data = GetSplitTurnData(game_data, turn_data,
 											agents_with_id);
@@ -560,7 +577,8 @@ array<Move, 8> SplitSearch(const GameData &game_data,
 	auto rival_all_moves = RivalAllSearch(game_data, turn_data,
 										  rival_split_moves, ally_team^1);
 	auto ally_all_moves = AllyAllSearch(game_data, turn_data, ally_split_moves,
-										rival_all_moves, ally_team);
+										rival_all_moves, ally_team,
+										conflicted);
 
 	sort(ally_all_moves.begin(), ally_all_moves.begin() + game_data.agent_num);
 

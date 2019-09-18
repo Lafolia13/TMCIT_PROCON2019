@@ -85,10 +85,11 @@ vector<vector<Move>> RivalAllSearch(const GameData&, const TurnData&,
 array<Move, 8> AllyAllSearch(const GameData&, const TurnData&,
 							 const vector<vector<array<Move, 8>>>&,
 							 const vector<vector<Move>>&,
-							 const int_fast32_t&);
+							 const int_fast32_t&,
+							 const bool&);
 
 array<Move, 8> SplitSearch(const GameData&, const TurnData&,
-						   const int_fast32_t &);
+						   const int_fast32_t&, const bool&);
 
 const array<vector<int_fast32_t>, 9> split_table = {
 	vector<int_fast32_t>{},
