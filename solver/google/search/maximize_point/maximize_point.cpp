@@ -30,8 +30,8 @@ namespace maximize_point {
 					max_point_index = i;
 				}
 			}
-			Position hoge = agent_pos + kNextToNine[all_agent_moves[agent_id][max_point_index].direction];
-			is_exist[hoge.h][hoge.w] = true;
+			Position best_pos = agent_pos + kNextToNine[all_agent_moves[agent_id][max_point_index].direction];
+			is_exist[best_pos.h][best_pos.w] = true;
 			ret[agent_id] = all_agent_moves[agent_id][max_point_index];
 		}
 		return ret;
