@@ -56,4 +56,8 @@ public class GameStatusPanel extends JPanel{
 	public void changeGameStatus(String str) {
 		gameStatus.setText("ƒQ[ƒ€ó‘Ô:" + str);
 	}
+	
+	public void changeTurn(int nowTurn) {
+		turnLabel.setText("ƒ^[ƒ“:" + String.valueOf(nowTurn) + "/" + String.valueOf(matchData.turns));
+	}
 }

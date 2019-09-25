@@ -51,6 +51,7 @@ public class GameNetworkRunnable implements Runnable{
 			nowField = net.getMatcheStatus(matchData.id);
 			gamePaintPanel.drawField(nowField);
 			gameStatusPanel.changeGameStatus("ゲーム中");
+			gameStatusPanel.changeTurn(nowField.turn);
 		} catch (InvalidTokenException e2) {
 			gameStatusPanel.changeGameStatus("トークンエラー");
 		} catch (InvalidMatchesException e2) {
@@ -197,10 +198,13 @@ public class GameNetworkRunnable implements Runnable{
 	public void run() {
 		Network net = new Network(connectSetting.url, connectSetting.port, connectSetting.token);
 		
+		// 次のターンがスタートする時間
+		long nextTurnStartTime = 0;
+		
 		// flag
 		boolean inputInitFlag = false;
 
-		// 最初にゲームが開始しているか確認
+		// 1最初にゲームが開始しているか確認
 		checkGameStatus(net);
 
 		while(true) {
@@ -213,17 +217,27 @@ public class GameNetworkRunnable implements Runnable{
 			}
 
 			if(gameStartUnixTime - nowUnixTime > -1) {
-				// ゲームが開始していない場合、秒数をカウントダウン
+				// 1ゲームが開始していない場合、秒数をカウントダウン
 				gameStatusPanel.changeGameStatus("開始前(残り" + String.valueOf(gameStartUnixTime - nowUnixTime) + "秒)");
 			}else {
-				// ゲームがスタートしている場合
+				// 1ゲームがスタートしている場合
 				if(!inputInitFlag) {
+					// 最初のみの入出力
 					Field nowField = checkGameStatus(net);
 					inputInit(nowField);
 					inputTurn(nowField);
 					outputSolver(net, nowField);
 					inputInitFlag = true;
+					nextTurnStartTime = gameStartUnixTime + (matchData.turnMillis + matchData.intervalMillis) / 1000L;
+				}else if(nextTurnStartTime - nowUnixTime < 0){
+					// ターン毎の入出力
+					System.out.println("Turn Input:" + String.valueOf(nextTurnStartTime) + "/" + String.valueOf(nowUnixTime));
+					Field nowField = checkGameStatus(net);
+					inputTurn(nowField);
+					outputSolver(net, nowField);
+					nextTurnStartTime += (matchData.turnMillis + matchData.intervalMillis) / 1000L;
 				}
+				
 			}
 
 			try {
