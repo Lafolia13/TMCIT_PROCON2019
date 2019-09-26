@@ -2,6 +2,8 @@ package tmcit.yasu.util;
 
 import java.io.IOException;
 
+import com.fasterxml.jackson.databind.deser.DataFormatReaders.Match;
+
 import tmcit.yasu.data.Action;
 import tmcit.yasu.data.Actions;
 import tmcit.yasu.data.Agent;
@@ -44,6 +46,30 @@ public class GameNetworkRunnable implements Runnable{
 		execPlayer = new ExecPlayer(cmd);
 	}
 	
+	// 残り時間の表示
+	private void printLastTime(boolean afterStartTimeFlag) {
+		long nowUnixTimeMillis = System.currentTimeMillis();
+		String statusText = "";
+		if(afterStartTimeFlag) {
+			statusText = "開始前にアクセスしてます(残り" + String.valueOf((gameStartUnixTime*1000L - nowUnixTimeMillis) / 1000.0) + "秒)";
+		}else {
+			statusText = "開始前(残り" + String.valueOf((gameStartUnixTime*1000L - nowUnixTimeMillis) / 1000.0) + "秒)";
+		}
+		gameStatusPanel.changeGameStatus(statusText);
+	}
+	
+	// 作戦ステップ時の表示
+	private void printStrategyStep(long strategyStepUnixTime) {
+		long nowUnixTimeMillis = System.currentTimeMillis();
+		gameStatusPanel.changeGameStatus("作戦ステップ(残り" + String.valueOf((strategyStepUnixTime*1000L - nowUnixTimeMillis) / 1000.0) + "秒)");
+	}
+	
+	// インターバル時の表示
+	private void printIntervalStep(long intervalStepUnixTime) {
+		long nowUnixTimeMillis = System.currentTimeMillis();
+		gameStatusPanel.changeGameStatus("インターバル(残り" + String.valueOf((intervalStepUnixTime*1000L - nowUnixTimeMillis) / 1000.0) + "秒)");
+	}
+	
 	// ゲームの状態を確認
 	private Field checkGameStatus(Network net) {
 		Field nowField = null;
@@ -58,9 +84,7 @@ public class GameNetworkRunnable implements Runnable{
 			gameStatusPanel.changeGameStatus("参加できません");
 		} catch (TooEarlyException e2) {
 			gameStartUnixTime = e2.startUnixTime;
-			nowUnixTime = System.currentTimeMillis() / 1000L;
-			long lastTime = gameStartUnixTime - nowUnixTime;
-			gameStatusPanel.changeGameStatus("開始前(残り" + String.valueOf(lastTime) + "秒)");
+			printLastTime(true);
 		}
 		
 		return nowField;
@@ -84,8 +108,6 @@ public class GameNetworkRunnable implements Runnable{
 	
 	// solverにマップ情報などの初期化を入力
 	private void inputInit(Field field) {
-		System.out.println(field.width);
-		System.out.println(field.height);
 		execPlayer.input(String.valueOf(matchData.turns));
 		execPlayer.input(String.valueOf(field.width));
 		execPlayer.input(String.valueOf(field.height));
@@ -219,9 +241,9 @@ public class GameNetworkRunnable implements Runnable{
 				nextPingUnixTime = nowUnixTime + connectSetting.interval;
 			}
 
-			if(gameStartUnixTime - nowUnixTime >= 0) {
+			if(gameStartUnixTime > nowUnixTime) {
 				// 1ゲームが開始していない場合、秒数をカウントダウン
-				gameStatusPanel.changeGameStatus("開始前(残り" + String.valueOf((gameStartUnixTime*1000L - nowUnixTimeMillis) / 1000.0) + "秒)");
+				printLastTime(false);
 			}else {
 				// 1ゲームがスタートしている場合
 				if(!inputInitFlag) {
@@ -240,7 +262,7 @@ public class GameNetworkRunnable implements Runnable{
 					outputSolver(net, nowField);
 					inputInitFlag = true;
 					nextTurnStartTime = gameStartUnixTime + (matchData.turnMillis + matchData.intervalMillis) / 1000L;
-				}else if(nextTurnStartTime - nowUnixTime < 0){
+				}else if(nextTurnStartTime <= nowUnixTime){
 					// ターン毎の入出力
 					System.out.println("Turn Input:" + String.valueOf(nextTurnStartTime) + "/" + String.valueOf(nowUnixTime));
 					Field nowField = checkGameStatus(net);
@@ -255,6 +277,12 @@ public class GameNetworkRunnable implements Runnable{
 					inputTurn(nowField);
 					outputSolver(net, nowField);
 					nextTurnStartTime = gameStartUnixTime + nowField.turn * ((matchData.turnMillis + matchData.intervalMillis) / 1000L);
+				}else if(nowUnixTime < nextTurnStartTime - matchData.intervalMillis/1000L) {
+					// 作戦ステップの間
+					printStrategyStep(nextTurnStartTime - matchData.intervalMillis/1000L);
+				}else if(nowUnixTime < nextTurnStartTime) {
+					// インターバルの間
+					printIntervalStep(nextTurnStartTime);
 				}
 				
 			}
