@@ -84,6 +84,8 @@ public class GameNetworkRunnable implements Runnable{
 	
 	// solverにマップ情報などの初期化を入力
 	private void inputInit(Field field) {
+		System.out.println(field.width);
+		System.out.println(field.height);
 		execPlayer.input(String.valueOf(matchData.turns));
 		execPlayer.input(String.valueOf(field.width));
 		execPlayer.input(String.valueOf(field.height));
@@ -208,7 +210,8 @@ public class GameNetworkRunnable implements Runnable{
 		checkGameStatus(net);
 
 		while(true) {
-			long nowUnixTime = System.currentTimeMillis() / 1000L;
+			long nowUnixTimeMillis = System.currentTimeMillis();
+			long nowUnixTime = nowUnixTimeMillis / 1000L;
 
 			// pingでサーバとの接続状態を取得
 			if(nextPingUnixTime < nowUnixTime) {
@@ -216,14 +219,22 @@ public class GameNetworkRunnable implements Runnable{
 				nextPingUnixTime = nowUnixTime + connectSetting.interval;
 			}
 
-			if(gameStartUnixTime - nowUnixTime > -1) {
+			if(gameStartUnixTime - nowUnixTime >= 0) {
 				// 1ゲームが開始していない場合、秒数をカウントダウン
-				gameStatusPanel.changeGameStatus("開始前(残り" + String.valueOf(gameStartUnixTime - nowUnixTime) + "秒)");
+				gameStatusPanel.changeGameStatus("開始前(残り" + String.valueOf((gameStartUnixTime*1000L - nowUnixTimeMillis) / 1000.0) + "秒)");
 			}else {
 				// 1ゲームがスタートしている場合
 				if(!inputInitFlag) {
 					// 最初のみの入出力
 					Field nowField = checkGameStatus(net);
+					if(nowField == null) {
+						try {
+							Thread.sleep(50);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+						continue;
+					}
 					inputInit(nowField);
 					inputTurn(nowField);
 					outputSolver(net, nowField);
@@ -233,9 +244,17 @@ public class GameNetworkRunnable implements Runnable{
 					// ターン毎の入出力
 					System.out.println("Turn Input:" + String.valueOf(nextTurnStartTime) + "/" + String.valueOf(nowUnixTime));
 					Field nowField = checkGameStatus(net);
+					if(nowField == null) {
+						try {
+							Thread.sleep(50);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+						continue;
+					}
 					inputTurn(nowField);
 					outputSolver(net, nowField);
-					nextTurnStartTime += (matchData.turnMillis + matchData.intervalMillis) / 1000L;
+					nextTurnStartTime = gameStartUnixTime + nowField.turn * ((matchData.turnMillis + matchData.intervalMillis) / 1000L);
 				}
 				
 			}
