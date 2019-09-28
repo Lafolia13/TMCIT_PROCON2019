@@ -30,6 +30,9 @@ public class GameNetworkRunnable implements Runnable{
 	
 	// solver関係
 	private ExecPlayer execPlayer;
+	
+	// 
+	private int nowTurn;
 
 	public GameNetworkRunnable(ConnectSetting connectSetting0, MatchesData matchData0, GameStatusPanel gameStatusPanel0, GamePaintPanel gamePaintPanel0, String cmd0) {
 		connectSetting = connectSetting0;
@@ -78,6 +81,7 @@ public class GameNetworkRunnable implements Runnable{
 			gamePaintPanel.drawField(nowField);
 			gameStatusPanel.changeGameStatus("ゲーム中");
 			gameStatusPanel.changeTurn(nowField.turn);
+			nowTurn = nowField.turn;
 		} catch (InvalidTokenException e2) {
 			gameStatusPanel.changeGameStatus("トークンエラー");
 		} catch (InvalidMatchesException e2) {
@@ -262,6 +266,10 @@ public class GameNetworkRunnable implements Runnable{
 					outputSolver(net, nowField);
 					inputInitFlag = true;
 					nextTurnStartTime = gameStartUnixTime + (matchData.turnMillis + matchData.intervalMillis) / 1000L;
+				}else if(nextTurnStartTime <= nowUnixTime && nowTurn == matchData.turns) {
+					checkGameStatus(net);
+					gameStatusPanel.changeGameStatus("ゲーム終了");
+					break;
 				}else if(nextTurnStartTime <= nowUnixTime){
 					// ターン毎の入出力
 					System.out.println("Turn Input:" + String.valueOf(nextTurnStartTime) + "/" + String.valueOf(nowUnixTime));
@@ -286,7 +294,7 @@ public class GameNetworkRunnable implements Runnable{
 				}
 				
 			}
-
+			
 			try {
 				Thread.sleep(50);
 			} catch (InterruptedException e) {
