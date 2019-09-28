@@ -34,6 +34,10 @@ public class Constant {
 	
 	public static int SLEEP_TIME = 100;
 
+	// arrow color
+	public static Color WALK_COLOR = new Color(0, 255, 0);
+	public static Color ERASE_COLOR = new Color(148, 0, 211);
+
 	
 	// 
 	public static int[] DIR_X = {-1, 0, 1, -1, 1, -1, 0, 1};

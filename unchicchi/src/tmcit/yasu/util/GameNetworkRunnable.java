@@ -1,6 +1,7 @@
 package tmcit.yasu.util;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import com.fasterxml.jackson.databind.deser.DataFormatReaders.Match;
 
@@ -200,6 +201,8 @@ public class GameNetworkRunnable implements Runnable{
 	
 	// solverから出力を取得してサーバに送信
 	private void outputSolver(Network net, Field field) {
+		ArrayList<String> myCmd = new ArrayList<>();
+		ArrayList<Integer> agentIds = new ArrayList<>();
 		for(int i = 0;i < field.teams.size();i++) {
 			Team nowTeam = field.teams.get(i);
 			if(nowTeam.teamID == matchData.teamID) {
@@ -207,6 +210,9 @@ public class GameNetworkRunnable implements Runnable{
 				for(int agentIndex = 0;agentIndex < nowTeam.agents.size();agentIndex++) {
 					Agent nowAgent = nowTeam.agents.get(agentIndex);
 					String solverAction = execPlayer.getAction();
+					
+					myCmd.add(solverAction);
+					agentIds.add(nowAgent.agentID);
 					
 					actions.actions.add(convertToAction(solverAction, nowAgent.agentID));
 				}
@@ -218,6 +224,9 @@ public class GameNetworkRunnable implements Runnable{
 						| UnacceptableTimeExeption e) {
 					e.printStackTrace();
 				}
+				
+				// 描画
+				gamePaintPanel.drawActions(myCmd, agentIds);
 			}
 		}
 	}
@@ -282,6 +291,7 @@ public class GameNetworkRunnable implements Runnable{
 						}
 						continue;
 					}
+					gamePaintPanel.resetActions();
 					inputTurn(nowField);
 					outputSolver(net, nowField);
 					nextTurnStartTime = gameStartUnixTime + nowField.turn * ((matchData.turnMillis + matchData.intervalMillis) / 1000L);
