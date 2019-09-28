@@ -1,11 +1,11 @@
-#ifndef SPLIT_AGENT_H
-#define SPLIT_AGENT_H
+#ifndef DISPERSE_AGENT_H
+#define DISPERSE_AGENT_H
 
 #include "../../base/base_system.h"
 #include "../../action/change_action.h"
 #include "../../calculation/calculation.h"
 
-namespace split_agent {
+namespace disperse_agent {
 
 struct NodeID {
 	int_fast32_t start_turn;

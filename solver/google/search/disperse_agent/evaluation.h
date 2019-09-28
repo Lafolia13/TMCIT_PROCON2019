@@ -1,11 +1,11 @@
-#ifndef SPLIT_AGENT_EVALUATION_H
-#define SPLIT_AGENT_EVALUATION_H
+#ifndef DISPERSE_AGENT_EVALUATION_H
+#define DISPERSE_AGENT_EVALUATION_H
 
 #include "../../calculation/calculation.h"
 
-namespace split_agent {
+namespace disperse_agent {
 
-const int_fast32_t evaluations_num = 6;
+const int_fast32_t evaluations_num = 7;
 
 double GetEvaluation(const GameData&, TurnData&, const TurnData&,
 					 const int_fast32_t&, const int_fast32_t&, const double&);
@@ -21,6 +21,11 @@ double AllyAreaPointDifference(const GameData&, const TurnData&,
 
 double RivalAreaPointDifference(const GameData&, const TurnData&,
 								const TurnData&, const int_fast32_t&);
+
+double DisperseAgent(const GameData&, const TurnData&, const int_fast32_t&);
+
+double NotMyTeamMasu(const GameData&, const TurnData&,
+					 const int_fast32_t&, const int_fast32_t&);
 
 double BeforeEvaluationBias(const GameData&, const double&, const int_fast32_t&);
 

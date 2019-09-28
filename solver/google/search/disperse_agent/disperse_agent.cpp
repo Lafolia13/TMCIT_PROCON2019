@@ -1,5 +1,5 @@
-#include "../../search/split_agent/split_agent.h"
-#include "../../search/split_agent/evaluation.h"
+#include "../../search/disperse_agent/disperse_agent.h"
+#include "../../search/disperse_agent/evaluation.h"
 
 #include <queue>
 #include <algorithm>
@@ -8,7 +8,7 @@
 #include <random>
 #include <ctime>
 
-namespace split_agent {
+namespace disperse_agent {
 
 template<typename T>
 using greater_priority_queue = priority_queue<T, vector<T>, greater<T>>;
@@ -30,7 +30,7 @@ int_fast32_t GetBeamWidth(const GameData &game_data,
 						  const int_fast32_t &beam_depth,
 						  const bool &first_search,
 						  const bool &rival_team) {
-	const int_fast32_t can_simulate_ps = 1300000;
+	const int_fast32_t can_simulate_ps = 1100000;
 	const int_fast32_t one_transition =
 		one_transition_table[game_data.agent_num];
 	const int_fast32_t make_new_node = first_search ? 500 : 0;
