@@ -150,14 +150,14 @@ double DisperseAgent(const GameData &game_data, const TurnData &turn_data,
 		const Position &agent_pos =
 			turn_data.agents_position[team_id][agent_id];
 		const Position left_up =
-			Position(max(0, agent_pos.h - box_size_half),
-					 max(0, agent_pos.w - box_size_half));
+			Position(max((int_fast32_t)0, agent_pos.h - box_size_half),
+					 max((int_fast32_t)0, agent_pos.w - box_size_half));
 		const Position right_up =
-			Position(max(0, agent_pos.h - box_size_half),
+			Position(max((int_fast32_t)0, agent_pos.h - box_size_half),
 					 agent_pos.w + box_size_half + 1);
 		const Position left_down =
 			Position(agent_pos.h + box_size_half + 1,
-					 max(0, agent_pos.w - box_size_half));
+					 max((int_fast32_t)0, agent_pos.w - box_size_half));
 		const Position right_down =
 			Position(agent_pos.h + box_size_half + 1,
 					 agent_pos.w + box_size_half + 1);
@@ -216,14 +216,14 @@ double NotMyTeamMasu(const GameData &game_data, const TurnData &turn_data,
 		for (int_fast32_t &&w = 0; w < game_data.width; ++w) {
 			const int_fast32_t &tile_color = turn_data.tile_data[h][w];
 			const Position left_up =
-				Position(max(0, h - box_size_half),
-						 max(0, w - box_size_half));
+				Position(max((int_fast32_t)0, h - box_size_half),
+						 max((int_fast32_t)0, w - box_size_half));
 			const Position right_up =
-				Position(max(0, h - box_size_half),
+				Position(max((int_fast32_t)0, h - box_size_half),
 						 w + box_size_half + 1);
 			const Position left_down =
 				Position(h + box_size_half + 1,
-						 max(0, w - box_size_half));
+						 max((int_fast32_t)0, w - box_size_half));
 			const Position right_down =
 				Position(h + box_size_half + 1,
 						 w + box_size_half + 1);
