@@ -44,11 +44,16 @@ int_fast32_t SelfMatch(string path,
 	game_data.parameters["FirstEvaluation1"] = first_evaluation_krival;
 
 
+	TurnData before_turn_data;
 	for (int_fast32_t &&turn = 0; turn < game_data.max_turn; ++turn) {
 		cerr << turn << " : ";
 		turn_data.now_turn = turn;
-		auto ally_moves = split_agent::SplitSearch(game_data, turn_data, kAlly);
-		auto rival_moves = split_agent::SplitSearch(game_data, turn_data, kRival);
+		auto ally_moves = split_agent::SplitSearch(game_data, turn_data, kAlly,
+												   turn_data == before_turn_data);
+		auto rival_moves = split_agent::SplitSearch(game_data, turn_data, kRival,
+													turn_data == before_turn_data);
+
+		before_turn_data = turn_data;
 		vector<Move> all_moves;
 		for (int_fast32_t &&i = 0; i < game_data.agent_num; ++i) {
 			all_moves.push_back(ally_moves[i]);

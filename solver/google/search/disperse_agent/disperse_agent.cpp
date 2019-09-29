@@ -544,7 +544,7 @@ array<Move, 8> AllyAllSearch(
 
 	if (conflicted && rival_point_sum > ally_point_sum) {
 		const int_fast32_t &&ret_id =
-			rand()%min(10, (int_fast32_t)all_nodes.size());
+			rand()%min((int_fast32_t)10, (int_fast32_t)all_nodes.size());
 		cerr << "random : " << ret_id << endl;
 		return all_nodes[ret_id].first_move;
 	} else {
