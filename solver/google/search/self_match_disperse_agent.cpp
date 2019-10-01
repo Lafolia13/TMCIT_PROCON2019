@@ -52,8 +52,8 @@ int_fast32_t SelfMatch(string path,
 	game_data.parameters["RivalTilePointDifference1"] = rival_tile_point_difference_krival;
 	game_data.parameters["AllyAreaPointDifference1"] = ally_area_point_difference_krival;
 	game_data.parameters["RivalAreaPointDifference1"] = rival_area_point_difference_krival;
-	game_data.parameters["StayMinusMasu0"] = stay_minus_masu_krival;
-	game_data.parameters["ActionToRivalLocation0"] = action_to_rival_location_krival;
+	game_data.parameters["StayMinusMasu1"] = stay_minus_masu_krival;
+	game_data.parameters["ActionToRivalLocation1"] = action_to_rival_location_krival;
 	game_data.parameters["DisperseAgent1"] = disperse_agent_krival;
 	game_data.parameters["NotMyTeamMasu1"] = not_my_team_masu_krival;
 	game_data.parameters["BeforeEvaluationBias1"] = before_evaluation_bias_krival;
