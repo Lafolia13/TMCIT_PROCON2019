@@ -12,6 +12,8 @@ int_fast32_t SelfMatch(string path,
 					   double rival_tile_point_difference_kally,
 					   double ally_area_point_difference_kally,
 					   double rival_area_point_difference_kally,
+					   double stay_minus_masu_kally,
+					   double action_to_rival_location_kally,
 					   double disperse_agent_kally,
 					   double not_my_team_masu_kally,
 					   double before_evaluation_bias_kally,
@@ -20,6 +22,8 @@ int_fast32_t SelfMatch(string path,
 					   double rival_tile_point_difference_krival,
 					   double ally_area_point_difference_krival,
 					   double rival_area_point_difference_krival,
+					   double stay_minus_masu_krival,
+					   double action_to_rival_location_krival,
 					   double disperse_agent_krival,
 					   double not_my_team_masu_krival,
 					   double before_evaluation_bias_krival,
@@ -37,6 +41,8 @@ int_fast32_t SelfMatch(string path,
 	game_data.parameters["RivalTilePointDifference0"] = rival_tile_point_difference_kally;
 	game_data.parameters["AllyAreaPointDifference0"] = ally_area_point_difference_kally;
 	game_data.parameters["RivalAreaPointDifference0"] = rival_area_point_difference_kally;
+	game_data.parameters["StayMinusMasu0"] = stay_minus_masu_kally;
+	game_data.parameters["ActionToRivalLocation0"] = action_to_rival_location_kally;
 	game_data.parameters["DisperseAgent0"] = disperse_agent_kally;
 	game_data.parameters["NotMyTeamMasu0"] = not_my_team_masu_kally;
 	game_data.parameters["BeforeEvaluationBias0"] = before_evaluation_bias_kally;
@@ -46,6 +52,8 @@ int_fast32_t SelfMatch(string path,
 	game_data.parameters["RivalTilePointDifference1"] = rival_tile_point_difference_krival;
 	game_data.parameters["AllyAreaPointDifference1"] = ally_area_point_difference_krival;
 	game_data.parameters["RivalAreaPointDifference1"] = rival_area_point_difference_krival;
+	game_data.parameters["StayMinusMasu1"] = stay_minus_masu_krival;
+	game_data.parameters["ActionToRivalLocation1"] = action_to_rival_location_krival;
 	game_data.parameters["DisperseAgent1"] = disperse_agent_krival;
 	game_data.parameters["NotMyTeamMasu1"] = not_my_team_masu_krival;
 	game_data.parameters["BeforeEvaluationBias1"] = before_evaluation_bias_krival;
@@ -95,8 +103,8 @@ int_fast32_t SelfMatch(string path,
 #include <iostream>
 int main() {
 	cout << SelfMatch("../../../../test/sample/map_creater/sample3.txt", 5000,
-					  1,1,1,1,1,1,1,1,
-					  1,1,1,1,1,1,1,1) << endl;
+					  1,1,1,1,1,1,1,1,1,1,
+					  1,1,1,1,1,1,1,1,1,1) << endl;
 
 	return 0;
 }

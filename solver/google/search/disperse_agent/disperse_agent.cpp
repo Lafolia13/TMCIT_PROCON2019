@@ -7,6 +7,7 @@
 #include <numeric>
 #include <random>
 #include <ctime>
+#include <iostream>
 
 namespace disperse_agent {
 
@@ -30,7 +31,7 @@ int_fast32_t GetBeamWidth(const GameData &game_data,
 						  const int_fast32_t &beam_depth,
 						  const bool &first_search,
 						  const bool &rival_team) {
-	const int_fast32_t can_simulate_ps = 1100000;
+	const int_fast32_t can_simulate_ps = 1000000;
 	const int_fast32_t one_transition =
 		one_transition_table[game_data.agent_num];
 	const int_fast32_t make_new_node = first_search ? 500 : 0;
@@ -164,6 +165,7 @@ vector<array<Move, 8>> BeamSearch(const GameData &game_data,
 								 GetEvaluation(game_data,
 								 			   next_turn_data,
 								 			   now_turn_data,
+								 			   check_moves,
 								 			   team_id,
 								 			   turn,
 								 			   now_node.evaluation));
@@ -220,7 +222,7 @@ vector<array<Move, 8>> BeamSearch(const GameData &game_data,
 			 i >= 0 && now_que.size() < beam_width; --i) {
 			const auto &check_first_move =
 				next_all_nodes[reverse_que[i].second]->first_move;
-			if (first_move_count[check_first_move] > beam_width * 0.8)
+			if (first_move_count[check_first_move] > beam_width * 0.95)
 				continue;
 
 			now_que.push(reverse_que[i]);
@@ -462,6 +464,7 @@ vector<vector<Move>> RivalAllSearch(
 		Node next_node(next_turn_data, GetEvaluation(game_data,
 													 next_turn_data,
 													 now_turn_data,
+													 check_all_moves,
 													 team_id,
 													 turn_data.now_turn,
 													 0));
@@ -523,6 +526,7 @@ array<Move, 8> AllyAllSearch(
 								  GetEvaluation(game_data,
 												next_turn_data,
 												turn_data,
+												check_all_agent_moves,
 												ally_team,
 												turn_data.now_turn,
 												0));
