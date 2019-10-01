@@ -6,6 +6,7 @@ namespace disperse_agent {
 
 double GetEvaluation(const GameData &game_data, TurnData &turn_data,
 					 const TurnData &before_turn_data,
+					 const vector<Move> &moves,
 					 const int_fast32_t &team_id,
 					 const int_fast32_t &start_turn,
 					 const double &before_evaluation) {
@@ -23,6 +24,13 @@ double GetEvaluation(const GameData &game_data, TurnData &turn_data,
 	double rival_area_point_difference =
 		RivalAreaPointDifference(game_data, turn_data, before_turn_data,
 								 team_id);
+
+	double stay_minus_masu =
+		StayMinusMasu(game_data, turn_data, team_id);
+
+	double action_to_rival_location =
+		ActionToRivalLocation(game_data, before_turn_data, moves, team_id);
+
 	double disperse_agent =
 		DisperseAgent(game_data, turn_data, team_id);
 
@@ -36,6 +44,8 @@ double GetEvaluation(const GameData &game_data, TurnData &turn_data,
 							 rival_tile_point_difference +
 							 ally_area_point_difference +
 							 rival_area_point_difference +
+							 stay_minus_masu +
+							 action_to_rival_location +
 							 disperse_agent +
 							 not_my_team_mas +
 							 before_evaluation_bias;
@@ -128,6 +138,57 @@ double RivalAreaPointDifference(const GameData &game_data,
 
 }
 
+double StayMinusMasu(const GameData &game_data, const TurnData &turn_data,
+					 const int_fast32_t &team_id) {
+	static string function_name = "StayMinusMasu";
+	static array<bool, 2> first_check = {true, true};
+	static array<double, 2> bias = {};
+	if (first_check[team_id]) {
+		auto it = game_data.parameters.find(function_name + to_string(team_id));
+		assert(it != game_data.parameters.end());
+		bias[team_id] = it->second;
+		first_check[team_id] = false;
+	}
+
+	double ret = 0;
+	for (int_fast32_t &&agent_id = 0; agent_id < turn_data.agent_num;
+		 ++agent_id) {
+		const Position &agent_pos =
+			turn_data.agents_position[team_id][agent_id];
+		ret += min((int_fast32_t)0, game_data.GetTilePoint(agent_pos));
+	}
+
+	ret *= bias[team_id];
+	return ret;
+}
+
+double ActionToRivalLocation(const GameData &game_data,
+							 const TurnData &before_turn_data,
+							 const vector<Move> &moves,
+							 const int_fast32_t &team_id) {
+	static string function_name = "ActionToRivalLocation";
+	static array<bool, 2> first_check = {true, true};
+	static array<double, 2> bias = {};
+	if (first_check[team_id]) {
+		auto it = game_data.parameters.find(function_name + to_string(team_id));
+		assert(it != game_data.parameters.end());
+		bias[team_id] = it->second;
+		first_check[team_id] = false;
+	}
+
+	double ret = 0;
+	for (const auto &move : moves) {
+		if (move.team_id != team_id) continue;
+		if (before_turn_data.agent_exist[GetBitsetNumber(
+				move.target_position)] == true) {
+			ret += game_data.GetTilePoint(move.target_position);
+		}
+	}
+
+	ret *= bias[team_id];
+	return -ret;
+}
+
 double DisperseAgent(const GameData &game_data, const TurnData &turn_data,
 					 const int_fast32_t &team_id) {
 	static string function_name = "DisperseAgent";
@@ -140,8 +201,7 @@ double DisperseAgent(const GameData &game_data, const TurnData &turn_data,
 		first_check[team_id] = false;
 	}
 
-	static const int_fast32_t box_size_half =
-		max(game_data.width, game_data.height) / 5;		// * (2 / 5) / 2
+	static const int_fast32_t box_size_half = 2;		// * (2 / 5) / 2
 	static array<array<int_fast32_t, 20>, 20> agent_area = {};
 	agent_area = {};
 
@@ -205,6 +265,7 @@ double NotMyTeamMasu(const GameData &game_data, const TurnData &turn_data,
 		first_check[team_id] = false;
 	}
 
+	// 重いので深さ2のときだけやります
 	if (turn_data.now_turn - start_turn != 2) return 0;
 
 	static const int_fast32_t box_size_half =
