@@ -74,6 +74,13 @@ public class GameNetworkRunnable implements Runnable{
 		gameStatusPanel.changeGameStatus("インターバル(残り" + String.valueOf((intervalStepUnixTime*1000L - nowUnixTimeMillis) / 1000.0) + "秒)");
 	}
 	
+	// 点数の更新
+	private void reflectPoint(Field field) {
+		for(Team nowTeam:field.teams) {
+			gameStatusPanel.changePoint(nowTeam.tilePoint, nowTeam.areaPoint, nowTeam.teamID == matchData.teamID);
+		}
+	}
+	
 	// ゲームの状態を確認
 	private Field checkGameStatus(Network net) {
 		Field nowField = null;
@@ -83,6 +90,7 @@ public class GameNetworkRunnable implements Runnable{
 			gameStatusPanel.changeGameStatus("ゲーム中");
 			gameStatusPanel.changeTurn(nowField.turn);
 			nowTurn = nowField.turn;
+			reflectPoint(nowField);
 			if(gameStartUnixTime == -1) gameStartUnixTime = nowField.startedAtUnixTime;
 		} catch (InvalidTokenException e2) {
 			gameStatusPanel.changeGameStatus("トークンエラー");

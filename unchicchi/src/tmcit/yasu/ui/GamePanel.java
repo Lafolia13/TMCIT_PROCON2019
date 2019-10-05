@@ -38,8 +38,8 @@ public class GamePanel extends JPanel {
 	private void initLayout() {
 		setLayout(null);
 
-		gameStatusPanel.setBounds(10, 10, 400, 200);
-		gamePaintPanel.setBounds(10, 220, Constant.MAP_SIZE + 10, Constant.MAP_SIZE + 10);
+		gameStatusPanel.setBounds(10, 10, 400, 300);
+		gamePaintPanel.setBounds(420, 10, Constant.MAP_SIZE + 10, Constant.MAP_SIZE + 10);
 
 		add(gameStatusPanel);
 		add(gamePaintPanel);
