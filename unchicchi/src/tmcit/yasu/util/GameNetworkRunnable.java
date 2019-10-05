@@ -83,6 +83,7 @@ public class GameNetworkRunnable implements Runnable{
 			gameStatusPanel.changeGameStatus("ゲーム中");
 			gameStatusPanel.changeTurn(nowField.turn);
 			nowTurn = nowField.turn;
+			if(gameStartUnixTime == -1) gameStartUnixTime = nowField.startedAtUnixTime;
 		} catch (InvalidTokenException e2) {
 			gameStatusPanel.changeGameStatus("トークンエラー");
 		} catch (InvalidMatchesException e2) {
@@ -275,7 +276,7 @@ public class GameNetworkRunnable implements Runnable{
 					inputTurn(nowField);
 					outputSolver(net, nowField);
 					inputInitFlag = true;
-					nextTurnStartTime = gameStartUnixTime + (matchData.turnMillis + matchData.intervalMillis) / 1000L;
+					nextTurnStartTime = gameStartUnixTime + (nowField.turn)*((matchData.turnMillis + matchData.intervalMillis) / 1000L);
 					beforeTurn = nowField.turn;
 				}else if(nextTurnStartTime <= nowUnixTime && nowTurn == matchData.turns) {
 					checkGameStatus(net);
