@@ -240,6 +240,7 @@ public class GameNetworkRunnable implements Runnable{
 		
 		// flag
 		boolean inputInitFlag = false;
+		int beforeTurn = -1;
 
 		// 1最初にゲームが開始しているか確認
 		checkGameStatus(net);
@@ -275,15 +276,16 @@ public class GameNetworkRunnable implements Runnable{
 					outputSolver(net, nowField);
 					inputInitFlag = true;
 					nextTurnStartTime = gameStartUnixTime + (matchData.turnMillis + matchData.intervalMillis) / 1000L;
+					beforeTurn = nowField.turn;
 				}else if(nextTurnStartTime <= nowUnixTime && nowTurn == matchData.turns) {
 					checkGameStatus(net);
 					gameStatusPanel.changeGameStatus("ゲーム終了");
 					break;
 				}else if(nextTurnStartTime <= nowUnixTime){
 					// ターン毎の入出力
-					System.out.println("Turn Input:" + String.valueOf(nextTurnStartTime) + "/" + String.valueOf(nowUnixTime));
 					Field nowField = checkGameStatus(net);
-					if(nowField == null) {
+					if(nowField == null || nowField.turn == beforeTurn) {
+						System.out.println("[WARN]continued beforeTurn == nowTurn");
 						try {
 							Thread.sleep(50);
 						} catch (InterruptedException e) {
@@ -291,10 +293,12 @@ public class GameNetworkRunnable implements Runnable{
 						}
 						continue;
 					}
+					System.out.println("Turn Input:" + String.valueOf(nowField.turn));
 					gamePaintPanel.resetActions();
 					inputTurn(nowField);
 					outputSolver(net, nowField);
-					nextTurnStartTime = gameStartUnixTime + nowField.turn * ((matchData.turnMillis + matchData.intervalMillis) / 1000L);
+					nextTurnStartTime = gameStartUnixTime + (nowField.turn)* ((matchData.turnMillis + matchData.intervalMillis) / 1000L);
+					beforeTurn = nowField.turn;
 				}else if(nowUnixTime < nextTurnStartTime - matchData.intervalMillis/1000L) {
 					// 作戦ステップの間
 					printStrategyStep(nextTurnStartTime - matchData.intervalMillis/1000L);
