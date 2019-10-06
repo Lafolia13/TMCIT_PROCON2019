@@ -67,6 +67,7 @@ void TurnData::CalculationAreaPoint(const GameData &game_data,
 	static array<array<int_fast32_t, 20>, 20> checked = {};
 
 	area_point[team_id] = 0;
+	area_num[team_id] = 0;
 
 	checked = {};
 	for (int_fast32_t &&h = 1; h < game_data.height - 1; ++h) {
@@ -75,10 +76,13 @@ void TurnData::CalculationAreaPoint(const GameData &game_data,
 			checked[h][w] = 1;
 			if (GetTileState(h, w) != team_id &&
 				GetTileState(h-1, w) == team_id &&
-				GetTileState(h, w-1) == team_id)
-				area_point[team_id] +=
-						CheckSurrounded(game_data, team_id, Position(h, w),
-										this, checked);
+				GetTileState(h, w-1) == team_id) {
+				const int_fast32_t && one_area_point =
+					CheckSurrounded(game_data, team_id, Position(h, w),
+									this, checked);
+				area_point[team_id] += one_area_point;
+				if (one_area_point > 0) ++area_num[team_id];
+			}
 		}
 	}
 }

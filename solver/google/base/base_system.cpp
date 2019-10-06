@@ -3,7 +3,7 @@
 #include <iostream>
 
 bool GameData::Input() {
-	cin >> turn_time_ms;
+	// cin >> turn_time_ms;
 	cin >> max_turn;
 	cin >> width >> height;
 	cin >> agent_num;
@@ -36,7 +36,7 @@ bool TurnData::Input(const GameData &game_data) {
 	reset();
 
 	cin >> now_turn;
-	if (now_turn > game_data.max_turn) return false;
+	if (now_turn >= game_data.max_turn) return false;
 
 	for (int_fast32_t &&h = 0; h < game_data.height; ++h) {
 		for (int_fast32_t &&w = 0; w < game_data.width; ++w) {

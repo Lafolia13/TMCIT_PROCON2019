@@ -91,8 +91,8 @@ struct TurnData {
 	array<int_fast32_t, 2> tile_point = {};
 	array<int_fast32_t, 2> area_point = {};
 	array<array<Position, 8>, 2> agents_position = {};
-	array<array<int_fast32_t, 20>, 20> tile_data = {};					// TileColors参照
-	// array<array<int_fast32_t, 20>, 20> is_area = {};					// あるマスが領域であるか
+	array<array<int_fast32_t, 20>, 20> tile_data = {};		// TileColors参照
+	array<int_fast32_t, 2> area_num = {};					// 領域の個数
 	bitset<400> agent_exist = {};
 
 	constexpr TurnData() {};
