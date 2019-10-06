@@ -81,4 +81,5 @@ public class GameListPanel extends JScrollPane{
 		if(selectedIndex == -1) return null;
 		return listItem.get(selectedIndex).getMatchesData();
 	}
+	
 }
