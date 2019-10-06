@@ -255,6 +255,13 @@ public class GameNetworkRunnable implements Runnable{
 		checkGameStatus(net);
 
 		while(true) {
+			// すでに終了しているゲームだったら
+			if(nowTurn > matchData.turns) {
+				checkGameStatus(net);
+				gameStatusPanel.changeGameStatus("ゲーム終了");
+				break;
+			}
+			
 			long nowUnixTimeMillis = System.currentTimeMillis();
 			long nowUnixTime = nowUnixTimeMillis / 1000L;
 
@@ -286,7 +293,7 @@ public class GameNetworkRunnable implements Runnable{
 					inputInitFlag = true;
 					nextTurnStartTime = gameStartUnixTime + (nowField.turn)*((matchData.turnMillis + matchData.intervalMillis) / 1000L);
 					beforeTurn = nowField.turn;
-				}else if(nextTurnStartTime <= nowUnixTime && nowTurn == matchData.turns) {
+				}else if(nextTurnStartTime <= nowUnixTime && nowTurn > matchData.turns) {
 					checkGameStatus(net);
 					gameStatusPanel.changeGameStatus("ゲーム終了");
 					break;
