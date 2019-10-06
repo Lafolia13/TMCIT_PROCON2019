@@ -75,7 +75,7 @@ public class GameInfoPanel extends JPanel{
 		}
 	}
 
-	public int getId() {
-		return matchesData.id;
+	public MatchesData getMatchesData() {
+		return matchesData;
 	}
 }

@@ -20,7 +20,9 @@ import tmcit.yasu.util.FileManager;
 import tmcit.yasu.util.Network;
 
 public class SelectGamePanel extends JPanel{
+	private MainFrame mainFrame;
 	private ConnectSetting connectSetting;
+
 	private JButton refreshButton, startButton;
 	private ArrayList<MatchesData> matchesData;
 	private ArrayList<Integer> startTime;
@@ -29,7 +31,8 @@ public class SelectGamePanel extends JPanel{
 
 	private SelectGameListener listener;
 
-	public SelectGamePanel(ConnectSetting connectSetting0) {
+	public SelectGamePanel(MainFrame mainFrame0, ConnectSetting connectSetting0) {
+		mainFrame = mainFrame0;
 		connectSetting = connectSetting0;
 
 		init();
@@ -67,6 +70,8 @@ public class SelectGamePanel extends JPanel{
 			GameInfoPanel nowInfoPanel = new GameInfoPanel(matchesData.get(i), startTime.get(i));
 			gameListPanel.addGameInfoPanel(nowInfoPanel);
 		}
+		this.revalidate();
+		this.repaint();
 	}
 
 	private void init() {
@@ -80,7 +85,7 @@ public class SelectGamePanel extends JPanel{
 		startButton = new JButton("ŠJŽn");
 		startButton.setFont(Constant.DEFAULT_FONT);
 
-		listener = new SelectGameListener(this);
+		listener = new SelectGameListener(mainFrame, this, connectSetting);
 		refreshButton.addActionListener(listener);
 		startButton.addActionListener(listener);
 	}
@@ -99,7 +104,11 @@ public class SelectGamePanel extends JPanel{
 		add(startButton);
 	}
 
-	public int getSelectedMatchId() {
-		return gameListPanel.getSelectedMatchId();
+	public MatchesData getSelectedMatch() {
+		return gameListPanel.getSelectedMatch();
+	}
+	
+	public String getSolverCmd() {
+		return agentSelectPanel.getSolverCmd();
 	}
 }

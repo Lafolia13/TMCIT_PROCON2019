@@ -129,7 +129,7 @@ public class AgentSelectPanel extends JPanel{
 	}
 
 	// Solver‚ðŽæ“¾
-	public void getPlayer() {
+	public String getSolverCmd() {
 		int solverIndex = solverComboBox.getSelectedIndex();
 		String solverName = solverComboBox.getItemAt(solverIndex);
 
@@ -145,9 +145,6 @@ public class AgentSelectPanel extends JPanel{
 		}
 
 		System.out.println("[CMD] " + cmd);
-
-//		ExecPlayer execPlayer = new ExecPlayer(cmd);
-//		return execPlayer;
-
+		return cmd;
 	}
 }

@@ -96,7 +96,7 @@ public class ConnectionListener implements ActionListener{
 			return;
 		}
 
-		mainFrame.addTab("ƒQ[ƒ€ˆê——", new SelectGamePanel(setting));
+		mainFrame.addTab("ƒQ[ƒ€ˆê——", new SelectGamePanel(mainFrame, setting));
 	}
 
 }
