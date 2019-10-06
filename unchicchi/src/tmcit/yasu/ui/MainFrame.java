@@ -36,5 +36,6 @@ public class MainFrame extends JFrame{
 
 	public void addTab(String title, Component component) {
 		tabbedPane.addTab(title, component);
+		tabbedPane.setSelectedComponent(component);
 	}
 }
