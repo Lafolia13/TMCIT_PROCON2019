@@ -109,7 +109,9 @@ vector<array<Move, 8>> BeamSearch(const GameData &game_data,
 						  const int_fast32_t &ally_team,
 						  const int_fast32_t &search_id,
 						  const bool &first_search) {
-	const int_fast32_t beam_depth = turn_data.agent_num == 3 ? 5 : 6;
+	const int_fast32_t beam_depth =
+		min(game_data.max_turn - turn_data.now_turn + 1,
+			(int_fast32_t)(turn_data.agent_num == 3 ? 5 : 6));
 	const int_fast32_t beam_width = GetBeamWidth(game_data, beam_depth,
 												 first_search,
 												 team_id != ally_team);
@@ -168,7 +170,8 @@ vector<array<Move, 8>> BeamSearch(const GameData &game_data,
 								 			   check_moves,
 								 			   team_id,
 								 			   turn,
-								 			   now_node.evaluation));
+								 			   now_node.evaluation,
+								 			   true));
 				next_node.node_id = NodeID(turn_data.now_turn,
 										   next_turn_data.now_turn,
 										   search_id);
@@ -222,7 +225,7 @@ vector<array<Move, 8>> BeamSearch(const GameData &game_data,
 			 i >= 0 && now_que.size() < beam_width; --i) {
 			const auto &check_first_move =
 				next_all_nodes[reverse_que[i].second]->first_move;
-			if (first_move_count[check_first_move] > beam_width * 0.95)
+			if (first_move_count[check_first_move] > beam_width * 0.90)
 				continue;
 
 			now_que.push(reverse_que[i]);
@@ -467,7 +470,8 @@ vector<vector<Move>> RivalAllSearch(
 													 check_all_moves,
 													 team_id,
 													 turn_data.now_turn,
-													 0));
+													 0,
+													 false));
 		for (int_fast32_t &&agent_id = 0; agent_id < game_data.agent_num;
 			 ++agent_id) {
 			next_node.first_move[agent_id] = check_all_moves[agent_id];
@@ -529,7 +533,8 @@ array<Move, 8> AllyAllSearch(
 												check_all_agent_moves,
 												ally_team,
 												turn_data.now_turn,
-												0));
+												0,
+												false));
 		}
 		Node next_node(next_turn_data, evaluation_mini);
 		for (int_fast32_t &&agent_id = 0; agent_id < game_data.agent_num;
@@ -548,7 +553,7 @@ array<Move, 8> AllyAllSearch(
 
 	if (conflicted && rival_point_sum > ally_point_sum) {
 		const int_fast32_t &&ret_id =
-			rand()%min((int_fast32_t)10, (int_fast32_t)all_nodes.size());
+			rand()%min((int_fast32_t)3, (int_fast32_t)all_nodes.size()-1) + 1;
 		cerr << "random : " << ret_id << endl;
 		return all_nodes[ret_id].first_move;
 	} else {

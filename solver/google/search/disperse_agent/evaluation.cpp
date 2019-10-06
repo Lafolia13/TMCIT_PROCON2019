@@ -9,46 +9,73 @@ double GetEvaluation(const GameData &game_data, TurnData &turn_data,
 					 const vector<Move> &moves,
 					 const int_fast32_t &team_id,
 					 const int_fast32_t &start_turn,
-					 const double &before_evaluation) {
-	double ally_tile_point_difference =
+					 const double &before_evaluation,
+					 const bool &in_beam) {
+	double ally_tile_point_difference = 0.0;
+	double rival_tile_point_difference = 0.0;
+	double ally_area_point_difference = 0.0;
+	double rival_area_point_difference = 0.0;
+
+	double ally_area_num = 0.0;
+	double rival_area_num = 0.0;
+	double stay_minus_masu = 0.0;
+	double action_to_rival_location = 0.0;
+	double disperse_agent = 0.0;
+	double not_my_team_mas = 0.0;
+
+	double before_evaluation_bias = 0.0;
+	double evaluations_sum = 0.0;
+
+	turn_data.CalculationAllAreaPoint(game_data);
+
+	ally_tile_point_difference =
 		AllyTilePointDifference(game_data, turn_data, before_turn_data,
 								team_id);
-	double rival_tile_point_difference =
+	rival_tile_point_difference =
 		RivalTilePointDifference(game_data, turn_data, before_turn_data,
 								 team_id);
 
-	turn_data.CalculationAllAreaPoint(game_data);
-	double ally_area_point_difference =
+	ally_area_point_difference =
 		AllyAreaPointDifference(game_data, turn_data, before_turn_data,
 								team_id);
-	double rival_area_point_difference =
+	rival_area_point_difference =
 		RivalAreaPointDifference(game_data, turn_data, before_turn_data,
 								 team_id);
 
-	double stay_minus_masu =
-		StayMinusMasu(game_data, turn_data, team_id);
+	if (in_beam) {
+		ally_area_num =
+			AllyAreaNum(game_data, turn_data, team_id);
 
-	double action_to_rival_location =
-		ActionToRivalLocation(game_data, before_turn_data, moves, team_id);
+		rival_area_num =
+			RivalAreaNum(game_data, turn_data, team_id);
 
-	double disperse_agent =
-		DisperseAgent(game_data, turn_data, team_id);
+		stay_minus_masu =
+			StayMinusMasu(game_data, turn_data, team_id);
 
-	double not_my_team_mas =
-		NotMyTeamMasu(game_data, turn_data, start_turn, team_id);
+		action_to_rival_location =
+			ActionToRivalLocation(game_data, before_turn_data, moves, team_id);
 
-	double before_evaluation_bias =
+		disperse_agent =
+			DisperseAgent(game_data, turn_data, team_id);
+
+		not_my_team_mas =
+			NotMyTeamMasu(game_data, turn_data, start_turn, team_id);
+	}
+
+	before_evaluation_bias =
 		BeforeEvaluationBias(game_data, before_evaluation, team_id);
 
-	double evaluations_sum = ally_tile_point_difference +
-							 rival_tile_point_difference +
-							 ally_area_point_difference +
-							 rival_area_point_difference +
-							 stay_minus_masu +
-							 action_to_rival_location +
-							 disperse_agent +
-							 not_my_team_mas +
-							 before_evaluation_bias;
+	evaluations_sum = ally_tile_point_difference +
+					  rival_tile_point_difference +
+					  ally_area_point_difference +
+					  rival_area_point_difference +
+					  ally_area_num +
+					  rival_area_num +
+					  stay_minus_masu +
+					  action_to_rival_location +
+					  disperse_agent +
+					  not_my_team_mas +
+					  before_evaluation_bias;
 	if (before_turn_data.now_turn == start_turn) {
 		evaluations_sum = FirstEvaluation(game_data, evaluations_sum, team_id);
 	}
@@ -136,6 +163,42 @@ double RivalAreaPointDifference(const GameData &game_data,
 
 	return -ret;
 
+}
+
+double AllyAreaNum(const GameData &game_data,const TurnData &turn_data,
+				   const int_fast32_t &team_id) {
+	static string function_name = "AllyAreaNum";
+	static array<bool, 2> first_check = {true, true};
+	static array<double, 2> bias = {};
+	if (first_check[team_id]) {
+		auto it = game_data.parameters.find(function_name + to_string(team_id));
+		assert(it != game_data.parameters.end());
+		bias[team_id] = it->second;
+		first_check[team_id] = false;
+	}
+
+	double ret = turn_data.area_num[team_id];
+
+	ret *= bias[team_id];
+	return ret;
+}
+
+double RivalAreaNum(const GameData &game_data, const TurnData &turn_data,
+					const int_fast32_t &team_id) {
+	static string function_name = "RivalAreaNum";
+	static array<bool, 2> first_check = {true, true};
+	static array<double, 2> bias = {};
+	if (first_check[team_id]) {
+		auto it = game_data.parameters.find(function_name + to_string(team_id));
+		assert(it != game_data.parameters.end());
+		bias[team_id] = it->second;
+		first_check[team_id] = false;
+	}
+
+	double ret = turn_data.area_num[team_id^1];
+
+	ret *= bias[team_id^1];
+	return -ret;
 }
 
 double StayMinusMasu(const GameData &game_data, const TurnData &turn_data,
