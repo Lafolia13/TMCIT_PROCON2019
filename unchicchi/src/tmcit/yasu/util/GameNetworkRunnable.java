@@ -146,9 +146,9 @@ public class GameNetworkRunnable implements Runnable{
 				int nowTerritory = field.tiled.get(nowY).get(nowX);
 				
 				if(nowTerritory == 0) {
-					line += "0";
-				}else if(nowTerritory == matchData.teamID) {
 					line += "2";
+				}else if(nowTerritory == matchData.teamID) {
+					line += "0";
 				}else {
 					line += "1";
 				}
