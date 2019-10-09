@@ -35,6 +35,12 @@ public class MainFrame extends JFrame{
 	}
 
 	public void addTab(String title, Component component) {
+		int index = tabbedPane.indexOfTab(title);
+		if(index != -1) {
+			tabbedPane.setSelectedIndex(index);
+			return;
+		}
+		
 		tabbedPane.addTab(title, component);
 		tabbedPane.setSelectedComponent(component);
 	}
