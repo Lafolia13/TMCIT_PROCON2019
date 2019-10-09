@@ -1,8 +1,8 @@
-#include "../../search/disperse_agent/evaluation.h"
+#include "../../search/neo_beamsearch/evaluation.h"
 
 #include <cassert>
 
-namespace disperse_agent {
+namespace neo_beamsearch {
 
 double GetEvaluation(const GameData &game_data, TurnData &turn_data,
 					 const TurnData &before_turn_data,
@@ -42,11 +42,6 @@ double GetEvaluation(const GameData &game_data, TurnData &turn_data,
 		RivalAreaPointDifference(game_data, turn_data, before_turn_data,
 								 team_id);
 
-	if (!in_beam) {
-		action_to_rival_location =
-			ActionToRivalLocation(game_data, before_turn_data, moves, team_id);
-	}
-
 	if (in_beam) {
 		ally_area_num =
 			AllyAreaNum(game_data, turn_data, team_id);
@@ -57,6 +52,8 @@ double GetEvaluation(const GameData &game_data, TurnData &turn_data,
 		stay_minus_masu =
 			StayMinusMasu(game_data, turn_data, team_id);
 
+		action_to_rival_location =
+			ActionToRivalLocation(game_data, before_turn_data, moves, team_id);
 
 		disperse_agent =
 			DisperseAgent(game_data, turn_data, team_id);
@@ -355,11 +352,10 @@ double NotMyTeamMasu(const GameData &game_data, const TurnData &turn_data,
 				Position(h + box_size_half + 1,
 						 w + box_size_half + 1);
 
-			const int_fast32_t sum = tile_color == (team_id^1);
-			// const int_fast32_t sum =
-			// 	tile_color == team_id ? 0 :
-			// 	tile_color == kBrank ? 1 :
-			// 	2;
+			const int_fast32_t sum =
+				tile_color == team_id ? 0 :
+				tile_color == kBrank ? 1 :
+				2;
 			if (game_data.IntoField(left_up))
 				agent_area[left_up.h][left_up.w] += sum;
 			if (game_data.IntoField(right_up))

@@ -1,0 +1,80 @@
+split_search
+	sort(turndata.agent)
+	vector<TurnData> split_turndata (max agent num is 3)
+	vector<vector<vector<Move>>> candidate_moves
+	for i in agent_num
+		cadidate_moves[kAlly].push_back(BeamSearch(gamedata, split_turndata[i], beam_width, beam_depth, moves_maxi, kAlly))
+		cadidate_moves[kRival].push_back(BeamSearch(gamedata, split_turndata[i], beam_width, beam_depth, moves_maxi, kRival))
+
+	vector<vector<Move>> team_moves
+	vector<vector<Move>> check_moves
+	vector<int> moves_index
+	for team_id in two_team
+		while NextPermutation(candidate_moves[team_id], check_moves, moves_index)
+			vector<Move> all_moves <= check_moves's sum
+			TurnData next_turndata <= turndata.Transition(gamedata, all_moves)
+			next_turndata.CalculationEvaluation()
+			team_moves[team_id].push_back(all_moves, next_turndata.evaluation)
+
+	predict_next_turndata
+	for ally_moves in team_moves[kAlly]
+		for rival_moves in team_moves[kRival]
+			all_moves <= ally_moves + rival_moves
+			next_turndata <= turndata.Trainsition(gamedata, all_moves)
+			predict_next_turndata <= higher evaluation turndata, now or next
+
+	return predict_next_turndata.ally_moves
+
+
+
+candidate_move is the move seems to be strong. so there is possibility Rival will choose the one in these moves, too.
+
+# function flow
+first, simulate next_turndata using mergemoves and calculation evaluation for each team.
+second, decide some whole team movements in order of highest evluation.
+third, simulate next turndata using movements ally and rival ato the same time.
+finaly, return ally move for next turndata highest ally evaluation.
+
+# issue
+- split agent
+	I think
+	agents_num : 2 : 2
+				 3 : 3
+				 4 : 2, 2
+				 5 : 2, 3
+				 6 : 3, 3
+				 7 : 2, 2, 3
+				 8 : 2, 3, 3
+
+- the number of beam depth and width.(solved)
+	ageent:2, width:2000, depth:5 => less than 1sec.
+	this parameter created turndatas are 64 + 4,096 + 12,800*3 = 388,160.
+	thus, this program is able to simulte about 500,000 turndata in 1sec.
+
+	and the result shows we can ignore first turn's turndata number.
+	so beam_depth = 1 + 500,000 * search_time / \sigma_{i}^{split_num}(8^agents_num[i]) * beam_width.
+	in rival search, beam_width = beam_width / 2, and beam_depth = beam_depth - 1
+
+	one turn time is 5 - 15 sec. I think we can use turn time - 2 sec for calculatin time.
+	I think
+	turn_time : 5  : 3
+				7  : 5
+				9 : 7
+				12 : 10
+				15 : 13
+
+	depth = 1 + \frac{4.5e5 * turn_time}{\sigma_{i} 8^Ni * width * 1.5}
+	\frac{4.5}{1.5 * (depth - 1)} * 10^5 * turn_time = (\sigma_{i} 8^Ni * width)
+	S = \sigma_{i} 8^Ni is already decided
+	width = \frac{3}{(depth - 1) * S}
+
+	then, 8^3 = 512 is very large num.
+	if 8->6, 6^3 = 216 is half of 8^3 so if agents_num is 3, decrease direction to check by 2
+	why 8->6 ? if it is decrased 2 directions, we can't only go 2 places.
+	but if it is 3, we cat't go 5 places.
+
+	solved
+
+- merge moves
+	the number of all turndatas is 50000. it is close to 36^3. it is close to 223^2 too.
+	you ha so iu koto
