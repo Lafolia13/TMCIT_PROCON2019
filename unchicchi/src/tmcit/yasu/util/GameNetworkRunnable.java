@@ -122,6 +122,7 @@ public class GameNetworkRunnable implements Runnable{
 	
 	// solver‚Éƒ}ƒbƒvî•ñ‚È‚Ç‚Ì‰Šú‰»‚ğ“ü—Í
 	private void inputInit(Field field) {
+		execPlayer.input(String.valueOf(matchData.turnMillis));
 		execPlayer.input(String.valueOf(matchData.turns));
 		execPlayer.input(String.valueOf(field.width));
 		execPlayer.input(String.valueOf(field.height));
