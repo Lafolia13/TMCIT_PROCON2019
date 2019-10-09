@@ -1,9 +1,9 @@
-#ifndef DISPERSE_AGENT_EVALUATION_H
-#define DISPERSE_AGENT_EVALUATION_H
+#ifndef IMPROVE_DISPERSE_EVALUATION_H
+#define IMPROVE_DISPERSE_EVALUATION_H
 
 #include "../../calculation/calculation.h"
 
-namespace disperse_agent {
+namespace improve_disperse {
 
 const int_fast32_t evaluations_num = 10;
 

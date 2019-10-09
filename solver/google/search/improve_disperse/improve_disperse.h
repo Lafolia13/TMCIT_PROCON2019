@@ -1,11 +1,11 @@
-#ifndef DISPERSE_AGENT_H
-#define DISPERSE_AGENT_H
+#ifndef IMPROVE_DISPERSE_H
+#define IMPROVE_DISPERSE_H
 
 #include "../../base/base_system.h"
 #include "../../action/change_action.h"
 #include "../../calculation/calculation.h"
 
-namespace disperse_agent {
+namespace improve_disperse {
 
 struct NodeID {
 	int_fast32_t start_turn;

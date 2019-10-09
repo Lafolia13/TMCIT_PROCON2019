@@ -1,5 +1,5 @@
-#include "../../search/disperse_agent/disperse_agent.h"
-#include "../../search/disperse_agent/evaluation.h"
+#include "../../search/improve_disperse/improve_disperse.h"
+#include "../../search/improve_disperse/evaluation.h"
 
 #include <queue>
 #include <algorithm>
@@ -9,7 +9,7 @@
 #include <ctime>
 #include <iostream>
 
-namespace disperse_agent {
+namespace improve_disperse {
 
 template<typename T>
 using greater_priority_queue = priority_queue<T, vector<T>, greater<T>>;
@@ -31,7 +31,7 @@ int_fast32_t GetBeamWidth(const GameData &game_data,
 						  const int_fast32_t &beam_depth,
 						  const bool &first_search,
 						  const bool &rival_team) {
-	const int_fast32_t can_simulate_ps = 1000000;
+	const int_fast32_t can_simulate_ps = 400000;
 	const int_fast32_t one_transition =
 		one_transition_table[game_data.agent_num];
 	const int_fast32_t make_new_node = first_search ? 500 : 0;
@@ -111,10 +111,10 @@ vector<array<Move, 8>> BeamSearch(const GameData &game_data,
 						  const bool &first_search) {
 	const int_fast32_t beam_depth =
 		min(game_data.max_turn - turn_data.now_turn + 1,
-			(int_fast32_t)(turn_data.agent_num == 3 ? 5 : 6));
-	const int_fast32_t beam_width = GetBeamWidth(game_data, beam_depth,
-												 first_search,
-												 team_id != ally_team);
+			(int_fast32_t)(turn_data.agent_num == 3 ? 4 : 5));
+	int_fast32_t beam_width = GetBeamWidth(game_data, beam_depth,
+										   first_search,
+										   team_id != ally_team);
 	cerr << beam_width << " : ";
 	static vector<Node*> now_all_nodes(1<<(3*9), nullptr), next_all_nodes(1<<(3*9), nullptr);
 	greater_priority_queue<pair<double, int_fast32_t>> now_que, next_que;
@@ -131,12 +131,12 @@ vector<array<Move, 8>> BeamSearch(const GameData &game_data,
 		 turn < min(turn_data.now_turn + beam_depth,
 		 			 game_data.max_turn);
 		 ++turn) {
+
 		while (now_que.size()) {
 			const double now_evaluation = now_que.top().first;
 			const int_fast32_t now_key = now_que.top().second;
 			now_que.pop();
 			const Node &now_node = *now_all_nodes[now_key];
-			if (now_node.evaluation > now_evaluation) continue;
 
 			static TurnData now_turn_data;
 			static vector<vector<Move>> all_moves;
@@ -146,7 +146,8 @@ vector<array<Move, 8>> BeamSearch(const GameData &game_data,
 
 			all_moves = GetAgentsAllMoves(game_data, now_turn_data,
 										  team_id, false, true);
-			if (game_data.agent_num >= 6 && turn_data.agent_num == 3) {
+			if (turn > turn_data.now_turn &&
+				game_data.agent_num >= 6 && turn_data.agent_num == 3) {
 				ReduceDirection(game_data, now_turn_data, all_moves);
 			}
 
@@ -190,66 +191,95 @@ vector<array<Move, 8>> BeamSearch(const GameData &game_data,
 				Node &check_node = *next_all_nodes[next_node.key];
 
 				if (check_node.node_id == next_node.node_id) {
-					if (check_node.evaluation < next_node.evaluation) {
+					static const double eps = 1e-9;
+					if (check_node.evaluation + eps < next_node.evaluation) {
 						check_node = next_node;
 						next_que.push(make_pair(next_node.evaluation,
 												next_node.key));
+						++beam_width;
 					}
 				} else {
+					while (next_que.size()) {
+						static const double eps = 1e-9;
+						const Node &top_node =
+							*next_all_nodes[next_que.top().second];
+						const double &top_evaluation =
+							next_que.top().first;
+						if (top_node.evaluation - eps < top_evaluation &&
+							top_evaluation < top_node.evaluation + eps) {
+							break;
+						} else {
+							next_que.pop();
+							--beam_width;
+						}
+					}
+
 					if (next_que.size() < beam_width) {
 						check_node = next_node;
 						next_que.push(make_pair(next_node.evaluation,
 												next_node.key));
-					} else {
-						const Node &top_node =
-							*next_all_nodes[next_que.top().second];
-						if (top_node.evaluation > next_que.top().first ||
-							top_node.evaluation < next_node.evaluation) {
-							check_node = next_node;
-							next_que.pop();
-							next_que.push(make_pair(next_node.evaluation,
-													next_node.key));
-						}
+					} else if (next_que.top().first < next_node.evaluation) {
+						check_node = next_node;
+						next_que.pop();
+						next_que.push(make_pair(next_node.evaluation,
+												next_node.key));
 					}
 				}
 			} while (NextPermutation(all_moves, 0, move_ids, check_moves));
 		}
 
-		vector<pair<double, int_fast32_t>> reverse_que;
 		map<array<Move, 8>, int_fast32_t> first_move_count;
 		while (next_que.size()) {
-			reverse_que.push_back(next_que.top());
-			next_que.pop();
+			static const double eps = 1e-9;
+			const Node &top_node =
+				*next_all_nodes[next_que.top().second];
+			const double &top_evaluation =
+				next_que.top().first;
+			if (top_node.evaluation - eps < top_evaluation &&
+				top_evaluation < top_node.evaluation + eps) {
+				now_que.push(next_que.top());
+				next_que.pop();
+				++first_move_count[top_node.first_move];
+			} else {
+				next_que.pop();
+				--beam_width;
+			}
 		}
-		for (int_fast32_t &&i = reverse_que.size()-1;
-			 i >= 0 && now_que.size() < beam_width; --i) {
-			const auto &check_first_move =
-				next_all_nodes[reverse_que[i].second]->first_move;
-			if (first_move_count[check_first_move] > beam_width * 0.95)
-				continue;
+		cerr << first_move_count.size() << endl;
+		// vector<pair<double, int_fast32_t>> reverse_que;
+		// map<array<Move, 8>, int_fast32_t> first_move_count;
+		// while (next_que.size()) {
+		// 	reverse_que.push_back(next_que.top());
+		// 	next_que.pop();
+		// }
+		// for (int_fast32_t &&i = reverse_que.size()-1;
+		// 	 i >= 0 && now_que.size() < beam_width; --i) {
+		// 	const auto &check_first_move =
+		// 		next_all_nodes[reverse_que[i].second]->first_move;
+		// 	if (first_move_count[check_first_move] > beam_width * 0.95)
+		// 		continue;
 
-			now_que.push(reverse_que[i]);
-			first_move_count[check_first_move]++;
-		}
-
+		// 	now_que.push(reverse_que[i]);
+		// 	first_move_count[check_first_move]++;
+		// }
 		swap(now_all_nodes, next_all_nodes);
 	}
-	const int_fast32_t &ret_size = game_data.agent_num <= 6 ? 100 : 21;
+	// const int_fast32_t &ret_size = game_data.agent_num <= 6 ? 100 : 21;
+	const int_fast32_t ret_size = 10;
 	vector<array<Move, 8>> ret;
 	set<array<Move, 8>> added;
 	while (now_que.size()) {
-		if (added.find(now_all_nodes[now_que.top().second]->first_move) ==
-			added.end()) {
-			ret.push_back(now_all_nodes[now_que.top().second]->first_move);
-			added.insert(now_all_nodes[now_que.top().second]->first_move);
+		const auto &check_first_moves =
+			now_all_nodes[now_que.top().second]->first_move;
+		if (added.find(check_first_moves) == added.end()) {
+			ret.push_back(check_first_moves);
+			added.insert(check_first_moves);
 		}
 		now_que.pop();
 	}
-	if (ret.size() > ret_size) {
-		reverse(ret.begin(), ret.end());
-		while (ret.size() > ret_size) {
-			ret.pop_back();
-		}
+	reverse(ret.begin(), ret.end());
+	while (ret.size() > ret_size) {
+		ret.pop_back();
 	}
 
 	return ret;

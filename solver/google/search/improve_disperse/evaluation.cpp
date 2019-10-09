@@ -1,8 +1,8 @@
-#include "../../search/disperse_agent/evaluation.h"
+#include "../../search/improve_disperse/evaluation.h"
 
 #include <cassert>
 
-namespace disperse_agent {
+namespace improve_disperse {
 
 double GetEvaluation(const GameData &game_data, TurnData &turn_data,
 					 const TurnData &before_turn_data,
