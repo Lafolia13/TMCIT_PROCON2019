@@ -225,7 +225,7 @@ vector<array<Move, 8>> BeamSearch(const GameData &game_data,
 			 i >= 0 && now_que.size() < beam_width; --i) {
 			const auto &check_first_move =
 				next_all_nodes[reverse_que[i].second]->first_move;
-			if (first_move_count[check_first_move] > beam_width * 0.90)
+			if (first_move_count[check_first_move] > beam_width * 0.95)
 				continue;
 
 			now_que.push(reverse_que[i]);

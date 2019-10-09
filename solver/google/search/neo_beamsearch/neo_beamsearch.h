@@ -31,6 +31,7 @@ struct Node {
 	TurnData turn_data = {};
 	double evaluation = {};
 	array<Move, 8> first_move = {};
+	vector<array<Move, 8>> all_turn_moves = {};
 
 	int_fast32_t key = {};
 	NodeID node_id;
@@ -55,9 +56,10 @@ void EraseAgent(const int_fast32_t&, TurnData&);
 
 void ReduceDirection(const GameData&, const TurnData&, vector<vector<Move>>&);
 
-vector<array<Move, 8>> BeamSearch(const GameData&, const TurnData&,
-								  const int_fast32_t&, const int_fast32_t&,
-								  const int_fast32_t&, const bool&);
+vector<vector<array<Move, 8>>> BeamSearch(const GameData&, const TurnData&,
+								  		  const int_fast32_t&,
+								  		  const int_fast32_t&,
+								  		  const int_fast32_t&, const bool&);
 
 array<array<pair<Position, int_fast32_t>, 8>, 2> GetAgentsPositionWidthID(
 		const GameData&, const TurnData&);
@@ -70,21 +72,21 @@ array<vector<vector<int_fast32_t>>, 2> GetTruthIndex(
 		const GameData &game_data, const vector<TurnData>&,
 		const array<array<pair<Position, int_fast32_t>, 8>, 2>&);
 
-array<vector<vector<array<Move, 8>>>, 2> GetCandidateSplitMoves(
+array<vector<vector<vector<array<Move, 8>>>>, 2> GetCandidateSplitMoves(
 		const GameData&, const vector<TurnData>&, const int_fast32_t&);
 
 void RestoreTruthIndex(const vector<int_fast32_t>&, vector<array<Move, 8>>&);
 
-void MakeTrasitionMoves(const GameData&, const vector<array<Move, 8>>&,
-						vector<Move>&);
+void MakeTrasitionMoves(const GameData&, const int_fast32_t&,
+						const vector<vector<array<Move, 8>>>&, vector<Move>&);
 
-vector<vector<Move>> RivalAllSearch(const GameData&, const TurnData&,
-									const vector<vector<array<Move, 8>>>&,
-									const int_fast32_t&);
+vector<vector<vector<Move>>> RivalAllSearch(
+		const GameData&, const TurnData&,
+		const vector<vector<vector<array<Move, 8>>>>&, const int_fast32_t&);
 
 array<Move, 8> AllyAllSearch(const GameData&, const TurnData&,
-							 const vector<vector<array<Move, 8>>>&,
-							 const vector<vector<Move>>&,
+							 const vector<vector<vector<array<Move, 8>>>>&,
+							 const vector<vector<vector<Move>>>&,
 							 const int_fast32_t&,
 							 const bool&);
 
