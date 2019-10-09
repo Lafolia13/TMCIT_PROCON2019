@@ -122,7 +122,7 @@ public class GameNetworkRunnable implements Runnable{
 	
 	// solverにマップ情報などの初期化を入力
 	private void inputInit(Field field) {
-		execPlayer.input(String.valueOf(matchData.turnMillis));
+//		execPlayer.input(String.valueOf(matchData.turnMillis));
 		execPlayer.input(String.valueOf(matchData.turns));
 		execPlayer.input(String.valueOf(field.width));
 		execPlayer.input(String.valueOf(field.height));
@@ -139,7 +139,7 @@ public class GameNetworkRunnable implements Runnable{
 	
 	// solverにターン毎の入力
 	private void inputTurn(Field field) {
-		execPlayer.input(String.valueOf(field.turn));
+		execPlayer.input(String.valueOf(field.turn-1));
 		for(int nowY = 0;nowY < field.height;nowY++) {
 			String line = "";
 			for(int nowX = 0;nowX < field.width;nowX++) {
