@@ -1,0 +1,12 @@
+AllyTilePointDifference=1.0
+AllyAreaPointDifference=1.0
+RivalTilePointDifference=2.0
+RivalAreaPointDifference=2.0
+AllyAreaNum=0.0
+RivalAreaNum=0.0
+StayMinusMasu=0.0
+ActionToRivalLocation=0.0
+DisperseAgent=0.0
+NotMyTeamMasu=0.0
+BeforeEvaluationBias=0.70
+FirstEvaluation=2.0

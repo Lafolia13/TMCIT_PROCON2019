@@ -1,0 +1,6 @@
+AllyTilePointDifference=1.0
+RivalTilePointDifference=1.0
+AllyAreaPointDifference=1.0
+RivalAreaPointDifference=1.0
+BeforeEvaluationBias=0.0
+FirstEvaluation=0.0
