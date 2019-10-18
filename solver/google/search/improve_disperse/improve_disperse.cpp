@@ -191,7 +191,7 @@ vector<array<Move, 8>> BeamSearch(const GameData &game_data,
 				Node &check_node = *next_all_nodes[next_node.key];
 
 				if (check_node.node_id == next_node.node_id) {
-					static const double eps = 1e-9;
+					static const double eps = 1e-5;
 					if (check_node.evaluation + eps < next_node.evaluation) {
 						check_node = next_node;
 						next_que.push(make_pair(next_node.evaluation,
@@ -228,8 +228,11 @@ vector<array<Move, 8>> BeamSearch(const GameData &game_data,
 			} while (NextPermutation(all_moves, 0, move_ids, check_moves));
 		}
 
+		beam_width = GetBeamWidth(game_data, beam_depth,
+												   first_search,
+												   team_id != ally_team);
 		map<array<Move, 8>, int_fast32_t> first_move_count;
-		while (next_que.size()) {
+		while (next_que.size() && now_que.size() < beam_width) {
 			static const double eps = 1e-9;
 			const Node &top_node =
 				*next_all_nodes[next_que.top().second];
@@ -238,14 +241,12 @@ vector<array<Move, 8>> BeamSearch(const GameData &game_data,
 			if (top_node.evaluation - eps < top_evaluation &&
 				top_evaluation < top_node.evaluation + eps) {
 				now_que.push(next_que.top());
-				next_que.pop();
 				++first_move_count[top_node.first_move];
-			} else {
-				next_que.pop();
-				--beam_width;
 			}
+			next_que.pop();
 		}
-		cerr << first_move_count.size() << endl;
+		while (next_que.size()) next_que.pop();
+		cerr << first_move_count.size() << " ";
 		// vector<pair<double, int_fast32_t>> reverse_que;
 		// map<array<Move, 8>, int_fast32_t> first_move_count;
 		// while (next_que.size()) {

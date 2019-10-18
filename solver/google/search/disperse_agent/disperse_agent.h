@@ -51,7 +51,7 @@ struct Node {
 int_fast32_t GetBeamWidth(const GameData&, const int_fast32_t&, const bool&,
 						  const bool&);
 
-void EraseAgent(const int_fast32_t&, TurnData&);
+void EraseAgent(const GameData&, const int_fast32_t&, TurnData&);
 
 void ReduceDirection(const GameData&, const TurnData&, vector<vector<Move>>&);
 
