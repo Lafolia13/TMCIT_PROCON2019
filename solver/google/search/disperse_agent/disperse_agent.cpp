@@ -46,9 +46,19 @@ int_fast32_t GetBeamWidth(const GameData &game_data,
 	return ret_width;
 }
 
-void EraseAgent(const int_fast32_t &team_id, TurnData &turn_data) {
-	for (auto &agent_pos : turn_data.agents_position[team_id]) {
-		turn_data.agent_exist.reset(GetBitsetNumber(agent_pos));
+void EraseAgent(const GameData &game_data, const int_fast32_t &ally_team,
+				TurnData &turn_data) {
+	// for (int_fast32_t &&team_id = 0; team_id < 2; ++team_id) {
+	// 	for (auto &agent_pos : turn_data.agents_position[team_id]) {
+	// 		turn_data.agent_exist.reset(GetBitsetNumber(agent_pos));
+	// 	}
+	// }
+
+	turn_data.agent_exist = {};
+
+	for (int_fast32_t &&agent_id = 0; agent_id < turn_data.agent_num;
+		 ++agent_id) {
+		turn_data.agent_exist.set(GetBitsetNumber(turn_data.agents_position[ally_team][agent_id]));
 	}
 
 	return;
@@ -115,13 +125,15 @@ vector<array<Move, 8>> BeamSearch(const GameData &game_data,
 	const int_fast32_t beam_width = GetBeamWidth(game_data, beam_depth,
 												 first_search,
 												 team_id != ally_team);
+	const bitset<400> first_exist = turn_data.agent_exist;
+
 	cerr << beam_width << " : ";
 	static vector<Node*> now_all_nodes(1<<(3*9), nullptr), next_all_nodes(1<<(3*9), nullptr);
 	greater_priority_queue<pair<double, int_fast32_t>> now_que, next_que;
 	Node root(turn_data, 0);
 	root.node_id = NodeID(turn_data.now_turn, turn_data.now_turn, search_id);
 	root.GetKey(team_id);
-	EraseAgent(team_id^1, root.turn_data);
+	EraseAgent(game_data, team_id^1, root.turn_data);
 	if (now_all_nodes[root.key] == nullptr) {
 		now_all_nodes[root.key] = new Node();
 	}
@@ -146,7 +158,8 @@ vector<array<Move, 8>> BeamSearch(const GameData &game_data,
 
 			all_moves = GetAgentsAllMoves(game_data, now_turn_data,
 										  team_id, false, true);
-			if (game_data.agent_num >= 6 && turn_data.agent_num == 3) {
+			if (turn > turn_data.now_turn &&
+				game_data.agent_num >= 6 && turn_data.agent_num == 3) {
 				ReduceDirection(game_data, now_turn_data, all_moves);
 			}
 
@@ -225,7 +238,7 @@ vector<array<Move, 8>> BeamSearch(const GameData &game_data,
 			 i >= 0 && now_que.size() < beam_width; --i) {
 			const auto &check_first_move =
 				next_all_nodes[reverse_que[i].second]->first_move;
-			if (first_move_count[check_first_move] > beam_width * 0.95)
+			if (first_move_count[check_first_move] > beam_width * 0.8)
 				continue;
 
 			now_que.push(reverse_que[i]);
@@ -449,7 +462,7 @@ vector<vector<Move>> RivalAllSearch(
 		const vector<vector<array<Move, 8>>> &split_moves,
 		const int_fast32_t &team_id) {
 	TurnData now_turn_data = turn_data;
-	EraseAgent(team_id^1, now_turn_data);
+	EraseAgent(game_data, team_id^1, now_turn_data);
 	vector<int_fast32_t> move_ids(split_moves.size(), 0);
 	vector<array<Move, 8>> check_split_moves(split_moves.size());
 	vector<Node> all_nodes;

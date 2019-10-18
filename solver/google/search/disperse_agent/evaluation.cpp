@@ -100,6 +100,8 @@ double AllyTilePointDifference(const GameData &game_data,
 		first_check[team_id] = false;
 	}
 
+	if (bias[team_id] == 0.0) return 0;
+
 	double ret = (turn_data.tile_point[team_id] -
 				  before_turn_data.tile_point[team_id]) * bias[team_id];
 
@@ -120,6 +122,8 @@ double RivalTilePointDifference(const GameData &game_data,
 		first_check[team_id] = false;
 	}
 
+	if (bias[team_id] == 0.0) return 0;
+
 	double ret = (turn_data.tile_point[team_id^1] -
 				  before_turn_data.tile_point[team_id^1]) * bias[team_id];
 
@@ -139,6 +143,8 @@ double AllyAreaPointDifference(const GameData &game_data,
 		bias[team_id] = it->second;
 		first_check[team_id] = false;
 	}
+
+	if (bias[team_id] == 0.0) return 0;
 
 	double ret = (turn_data.area_point[team_id] -
 				  before_turn_data.area_point[team_id]) * bias[team_id];
@@ -161,6 +167,8 @@ double RivalAreaPointDifference(const GameData &game_data,
 		first_check[team_id] = false;
 	}
 
+	if (bias[team_id] == 0.0) return 0;
+
 	double ret = (turn_data.area_point[team_id^1] -
 				  before_turn_data.area_point[team_id^1]) * bias[team_id];
 
@@ -180,6 +188,8 @@ double AllyAreaNum(const GameData &game_data,const TurnData &turn_data,
 		first_check[team_id] = false;
 	}
 
+	if (bias[team_id] == 0.0) return 0;
+
 	double ret = turn_data.area_num[team_id];
 
 	ret *= bias[team_id];
@@ -198,6 +208,8 @@ double RivalAreaNum(const GameData &game_data, const TurnData &turn_data,
 		first_check[team_id] = false;
 	}
 
+	if (bias[team_id] == 0.0) return 0;
+
 	double ret = turn_data.area_num[team_id^1];
 
 	ret *= bias[team_id^1];
@@ -215,6 +227,8 @@ double StayMinusMasu(const GameData &game_data, const TurnData &turn_data,
 		bias[team_id] = it->second;
 		first_check[team_id] = false;
 	}
+
+	if (bias[team_id] == 0.0) return 0;
 
 	double ret = 0;
 	for (int_fast32_t &&agent_id = 0; agent_id < turn_data.agent_num;
@@ -242,6 +256,8 @@ double ActionToRivalLocation(const GameData &game_data,
 		first_check[team_id] = false;
 	}
 
+	if (bias[team_id] == 0.0) return 0;
+
 	double ret = 0;
 	for (const auto &move : moves) {
 		if (move.team_id != team_id) continue;
@@ -266,6 +282,8 @@ double DisperseAgent(const GameData &game_data, const TurnData &turn_data,
 		bias[team_id] = it->second;
 		first_check[team_id] = false;
 	}
+
+	if (bias[team_id] == 0.0) return 0;
 
 	static const int_fast32_t box_size_half = 2;		// * (2 / 5) / 2
 	static array<array<int_fast32_t, 20>, 20> agent_area = {};
@@ -306,6 +324,8 @@ double DisperseAgent(const GameData &game_data, const TurnData &turn_data,
 		}
 	}
 
+	if (bias[team_id] == 0.0) return 0;
+
 	int_fast32_t ret = 0;
 	for (int_fast32_t &&agent_id = 0; agent_id < turn_data.agent_num;
 		 ++agent_id) {
@@ -330,6 +350,8 @@ double NotMyTeamMasu(const GameData &game_data, const TurnData &turn_data,
 		bias[team_id] = it->second;
 		first_check[team_id] = false;
 	}
+
+	if (bias[team_id] == 0.0) return 0;
 
 	// 重いので深さ2のときだけやります
 	if (turn_data.now_turn - start_turn != 2) return 0;
@@ -404,6 +426,8 @@ double BeforeEvaluationBias(const GameData &game_data,
 		first_check[team_id] = false;
 	}
 
+	if (bias[team_id] == 0.0) return 0;
+
 	double ret = before_evaluation * bias[team_id];
 
 	return ret;
@@ -421,6 +445,8 @@ double FirstEvaluation(const GameData &game_data,
 		bias[team_id] = it->second;
 		first_check[team_id] = false;
 	}
+
+	if (bias[team_id] == 0.0) return 0;
 
 	double ret = evaluation * bias[team_id];
 
