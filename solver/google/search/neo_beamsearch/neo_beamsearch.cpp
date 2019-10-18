@@ -31,7 +31,7 @@ int_fast32_t GetBeamWidth(const GameData &game_data,
 						  const int_fast32_t &beam_depth,
 						  const bool &first_search,
 						  const bool &rival_team) {
-	const int_fast32_t can_simulate_ps = 800000;
+	const int_fast32_t can_simulate_ps = 400000;
 	const int_fast32_t one_transition =
 		one_transition_table[game_data.agent_num];
 	const int_fast32_t make_new_node = first_search ? 500 : 0;
@@ -106,17 +106,17 @@ void ReduceDirection(const GameData &game_data, const TurnData &turn_data,
 	return;
 }
 
-template<typename T>
-void InputVector(vector<T> &in_vec, int_fast32_t &vec_size, T in) {
-	if (in_vec.size() == vec_size) {
-		in_vec.push_back(in);
-		++vec_size;
-	} else {
-		in_vec[vec_size++] = in;
-	}
+// template<typename T>
+// void InputVector(vector<T> &in_vec, int_fast32_t &vec_size, T in) {
+// 	if (in_vec.size() == vec_size) {
+// 		in_vec.push_back(in);
+// 		++vec_size;
+// 	} else {
+// 		in_vec[vec_size++] = in;
+// 	}
 
-	return;
-}
+// 	return;
+// }
 
 // [candidate][turn][agent]
 vector<vector<array<Move, 8>>> BeamSearch(
@@ -126,13 +126,14 @@ vector<vector<array<Move, 8>>> BeamSearch(
 	const int_fast32_t beam_depth =
 		min(game_data.max_turn - turn_data.now_turn + 1,
 			(int_fast32_t)(turn_data.agent_num == 3 ? 4 : 5));
-	const int_fast32_t beam_width = GetBeamWidth(game_data, beam_depth,
-												 first_search,
-												 team_id != ally_team);
+	int_fast32_t beam_width = GetBeamWidth(game_data, beam_depth,
+										   first_search,
+										   team_id != ally_team);
 	cerr << beam_width << " : ";
 	static vector<Node*> now_all_nodes(1<<(3*9), nullptr), next_all_nodes(1<<(3*9), nullptr);
-	vector<pair<double ,int_fast32_t>> now_vec, next_vec;
-	int_fast32_t now_vec_size = 0, next_vec_size = 0;
+	// vector<pair<double ,int_fast32_t>> now_vec, next_vec;
+	// int_fast32_t now_vec_size = 0, next_vec_size = 0;
+	greater_priority_queue<pair<double, int_fast32_t>> now_que, next_que;
 
 	Node root(turn_data, 0);
 	root.node_id = NodeID(turn_data.now_turn, turn_data.now_turn, search_id);
@@ -142,19 +143,19 @@ vector<vector<array<Move, 8>>> BeamSearch(
 		now_all_nodes[root.key] = new Node();
 	}
 	*now_all_nodes[root.key] = root;
-	InputVector(now_vec, now_vec_size, make_pair(0.0, root.key));
+	// InputVector(now_vec, now_vec_size, make_pair(0.0, root.key));
+	now_que.push(make_pair(0, root.key));
 
 	for (int_fast32_t turn = turn_data.now_turn;
 		 turn < min(turn_data.now_turn + beam_depth,
 		 			 game_data.max_turn);
 		 ++turn) {
-
-		double evaluation_mini = 1e10;
-		for (int_fast32_t &&vec_id = 0; vec_id < now_vec_size; ++vec_id) {
-			const double now_evaluation = now_vec[vec_id].first;
-			const int_fast32_t now_key = now_vec[vec_id].second;
+		while (now_que.size()) {
+		// for (int_fast32_t &&vec_id = 0; vec_id < now_vec_size; ++vec_id) {
+			const double now_evaluation = now_que.top().first;
+			const int_fast32_t now_key = now_que.top().second;
 			const Node &now_node = *now_all_nodes[now_key];
-			if (now_node.evaluation > now_evaluation) continue;
+			now_que.pop();
 
 			static TurnData now_turn_data;
 			static vector<vector<Move>> all_moves;
@@ -164,7 +165,8 @@ vector<vector<array<Move, 8>>> BeamSearch(
 
 			all_moves = GetAgentsAllMoves(game_data, now_turn_data,
 										  team_id, false, true);
-			if (game_data.agent_num >= 6 && turn_data.agent_num == 3) {
+			if (turn > turn_data.now_turn &&
+				game_data.agent_num >= 6 && turn_data.agent_num == 3) {
 				ReduceDirection(game_data, now_turn_data, all_moves);
 			}
 
@@ -178,9 +180,6 @@ vector<vector<array<Move, 8>>> BeamSearch(
 				TurnData next_turn_data = now_turn_data;
 				next_turn_data.Transition(game_data, check_moves);
 				++next_turn_data.now_turn;
-				sort(next_turn_data.agents_position[team_id].begin(),
-					 next_turn_data.agents_position[team_id].begin() +
-					 turn_data.agent_num);
 				next_node = Node(next_turn_data,
 								 GetEvaluation(game_data,
 								 			   next_turn_data,
@@ -202,62 +201,105 @@ vector<vector<array<Move, 8>>> BeamSearch(
 					next_node.first_move = now_node.first_move;
 				}
 
-				next_node.all_turn_moves = now_node.all_turn_moves;
-				next_node.all_turn_moves.push_back(array<Move, 8>());
-				for (int_fast32_t &&i = 0; i < turn_data.agent_num; ++i) {
-					next_node.all_turn_moves.back()[i] = check_moves[i];
-				}
-
 				if (next_all_nodes[next_node.key] == nullptr) {
 						next_all_nodes[next_node.key] = new Node();
 				}
 				Node &check_node = *next_all_nodes[next_node.key];
-				if (next_vec_size < beam_width ||
-					evaluation_mini < check_node.evaluation) {
-					evaluation_mini = min(evaluation_mini,
-										  check_node.evaluation);
-					if (check_node.node_id == next_node.node_id) {
-						if (check_node.evaluation < next_node.evaluation) {
-							check_node = next_node;
+
+				if (check_node.node_id == next_node.node_id) {
+					static const double eps = 1e-8;
+					if (check_node.evaluation + eps < next_node.evaluation) {
+						next_node.all_turn_moves = now_node.all_turn_moves;
+						next_node.all_turn_moves.push_back(array<Move, 8>());
+						for (int_fast32_t &&i = 0; i < turn_data.agent_num; ++i) {
+							next_node.all_turn_moves.back()[i] = check_moves[i];
 						}
-					} else {
+
 						check_node = next_node;
+						next_que.push(make_pair(next_node.evaluation,
+												next_node.key));
+
+						++beam_width;
 					}
-					InputVector(next_vec, next_vec_size,
-							    make_pair(next_node.evaluation,next_node.key));
+				} else {
+					while (next_que.size()) {
+						static const double eps = 1e-9;
+						const Node &top_node =
+							*next_all_nodes[next_que.top().second];
+						const double &top_evaluation =
+							next_que.top().first;
+						if (top_node.evaluation - eps < top_evaluation &&
+							top_evaluation < top_node.evaluation + eps) {
+							break;
+						} else {
+							next_que.pop();
+							--beam_width;
+						}
+					}
+
+					if (next_que.size() < beam_width) {
+						next_node.all_turn_moves = now_node.all_turn_moves;
+						next_node.all_turn_moves.push_back(array<Move, 8>());
+						for (int_fast32_t &&i = 0; i < turn_data.agent_num; ++i) {
+							next_node.all_turn_moves.back()[i] = check_moves[i];
+						}
+
+						check_node = next_node;
+						next_que.push(make_pair(next_node.evaluation,
+												next_node.key));
+					} else if (next_que.top().first < next_node.evaluation) {
+						next_node.all_turn_moves = now_node.all_turn_moves;
+						next_node.all_turn_moves.push_back(array<Move, 8>());
+						for (int_fast32_t &&i = 0; i < turn_data.agent_num; ++i) {
+							next_node.all_turn_moves.back()[i] = check_moves[i];
+						}
+
+						check_node = next_node;
+						next_que.pop();
+						next_que.push(make_pair(next_node.evaluation,
+												next_node.key));
+					}
 				}
 			} while (NextPermutation(all_moves, 0, move_ids, check_moves));
 		}
+		beam_width = GetBeamWidth(game_data, beam_depth,
+										   first_search,
+										   team_id != ally_team);
 
-		sort(next_vec.begin(), next_vec.begin() + next_vec_size, greater<>());
 		map<array<Move, 8>, int_fast32_t> first_move_count;
-
-		now_vec_size = 0;
-		const double eps = 1e-9;
-		for (int_fast32_t &&vec_id = 0;
-			 vec_id < next_vec_size && now_vec_size < beam_width; ++vec_id) {
-			const auto &check_pair = next_vec[vec_id];
-			const Node &check_node = *next_all_nodes[check_pair.second];
-			if (!(check_pair.first - eps <= check_node.evaluation &&
-				  check_node.evaluation <= check_pair.first + eps))
-				continue;
-			if (first_move_count[check_node.first_move] > beam_width * 0.60)
-				continue;
-
-			InputVector(now_vec, now_vec_size, check_pair);
-			++first_move_count[check_node.first_move];
+		while (next_que.size() > 0 && now_que.size() < beam_width) {
+			static const double eps = 1e-9;
+			const Node &top_node =
+				*next_all_nodes[next_que.top().second];
+			const double &top_evaluation =
+				next_que.top().first;
+			if (top_node.evaluation - eps < top_evaluation &&
+				top_evaluation < top_node.evaluation + eps &&
+				first_move_count[top_node.first_move] < beam_width*0.4) {
+				now_que.push(next_que.top());
+				++first_move_count[top_node.first_move];
+			}
+			next_que.pop();
 		}
-		next_vec_size = 0;
+		while (next_que.size()) next_que.pop();
+		cerr << first_move_count.size() << " ";
 
 		swap(now_all_nodes, next_all_nodes);
 	}
 
-	const int_fast32_t &ret_size = game_data.agent_num <= 6 ? 50 : 13;
+	// const int_fast32_t &ret_size = game_data.agent_num <= 6 ? 50 : 13;
+	const int_fast32_t ret_size = 10;
 	vector<vector<array<Move, 8>>> ret;
 	map<array<Move, 8>, int_fast32_t> first_move_count;
-	for (int_fast32_t &&vec_id = 0;
-		 vec_id < now_vec_size && ret.size() < ret_size; ++vec_id) {
-		const Node &check_node = *now_all_nodes[now_vec[vec_id].second];
+	vector<pair<double, int_fast32_t>> rev_vec;
+	while (now_que.size()) {
+		rev_vec.push_back(now_que.top());
+		now_que.pop();
+	}
+
+	for (int_fast32_t &&vec_id = rev_vec.size()-1;
+		 vec_id >= 0 && ret.size() < ret_size; --vec_id) {
+		const Node &check_node = *now_all_nodes[rev_vec[vec_id].second];
 
 		if (first_move_count[check_node.first_move] > ret_size * 0.34) continue;
 
@@ -511,8 +553,6 @@ vector<vector<vector<Move>>> RivalAllSearch(
 		static vector<Move> check_all_moves(game_data.agent_num);
 		static TurnData before_turn_data;
 		Node next_node(now_turn_data, 0.0);
-		// for (int_fast32_t &&turn = 0; turn < check_split_moves[0].size();
-		// 	 ++turn) {
 		for (int_fast32_t &&turn = 0; turn < check_turn; ++turn) {
 			MakeTrasitionMoves(game_data, turn, check_split_moves,
 							   check_all_moves);
@@ -529,31 +569,31 @@ vector<vector<vector<Move>>> RivalAllSearch(
 			next_node.turn_data.Transition(game_data, check_all_moves);
 			++next_node.turn_data.now_turn;
 
-			const auto &target_split = split_table[game_data.agent_num];
-			const int_fast32_t &split_size = target_split.size();
-			int_fast32_t &&before_count = 0;
-			for (int_fast32_t &&split_id = 0; split_id < split_size;
-				 ++split_id) {
-				const int_fast32_t &one_size = target_split[split_id];
-				for (int_fast32_t &&agent_id = 0; agent_id < one_size-1;
-					 ++agent_id) {
-					const int_fast32_t truth_id = before_count + agent_id;
-					const int_fast32_t &target_id =
-						check_all_moves[truth_id].agent_id;
-					const int_fast32_t &next_id =
-						check_all_moves[truth_id+1].agent_id;
-					Position &target_agent_pos =
-						next_node.turn_data.GetPosition(rival_team, target_id);
-					Position &next_agent_pos =
-						next_node.turn_data.GetPosition(rival_team, next_id);
+			// const auto &target_split = split_table[game_data.agent_num];
+			// const int_fast32_t &split_size = target_split.size();
+			// int_fast32_t &&before_count = 0;
+			// for (int_fast32_t &&split_id = 0; split_id < split_size;
+			// 	 ++split_id) {
+			// 	const int_fast32_t &one_size = target_split[split_id];
+			// 	for (int_fast32_t &&agent_id = 0; agent_id < one_size-1;
+			// 		 ++agent_id) {
+			// 		const int_fast32_t truth_id = before_count + agent_id;
+			// 		const int_fast32_t &target_id =
+			// 			check_all_moves[truth_id].agent_id;
+			// 		const int_fast32_t &next_id =
+			// 			check_all_moves[truth_id+1].agent_id;
+			// 		Position &target_agent_pos =
+			// 			next_node.turn_data.GetPosition(rival_team, target_id);
+			// 		Position &next_agent_pos =
+			// 			next_node.turn_data.GetPosition(rival_team, next_id);
 
-					if (target_agent_pos > next_agent_pos) {
-						swap(target_agent_pos, next_agent_pos);
-						--agent_id;
-					}
-				}
-				before_count += one_size;
-			}
+			// 		if (target_agent_pos > next_agent_pos) {
+			// 			swap(target_agent_pos, next_agent_pos);
+			// 			--agent_id;
+			// 		}
+			// 	}
+			// 	before_count += one_size;
+			// }
 
 			if (turn == 0) {
 				for (int_fast32_t &&agent_id = 0; agent_id < game_data.agent_num;
@@ -617,8 +657,6 @@ array<Move, 8> AllyAllSearch(
 		for (auto check_rival_moves: rival_all_moves) {
 			next_node.turn_data = turn_data;
 			next_node.evaluation = 0.0;
-			// for (int_fast32_t &&turn = 0; turn < check_rival_moves.size();
-			// 	 ++turn) {
 			for (int_fast32_t &&turn = 0; turn < check_turn; ++turn) {
 				MakeTrasitionMoves(game_data, turn, check_split_moves,
 								   check_ally_moves);
@@ -637,52 +675,52 @@ array<Move, 8> AllyAllSearch(
 				++next_node.turn_data.now_turn;
 // cerr << next_node.turn_data.tile_point[0] + next_node.turn_data.area_point[0] << " "
 // 	 << next_node.turn_data.tile_point[1] + next_node.turn_data.area_point[1] << endl;
-				const auto &target_split = split_table[game_data.agent_num];
-				const int_fast32_t &split_size = target_split.size();
-				int_fast32_t &&before_count = 0;
-				for (int_fast32_t &&split_id = 0; split_id < split_size;
-					 ++split_id) {
-					const int_fast32_t &one_size = target_split[split_id];
-					for (int_fast32_t &&agent_id = 0; agent_id < one_size-1;
-						 ++agent_id) {
-						bool swapped = false;
-						const int_fast32_t truth_id = before_count + agent_id;
+				// const auto &target_split = split_table[game_data.agent_num];
+				// const int_fast32_t &split_size = target_split.size();
+				// int_fast32_t &&before_count = 0;
+				// for (int_fast32_t &&split_id = 0; split_id < split_size;
+				// 	 ++split_id) {
+				// 	const int_fast32_t &one_size = target_split[split_id];
+				// 	for (int_fast32_t &&agent_id = 0; agent_id < one_size-1;
+				// 		 ++agent_id) {
+				// 		bool swapped = false;
+				// 		const int_fast32_t truth_id = before_count + agent_id;
 
-						const int_fast32_t &ally_target_id =
-							check_ally_moves[truth_id].agent_id;
-						const int_fast32_t &ally_next_id =
-							check_ally_moves[truth_id+1].agent_id;
-						Position &ally_target_agent_pos =
-							next_node.turn_data.GetPosition(ally_team,
-															ally_target_id);
-						Position &ally_next_agent_pos =
-							next_node.turn_data.GetPosition(ally_team,
-															ally_next_id);
-						if (ally_target_agent_pos > ally_next_agent_pos) {
-							swap(ally_target_agent_pos, ally_next_agent_pos);
-							swapped = true;
-						}
+				// 		const int_fast32_t &ally_target_id =
+				// 			check_ally_moves[truth_id].agent_id;
+				// 		const int_fast32_t &ally_next_id =
+				// 			check_ally_moves[truth_id+1].agent_id;
+				// 		Position &ally_target_agent_pos =
+				// 			next_node.turn_data.GetPosition(ally_team,
+				// 											ally_target_id);
+				// 		Position &ally_next_agent_pos =
+				// 			next_node.turn_data.GetPosition(ally_team,
+				// 											ally_next_id);
+				// 		if (ally_target_agent_pos > ally_next_agent_pos) {
+				// 			swap(ally_target_agent_pos, ally_next_agent_pos);
+				// 			swapped = true;
+				// 		}
 
-						const int_fast32_t &rival_target_id =
-							check_rival_moves[turn][truth_id].agent_id;
-						const int_fast32_t &rival_next_id =
-							check_rival_moves[turn][truth_id+1].agent_id;
-						Position &rival_target_agent_pos =
-							next_node.turn_data.GetPosition(ally_team^1,
-															rival_target_id);
-						Position &rival_next_agent_pos =
-							next_node.turn_data.GetPosition(ally_team^1,
-															rival_next_id);
-						if (rival_target_agent_pos > rival_next_agent_pos) {
-							swap(rival_target_agent_pos, rival_next_agent_pos);
-							swapped = true;
-						}
+				// 		const int_fast32_t &rival_target_id =
+				// 			check_rival_moves[turn][truth_id].agent_id;
+				// 		const int_fast32_t &rival_next_id =
+				// 			check_rival_moves[turn][truth_id+1].agent_id;
+				// 		Position &rival_target_agent_pos =
+				// 			next_node.turn_data.GetPosition(ally_team^1,
+				// 											rival_target_id);
+				// 		Position &rival_next_agent_pos =
+				// 			next_node.turn_data.GetPosition(ally_team^1,
+				// 											rival_next_id);
+				// 		if (rival_target_agent_pos > rival_next_agent_pos) {
+				// 			swap(rival_target_agent_pos, rival_next_agent_pos);
+				// 			swapped = true;
+				// 		}
 
-						if (swapped)
-							--agent_id;
-					}
-					before_count += one_size;
-				}
+				// 		if (swapped)
+				// 			--agent_id;
+				// 	}
+				// 	before_count += one_size;
+				// }
 
 				if (turn == 0) {
 					for (int_fast32_t &&agent_id = 0; agent_id < game_data.agent_num;
@@ -715,7 +753,7 @@ array<Move, 8> AllyAllSearch(
 
 	if (conflicted && rival_point_sum > ally_point_sum) {
 		const int_fast32_t &&ret_id =
-			rand()%min((int_fast32_t)3, (int_fast32_t)all_nodes.size()-1) + 1;
+			rand()%min((int_fast32_t)10, (int_fast32_t)all_nodes.size()-1) + 1;
 		cerr << "random : " << ret_id << endl;
 		return all_nodes[ret_id].first_move;
 	} else {
