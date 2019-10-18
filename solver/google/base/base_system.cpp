@@ -3,7 +3,7 @@
 #include <iostream>
 
 bool GameData::Input() {
-	// cin >> turn_time_ms;
+	cin >> turn_time_ms;
 	cin >> max_turn;
 	cin >> width >> height;
 	cin >> agent_num;
