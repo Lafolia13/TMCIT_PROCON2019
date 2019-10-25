@@ -189,12 +189,36 @@ public class TurnData {
 					}
 				}
 			}
+
+			for(int i = 0;i < playerSize;i++) {
+				Point nowMyP = myPlayers.get(i);
+				ActionData nowMyActionData = allActionDataList.get(i);
+				if(checkActionData.agentChar == nowMyActionData.agentChar) continue;
+				if(checkActionData.target.x == nowMyP.x && checkActionData.target.y == nowMyP.y) {
+					if(nowMyActionData.command == 'e' || nowMyActionData.command == 'n') {
+						// 移動先が仲間じゃなく、除去か停留をしている。
+						return true;
+					}
+				}
+			}
 		}else {
 			for(int i = 0;i < playerSize;i++) {
 				Point nowMyP = myPlayers.get(i);
 				ActionData nowMyActionData = allActionDataList.get(i);
 				if(checkActionData.target.x == nowMyP.x && checkActionData.target.y == nowMyP.y) {
 					if(nowMyActionData.command == 'e' || nowMyActionData.command == 'n') {
+						// 移動先が仲間じゃなく、除去か停留をしている。
+						return true;
+					}
+				}
+			}
+
+			for(int i = 0;i < playerSize;i++) {
+				Point nowRivalP = rivalPlayers.get(i);
+				ActionData nowRivalActionData = allActionDataList.get(playerSize+i);
+				if(checkActionData.agentChar == nowRivalActionData.agentChar) continue;
+				if(checkActionData.target.x == nowRivalP.x && checkActionData.target.y == nowRivalP.y) {
+					if(nowRivalActionData.command == 'e' || nowRivalActionData.command == 'n') {
 						// 移動先が仲間じゃなく、除去か停留をしている。
 						return true;
 					}
@@ -274,7 +298,9 @@ public class TurnData {
 	private ArrayList<ActionData> checkAction(ArrayList<ActionData> allActionDataList){
 		int[][] howSelect = new int[mapWidth][mapHeight];
 
-		Pair<ArrayList<ActionData>, Boolean> ret = changeBadActionToStay(allActionDataList);
+		howSelect = countSelect(allActionDataList);
+		Pair<ArrayList<ActionData>, Boolean> ret = changeCollisionAgentToStay(howSelect, allActionDataList);
+		ret = changeBadActionToStay(allActionDataList);
 		allActionDataList = ret.first;
 		howSelect = countSelect(allActionDataList);
 

@@ -5,9 +5,12 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 
 import javax.swing.UIManager;
+
+import tmcit.yasu.data.ConnectFileData;
 
 public class FileManager {
 	private File procon30Directory, settingDirectory, solverDirectory, logDirectory;
@@ -118,4 +121,38 @@ public class FileManager {
 		return ret;
 	}
 
+	// URLÇ‚port, tokenÇÃê›íËÇéÊìæ
+	public ConnectFileData getConnectFileData() {
+		File readFile = new File(settingDirectory.getAbsolutePath() + "\\connectSetting.txt");
+		
+		String url = "example.com", token = "PROCON30_TOKEN";
+		int port = 80;
+		if(readFile.exists()) {
+			try {
+				BufferedReader br = new BufferedReader(new FileReader(readFile));
+				url = br.readLine();
+				token = br.readLine();
+				port = Integer.valueOf(br.readLine());
+				br.close();
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}else {
+			try {
+				readFile.createNewFile();
+				PrintWriter pw = new PrintWriter(readFile);
+				pw.println(url);
+				pw.println(token);
+				pw.println(port);
+				pw.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			
+		}
+		
+		return new ConnectFileData(url, token, port);
+	}
 }

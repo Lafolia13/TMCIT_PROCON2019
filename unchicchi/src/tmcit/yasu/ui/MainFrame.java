@@ -29,12 +29,18 @@ public class MainFrame extends JFrame{
 	private void initLayout() {
 //		tabbedPane.addTab("スタート画面", new MainPanel(this, fileManager));
 
-		tabbedPane.addTab("接続設定", new ConnectPanel(this));
+		tabbedPane.addTab("接続設定", new ConnectPanel(this, fileManager));
 
 		this.add(tabbedPane);
 	}
 
 	public void addTab(String title, Component component) {
+		int index = tabbedPane.indexOfTab(title);
+		if(index != -1) {
+			tabbedPane.setSelectedIndex(index);
+			return;
+		}
+		
 		tabbedPane.addTab(title, component);
 		tabbedPane.setSelectedComponent(component);
 	}

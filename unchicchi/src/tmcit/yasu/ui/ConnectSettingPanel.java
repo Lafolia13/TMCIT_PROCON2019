@@ -7,22 +7,29 @@ import javax.swing.JTextField;
 import javax.swing.SpinnerModel;
 import javax.swing.SpinnerNumberModel;
 
+import tmcit.yasu.data.ConnectFileData;
 import tmcit.yasu.data.ConnectSetting;
 import tmcit.yasu.util.Constant;
+import tmcit.yasu.util.FileManager;
 
 public class ConnectSettingPanel extends JPanel{
+	private FileManager fileManager;
+	
 	private JLabel nameLabel, tokenLabel, urlLabel, portLabel, intervalLabel;
 	private JTextField tokenField, urlField;
 	private JSpinner portSpinner, intervalSpinner;
 	private SpinnerModel portSpinnerModel, intervalSpinnerModel;
 
-	public ConnectSettingPanel() {
+	public ConnectSettingPanel(FileManager fileManager0) {
+		fileManager = fileManager0;
 		init();
 		initLayout();
 	}
 
 	private void init() {
 		setBorder(Constant.DEFAULT_LINE_BORDER);
+		
+		ConnectFileData cfd = fileManager.getConnectFileData();
 
 		nameLabel = new JLabel("ê⁄ë±ê›íË");
 		nameLabel.setFont(Constant.DEFAULT_FONT);
@@ -35,10 +42,10 @@ public class ConnectSettingPanel extends JPanel{
 		intervalLabel = new JLabel("ê⁄ë±ä‘äu[ms]:");
 		intervalLabel.setFont(Constant.SMALL_FONT);
 
-		tokenField = new JTextField("MY");
-		urlField = new JTextField("http://192.168.99.100/procon30-battle-api");
+		tokenField = new JTextField(cfd.getToken());
+		urlField = new JTextField(cfd.getUrl());
 
-		portSpinnerModel = new SpinnerNumberModel(16000, 0, 65535, 1);
+		portSpinnerModel = new SpinnerNumberModel(cfd.getPort(), 0, 65535, 1);
 		portSpinner = new JSpinner(portSpinnerModel);
 
 		intervalSpinnerModel = new SpinnerNumberModel(1000, 10, 10000, 10);
