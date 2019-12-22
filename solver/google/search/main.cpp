@@ -40,7 +40,7 @@ void InputDefaultParameter(GameData &game_data) {
 	return;
 }
 
-void InputCustomParameter(int_fast32_t &argc, char** argv, GameData &game_data) {
+void InputCustomParameter(const int_fast32_t &argc, char** argv, GameData &game_data) {
 	istringstream iss;
 	string key, value;
 
